@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _sendDataToServer2(String data) async {
-    final url = Uri.parse('http://192.168.0.103:3000/api-endpoint2');
+    final url = Uri.parse('http://localhost:3000/api-endpoint2');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
