@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,19 +43,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _sendDataToServer(String data) async {
-    final url = Uri.parse(
-        'https://your-api-endpoint.com'); // Replace with your API endpoint
+    final url = Uri.parse('http://localhost:3000/api-endpoint');
     final response = await http.post(
       url,
-      body: {
-        'data': data, // The data from the TextField
-      },
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'data': data}),
     );
+
     if (response.statusCode == 200) {
-      // Data sent successfully
-    } else {
-      // Handle errors here
-    }
+    } else {}
+  }
+
+  Future<void> _sendDataToServer2(String data) async {
+    final url = Uri.parse('http://192.168.0.103:3000/api-endpoint2');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'data': data}),
+    );
+
+    if (response.statusCode == 200) {
+    } else {}
   }
 
   @override
@@ -86,6 +96,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 _sendDataToServer(enteredText);
               },
               child: const Text('Send to Server'),
+            ),
+            TextField(
+              controller: _textFieldController,
+              decoration: const InputDecoration(
+                labelText: 'Enter data for table 2',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String enteredText = _textFieldController.text;
+                _sendDataToServer2(enteredText);
+              },
+              child: const Text('Send to Table 2'),
             ),
           ],
         ),
