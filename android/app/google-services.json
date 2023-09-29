@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "825506978982",
+    "project_id": "region-skane-fire",
+    "storage_bucket": "region-skane-fire.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825506978982:android:28a12e8885dd394c96e867",
+        "android_client_info": {
+          "package_name": "com.example.flutter_local_test_pca"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX0se8frDXyXaQ4wZkjfMxMkaK2JuK0vk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
