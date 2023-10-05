@@ -1,5 +1,7 @@
 # PharmAware
 
+HEJ!
+
 ## Exempel flutter till SQL
 
 checka ut på FlutterTest branch och testa där
