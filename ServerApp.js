@@ -1,3 +1,9 @@
+/*
+*
+* Kör servern med "node ServerApp.js"
+*
+*/
+
 // Import required modules
 const express = require('express');
 const bodyParser = require('body-parser');
