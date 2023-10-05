@@ -1,12 +1,11 @@
 /*
-*
-* Kör servern med "node ServerApp.js"
-*
-*/
+ * Run server with "node ServerApp.js"
+ * Exit with Ctrl+c
+ */
 
 // Import required modules
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
 
 // Create an Express application
 const app = express();
@@ -14,83 +13,79 @@ const app = express();
 // Use middleware to parse JSON requests
 app.use(bodyParser.json());
 
-// Handle GET requests to /api-endpoint
-app.get('/api-endpoint', (req, res) => {
-  // Handle GET requests here (e.g., retrieve data)
-  res.send('This is a GET request to /api-endpoint');
-});
-
-// Handle POST requests to /api-endpoint
-app.post('/api-endpoint', (req, res) => {
-
-  const data = req.body.data;
-  insertData(data);
-  // Insert 'data' into your MySQL database here
-  // Respond to the client accordingly
-  res.status(200).json({ message: 'Data received and processed.' });
-});
-
-app.post('/api-endpoint2', (req, res) => {
-  const data = req.body.data;
-  // Insert 'data' into table 2 here
-  res.status(200).json({ message: 'Data received and processed for table 2.' });
-  insertData2(data);
-});
-
-
-
 // Start the server
 const port = process.env.PORT || 3000; // Use the specified port or 3000 as a default
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-const mysql = require('mysql');
+const mysql = require("mysql");
 
 const db = mysql.createConnection({
-  host: 'sql11.freesqldatabase.com',
-  user: 'sql11648708',
-  password: 'bYlA6x4JHr',
-  database: 'sql11648708',
-  port: 3306
+  host: "sql11.freesqldatabase.com",
+  user: "sql11648708",
+  password: "bYlA6x4JHr",
+  database: "sql11648708",
+  port: 3306,
 });
 
 // Connect to MySQL
 db.connect((err) => {
   if (err) {
-    console.error('Error connecting to MySQL:', err);
+    console.error("Error connecting to MySQL:", err);
   } else {
-    console.log('Connected to MySQL');
+    console.log("Connected to MySQL");
   }
 });
 
-// Insert data into MySQL
-function insertData(data) {
-    console.log(data);
-    // Split the data into an array of values, assuming it's a comma-separated string
-    const values = data.split(',');
-  
-    const sql = 'INSERT INTO dummy_table (name, age) VALUES (?, ?)';
-    db.query(sql, values, (err, result) => {
-      if (err) {
-        console.error('Error inserting data:', err);
-      } else {
-        console.log('Data inserted successfully:', result);
-      }
-    });
-  }
-  
-  function insertData2(data) {
-    console.log(data);
-    // Split the data into an array of values, assuming it's a comma-separated string
-    const values = data.split(',');
-  
-    const sql = 'INSERT INTO dummy_table2 (name, age) VALUES (?, ?)';
-    db.query(sql, values, (err, result) => {
-      if (err) {
-        console.error('Error inserting data:', err);
-      } else {
-        console.log('Data inserted successfully:', result);
-      }
-    });
-  }
+app.get("/department", (req, res) => {
+  const data = req.body.data;
+  // TODO: Get department name with help of DepartmentId
+  es.status(200).json({ message: "" });
+});
+
+app.get("/entries", (req, res) => {
+  const data = req.body.data;
+  /* TODO: Get entries with filters. If no filter is provided, return all entries.
+   * Filters should allow for filtration on DepartmentName, BatchNr, ProductCode, ProductName
+   */
+  es.status(200).json({ message: "" });
+});
+
+app.get("/expiration-entries", (req, res) => {
+  const data = req.body.data;
+  // TODO: Get all entries with expiration date that has an expiration date in the following 3 months.
+  es.status(200).json({ message: "" });
+});
+
+// Requires e-VIS
+app.get("/entry", (req, res) => {
+  const data = req.body.data;
+  // TODO: Get ProductName and ProductNumber with help of ProductCode (This can change depending on how the // API works)
+  es.status(200).json({ message: "" });
+});
+
+app.post("/remove-entry-from-single-departement", (req, res) => {
+  const data = req.body.data;
+  // TODO: Removes an entry from a single specified department
+  es.status(200).json({ message: "" });
+});
+
+app.post("/remove-entry-from-all-departments", (req, res) => {
+  const data = req.body.data;
+  // TODO: Removes an entry from all departments
+  es.status(200).json({ message: "" });
+});
+
+app.post("/add-entry", (req, res) => {
+  const data = req.body.data;
+  // TODO: Adds an entry to the database with a unique ProductNumber, ExpirationDate, ProductName, BatchNr and // ProductCode
+  es.status(200).json({ message: "" });
+});
+
+// Requires e-VIS
+app.post("/add-new-entry-type", (req, res) => {
+  const data = req.body.data;
+  // TODO: Adds a new ProductNumber mapped to unique ProductName
+  es.status(200).json({ message: "" });
+});

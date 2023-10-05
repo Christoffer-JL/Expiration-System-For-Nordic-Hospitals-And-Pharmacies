@@ -1,16 +1,56 @@
 # flutter_local_test_pca
 
-A new Flutter project.
+## Exempelkod för http hantering
 
-## Getting Started
+// Handle GET requests to /api-endpoint
+app.get("/api-endpoint", (req, res) => {
+// Handle GET requests here (e.g., retrieve data)
+res.send("This is a GET request to /api-endpoint");
+});
 
-This project is a starting point for a Flutter application.
+// Handle POST requests to /api-endpoint
+app.post("/api-endpoint", (req, res) => {
+const data = req.body.data;
+insertData(data);
+// Insert 'data' into your MySQL database here
+// Respond to the client accordingly
+res.status(200).json({ message: "Data received and processed." });
+});
 
-A few resources to get you started if this is your first Flutter project:
+app.post("/api-endpoint2", (req, res) => {
+const data = req.body.data;
+// Insert 'data' into table 2 here
+res.status(200).json({ message: "Data received and processed for table 2." });
+insertData2(data);
+});
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+// Insert data into MySQL
+function insertData(data) {
+console.log(data);
+// Split the data into an array of values, assuming it's a comma-separated string
+const values = data.split(",");
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+const sql = "INSERT INTO dummy_table (name, age) VALUES (?, ?)";
+db.query(sql, values, (err, result) => {
+if (err) {
+console.error("Error inserting data:", err);
+} else {
+console.log("Data inserted successfully:", result);
+}
+});
+}
+
+function insertData2(data) {
+console.log(data);
+// Split the data into an array of values, assuming it's a comma-separated string
+const values = data.split(",");
+
+const sql = "INSERT INTO dummy_table2 (name, age) VALUES (?, ?)";
+db.query(sql, values, (err, result) => {
+if (err) {
+console.error("Error inserting data:", err);
+} else {
+console.log("Data inserted successfully:", result);
+}
+});
+}
