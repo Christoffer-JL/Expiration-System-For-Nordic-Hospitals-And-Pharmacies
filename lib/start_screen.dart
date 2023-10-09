@@ -2,6 +2,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'widgets/scanned_pop_up.dart';
+import 'widgets/qr_scanner_overlay.dart';
+import 'package:vibration/vibration.dart';
 
 MobileScannerController cameraController = MobileScannerController();
 
@@ -18,13 +20,13 @@ class _StartScreenState extends State<StartScreen> {
   String serial = "";
   String exp = "";
   String batch = "";
-  bool hasScanned = false;
+  bool scanEnabled = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mobile Scanner'),
+        title: const Text('Inloggad som: Hjärtavdelningen'),
         actions: [
           IconButton(
             color: Colors.white,
@@ -60,85 +62,107 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ],
       ),
-      body: MobileScanner(
-        controller: cameraController,
-        onDetect: (capture) {
-          final List<Barcode> barcodes = capture.barcodes;
-          String qrCodeData = "";
-          Uint8List data = Uint8List(0);
-          for (final barcode in barcodes) {
-            qrCodeData = barcode.displayValue!;
-            data = barcode.rawBytes!;
-            hasScanned = true;
-          }
+      body: Stack(
+        children: [
+          MobileScanner(
+            controller: cameraController,
+            onDetect: (capture) {
+              if (scanEnabled) {
+                final List<Barcode> barcodes = capture.barcodes;
+                final barcode = barcodes.first;
+                String qrCodeData = barcode.displayValue!;
 
-          int delimiter = 0;
+                if (qrCodeData.substring(1, 3).compareTo("01") == 0) {
+                  scanEnabled = false;
+                  Uint8List data = barcode.rawBytes!;
 
-          for (int i = data.length - 1; i >= 0; i--) {
-            if (data[i] == 29) {
-              break;
-            } else {
-              delimiter++;
-            }
-          }
+                  int delimiter = 0;
 
-          // Find and extract PC
-          final pcStartIndex = qrCodeData.indexOf('01');
-          if (pcStartIndex != -1) {
-            pc =
-                "PC: ${qrCodeData.substring(pcStartIndex + 2, pcStartIndex + 16)}";
-            qrCodeData = qrCodeData.substring(0, pcStartIndex) +
-                qrCodeData.substring(pcStartIndex + 16);
-          }
+                  for (int i = data.length - 1; i >= 0; i--) {
+                    if (data[i] == 29) {
+                      break;
+                    } else {
+                      delimiter++;
+                    }
+                  }
 
-          // Find and extract SERIAL from the end of the string
-          final serialStartIndex = qrCodeData.length - delimiter;
-          if (serialStartIndex != -1) {
-            serial = "SERIAL: ${qrCodeData.substring(serialStartIndex + 2)}";
-            qrCodeData = qrCodeData.substring(0, serialStartIndex);
-          }
+                  // Find and extract PC
+                  final pcStartIndex = qrCodeData.indexOf('01');
+                  if (pcStartIndex != -1) {
+                    pc =
+                        "PC: ${qrCodeData.substring(pcStartIndex + 2, pcStartIndex + 16)}";
+                    qrCodeData = qrCodeData.substring(0, pcStartIndex) +
+                        qrCodeData.substring(pcStartIndex + 16);
+                  }
 
-          // Find and extract EXP
-          final expStartIndex = qrCodeData.indexOf('17');
-          if (expStartIndex != -1) {
-            exp =
-                "EXP: ${qrCodeData.substring(expStartIndex + 2, expStartIndex + 8)}";
-            qrCodeData = qrCodeData.substring(0, expStartIndex) +
-                qrCodeData.substring(expStartIndex + 8);
-          }
+                  // Find and extract SERIAL from the end of the string
+                  final serialStartIndex = qrCodeData.length - delimiter;
+                  if (serialStartIndex != -1) {
+                    serial =
+                        "SERIAL: ${qrCodeData.substring(serialStartIndex + 2)}";
+                    qrCodeData = qrCodeData.substring(0, serialStartIndex);
+                  }
 
-          // Whatever is left should be BATCH
-          batch =
-              "BATCH: ${qrCodeData.replaceAll(RegExp(r'[^A-Za-z0-9]'), '').substring(2)}";
+                  // Find and extract EXP
+                  final expStartIndex = qrCodeData.indexOf('17');
+                  if (expStartIndex != -1) {
+                    exp =
+                        "EXP: ${qrCodeData.substring(expStartIndex + 2, expStartIndex + 8)}";
+                    qrCodeData = qrCodeData.substring(0, expStartIndex) +
+                        qrCodeData.substring(expStartIndex + 8);
+                  }
 
-          setState(() {
-            pc = pc;
-            exp = exp;
-            batch = batch;
-            serial = serial;
-          });
-        },
-      ),
-      bottomSheet: SizedBox(
-        child: hasScanned
-            ? CustomPopup(
-                pc: pc,
-                exp: exp,
-                batch: batch,
-                serial: serial,
-              )
-            : Container(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(pc),
-                    Text(exp),
-                    Text(batch),
-                    Text(serial),
-                  ],
-                ),
-              ),
+                  // Whatever is left should be BATCH
+                  batch =
+                      "BATCH: ${qrCodeData.replaceAll(RegExp(r'[^A-Za-z0-9]'), '').substring(2)}";
+
+                  setState(() {
+                    pc = pc;
+                    exp = exp;
+                    batch = batch;
+                    serial = serial;
+                  });
+
+                  Vibration.vibrate(duration: 100);
+
+                  debugPrint("Barcode found $pc");
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomPopup(
+                        pc: pc,
+                        exp: exp,
+                        batch: batch,
+                        serial: serial,
+                        onPopupDismissed: () {
+                          // Enable scanning after the popup is dismissed
+                          setState(() {
+                            scanEnabled = true;
+                          });
+                        },
+                      );
+                    },
+                  );
+                } else if (qrCodeData.length == 13) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                        title: Text("Oops, du skannade en EAN-kod"),
+                      );
+                    },
+                  );
+                } else {
+                  debugPrint(
+                      "Handle me! ${barcode.displayValue!.substring(0, 1)} length: ${qrCodeData.length}");
+                }
+              }
+            },
+          ),
+          QRScannerOverlay(
+            overlayColour: Colors.black.withOpacity(0.3),
+          ),
+        ],
       ),
     );
   }
