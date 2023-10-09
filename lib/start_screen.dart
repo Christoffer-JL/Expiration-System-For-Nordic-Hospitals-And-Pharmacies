@@ -18,8 +18,10 @@ class StartScreen extends StatelessWidget {
               text: 'button example',
               onPressed: () {
                 // Add your button click logic here
-                Navigator.pushNamed(
-                    context, '/qr_scan'); // Navigate to the QR scanning screen
+               Navigator.pushNamed(
+                    context, '/qr_scan'); 
+                    // Navigate to the QR scanning screen
+                    
               },
             ),
           ],

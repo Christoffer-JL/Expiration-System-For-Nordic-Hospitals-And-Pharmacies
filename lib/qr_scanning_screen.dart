@@ -9,6 +9,8 @@ class QrScanningScreen extends StatelessWidget {
       ),
       body: Center(
         child: Text('Scan QR Code Here'),
+      
+        
       ),
     );
   }
