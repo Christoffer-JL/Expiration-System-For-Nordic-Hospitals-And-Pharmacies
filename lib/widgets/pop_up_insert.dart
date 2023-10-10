@@ -30,9 +30,8 @@ class _PopUpInsert extends State<PopUpInsert> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Filter'),
-      content: SingleChildScrollView(
-        child: Column(
+      title: Text('Search'),
+      content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
@@ -63,51 +62,15 @@ class _PopUpInsert extends State<PopUpInsert> {
             readOnly: true,
             onTap: () => _selectDate(context),
           ),
+
+
         ],
       ),
-      ),
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            
-            // Get the date from the date picker
-            String date = dateController.text;
-            // Get the text from the text fields
-            String input1 = otherController1.text;
-            String input2 = otherController2.text;
-            String input3 = otherController3.text;
-            String input4 = otherController4.text;
-
-               
-           // logic for what happens when button is pressed
-            print('Date: $date');
-            print('1: $input1');
-            print('2: $input2');
-            print('3: $input3');
-            print('4: $input4');  
-            // Close the pop up window
-            Navigator.of(context).pop();
-          },
-          child: Text('Search'),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('Cancel'),
-        ),
-      ],
-    );
-  }
-
-  @override
-  void dispose() {
+      )
+      
+       
+        
+      
     
-    dateController.dispose();
-    otherController1.dispose();
-    otherController2.dispose();
-    otherController3.dispose();
-    otherController4.dispose();
-    super.dispose();
   }
 }
