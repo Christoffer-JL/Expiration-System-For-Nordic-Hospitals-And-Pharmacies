@@ -15,11 +15,22 @@ class StartScreen extends StatelessWidget {
             Text('Welcome to the Start Screen'),
             SizedBox(height: 20), // Add some spacing
             CustomButton(
-              text: 'button example',
+              text: 'Qr Scan',
               onPressed: () {
                 // Add your button click logic here
                Navigator.pushNamed(
                     context, '/qr_scan'); 
+                    // Navigate to the QR scanning screen
+                    
+              },
+            ),
+            SizedBox(height: 20),
+            CustomButton(
+              text: 'Catalog',
+              onPressed: () {
+                // Add your button click logic here
+               Navigator.pushNamed(
+                    context, '/catalog_start'); 
                     // Navigate to the QR scanning screen
                     
               },
