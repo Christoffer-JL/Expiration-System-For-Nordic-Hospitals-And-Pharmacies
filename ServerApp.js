@@ -3,45 +3,82 @@
  * Exit with Ctrl+c
  */
 
-// Import required modules
 const express = require("express");
 const bodyParser = require("body-parser");
+const mysql = require("mysql2");
+const Client = require("ssh2").Client; // Import SSH2 client
 
-// Create an Express application
 const app = express();
 
-// Use middleware to parse JSON requests
 app.use(bodyParser.json());
 
-// Start the server
-const port = process.env.PORT || 3000; // Use the specified port or 3000 as a default
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-const mysql = require("mysql");
+// SSH Configuration
+const sshConfig = {
+  host: "188.150.228.31",
+  port: 22, // Default SSH port
+  username: "christoffer1917",
+  password: "rspi_temp",
+};
 
-const db = mysql.createConnection({
-  host: "sql11.freesqldatabase.com",
-  user: "sql11648708",
-  password: "bYlA6x4JHr",
-  database: "sql11648708",
-  port: 3306,
+// MySQL Database Configuration
+const dbConfig = {
+  host: "localhost", // MariaDB will be available locally through the SSH tunnel
+  port: 3306, // MariaDB's default port
+  //port: "/var/run/mysqld/mysqld.sock",
+  user: "admin",
+  password: "password",
+  database: "RegionSkane",
+};
+
+// Create an SSH tunnel
+const ssh = new Client();
+ssh.on("ready", () => {
+  console.log("SSH tunnel established");
+
+  // Create MySQL connection via SSH tunnel
+  const db = mysql.createConnection(dbConfig);
+
+  db.connect((err) => {
+    if (err) {
+      console.error("Error connecting to MariaDB:", err);
+    } else {
+      console.log("Connected to MariaDB");
+    }
+  });
+
+  // Add this error handler
+  db.on("error", (err) => {
+    console.error("MySQL error:", err);
+  });
+
+  // Define your routes and logic here
+
+  // Close the SSH tunnel and MySQL connection when the server shuts down
+  app.on("close", () => {
+    ssh.end();
+    db.end();
+  });
 });
 
-// Connect to MySQL
-db.connect((err) => {
-  if (err) {
-    console.error("Error connecting to MySQL:", err);
-  } else {
-    console.log("Connected to MySQL");
-  }
+// Connect to the SSH server
+ssh.connect(sshConfig);
+
+// Define your routes and logic here
+
+// Close the SSH tunnel and MySQL connection when the server shuts down
+app.on("close", () => {
+  ssh.end();
 });
 
 app.get("/department", (req, res) => {
   const data = req.body.data;
   // TODO: Get department name with help of DepartmentId
-  es.status(200).json({ message: "" });
+  res.status(200).json({ message: "" });
 });
 
 app.get("/entries", (req, res) => {
@@ -49,43 +86,43 @@ app.get("/entries", (req, res) => {
   /* TODO: Get entries with filters. If no filter is provided, return all entries.
    * Filters should allow for filtration on DepartmentName, BatchNr, ProductCode, ProductName
    */
-  es.status(200).json({ message: "" });
+  res.status(200).json({ message: "" });
 });
 
 app.get("/expiration-entries", (req, res) => {
   const data = req.body.data;
   // TODO: Get all entries with expiration date that has an expiration date in the following 3 months.
-  es.status(200).json({ message: "" });
+  res.status(200).json({ message: "" });
 });
 
 // Requires e-VIS
 app.get("/entry", (req, res) => {
   const data = req.body.data;
   // TODO: Get ProductName and ProductNumber with help of ProductCode (This can change depending on how the // API works)
-  es.status(200).json({ message: "" });
+  res.status(200).json({ message: "" });
 });
 
 app.post("/remove-entry-from-single-departement", (req, res) => {
   const data = req.body.data;
   // TODO: Removes an entry from a single specified department
-  es.status(200).json({ message: "" });
+  res.status(200).json({ message: "" });
 });
 
 app.post("/remove-entry-from-all-departments", (req, res) => {
   const data = req.body.data;
   // TODO: Removes an entry from all departments
-  es.status(200).json({ message: "" });
+  res.status(200).json({ message: "" });
 });
 
 app.post("/add-entry", (req, res) => {
   const data = req.body.data;
   // TODO: Adds an entry to the database with a unique ProductNumber, ExpirationDate, ProductName, BatchNr and // ProductCode
-  es.status(200).json({ message: "" });
+  res.status(200).json({ message: "" });
 });
 
 // Requires e-VIS
 app.post("/add-new-entry-type", (req, res) => {
   const data = req.body.data;
   // TODO: Adds a new ProductNumber mapped to unique ProductName
-  es.status(200).json({ message: "" });
+  res.status(200).json({ message: "" });
 });
