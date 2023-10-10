@@ -92,7 +92,7 @@ class _PopUpInsert extends State<PopUpInsert> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancle'),
+          child: Text('Cancel'),
         ),
       ],
     );
@@ -100,7 +100,7 @@ class _PopUpInsert extends State<PopUpInsert> {
 
   @override
   void dispose() {
-    // 释放控制器资源
+    
     dateController.dispose();
     otherController1.dispose();
     otherController2.dispose();

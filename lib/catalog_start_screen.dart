@@ -1,24 +1,9 @@
 import 'package:flutter/material.dart';
 import 'widgets/pop_up.dart'; // Import your PopUp widget
+import 'widgets/pop_up_insert.dart';
 
 class CatalogStartScreen extends StatelessWidget {
-  void _showPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return PopUp(
-          title: 'Popup Title',
-          content: 'Popup Content',
-          buttonText1: 'Cancel',
-          buttonText2: 'OK',
-          onPressed: () {
-            // Handle OK button press logic here if needed
-            Navigator.of(context).pop(); // Close the popup
-          },
-        );
-      },
-    );
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +35,7 @@ class CatalogStartScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   CustomImageButton(
-                    imagePath: 'assets/pingu.jpg', // Provide the path to your image asset
+                    imagePath: 'assets/shin.jfif', // Provide the path to your image asset
                     onPressed: () {
                       Navigator.pushNamed(context, '/catalog_expiration');
                     },
@@ -58,11 +43,29 @@ class CatalogStartScreen extends StatelessWidget {
                   SizedBox(width: 15),
                   CustomImageButton(
                     imagePath: 'assets/pingu.jpg', // Provide the path to your image asset
-                    onPressed: () {
-                      _showPopup(context); // Show the popup when the button is pressed
+                    onPressed: () 
+                    {
+                      showDialog(
+                        context: context, 
+                        builder:(BuildContext context){
+                        return PopUpInsert();
+                      }
+
+                                           ) ; // Show the popup when the button is pressed
                     },
                   ),
                 ],
+              ),
+            ),
+          ),
+
+          Center(
+            child: Text(
+              'catalog start screen',
+              style: TextStyle(
+                fontSize: 20, // Set the font size of the text
+                fontWeight: FontWeight.bold, // Set the font weight of the text
+                color: Colors.black, // Set the color of the text
               ),
             ),
           ),
@@ -71,6 +74,7 @@ class CatalogStartScreen extends StatelessWidget {
     );
   }
 }
+        
 
 class CustomImageButton extends StatelessWidget {
   final String imagePath;
