@@ -31,7 +31,8 @@ class _PopUpInsert extends State<PopUpInsert> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Filter'),
-      content: Column(
+      content: SingleChildScrollView(
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
@@ -63,6 +64,7 @@ class _PopUpInsert extends State<PopUpInsert> {
             onTap: () => _selectDate(context),
           ),
         ],
+      ),
       ),
       actions: [
         ElevatedButton(
