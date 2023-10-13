@@ -22,8 +22,8 @@ class StartScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/qr_scan'); // Navigate to the QR scanning screen
                 },
-                color: Color(0xFF73C9DF),
-                fontSize: 25,
+              color: Color(0xFF73C9DF),
+              fontSize: 24,
               ),
             ),
             SizedBox(height: 20),
@@ -35,8 +35,8 @@ class StartScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/catalog_start'); // Navigate to the QR scanning screen
                 },
-                color: Color(0xFFFDDD41),
-                fontSize: 25,
+              color: Color(0xFFFDDD41),
+              fontSize: 24,
               ),
             ),
           ],
