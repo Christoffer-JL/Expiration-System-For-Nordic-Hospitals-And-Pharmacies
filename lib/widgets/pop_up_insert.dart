@@ -45,23 +45,11 @@ class _PopUpInsert extends State<PopUpInsert> {
         child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          //TextFormField(
-            //controller: otherController1,
-            //decoration: InputDecoration(labelText: 'Avdelning:',
-           // hintText: 'fyll i avdelning '),
-         // ),
-
-           
-          // 如果选择了自定义，显示文本输入框
-          
-
-
       DropdownSearch<String>(
          popupProps:  const PopupProps.menu(
           showSearchBox: true,
           showSelectedItems: true,
          
-      
           scrollbarProps: ScrollbarProps(
             thickness: 7,
             radius: Radius.circular(10),
@@ -70,14 +58,11 @@ class _PopUpInsert extends State<PopUpInsert> {
             crossAxisMargin: 10,
           ),
 
-            menuProps: MenuProps(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              
+          menuProps: MenuProps(
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
             )
-
-
          ),
 
          
@@ -85,11 +70,8 @@ class _PopUpInsert extends State<PopUpInsert> {
          dropdownButtonProps: DropdownButtonProps(
            icon: const Icon(Icons.arrow_drop_down_circle_outlined),
            iconSize: 36,
-           
          ),
         items: departmentNames,
-        
-       
          
          dropdownDecoratorProps: const DropDownDecoratorProps(
          dropdownSearchDecoration: InputDecoration(
