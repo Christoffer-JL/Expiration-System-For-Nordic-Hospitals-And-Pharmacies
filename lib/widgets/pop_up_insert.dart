@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class PopUpInsert extends StatefulWidget {
   @override
@@ -13,8 +15,55 @@ class _PopUpInsert extends State<PopUpInsert> {
   TextEditingController produktkodController = TextEditingController();
   TextEditingController produktnamnController = TextEditingController();
 
-  List<String> departmentNames = ['Department 1', 'Department 2', 'Department 3'];
+  List<String> departmentNames = [];
+  List<String> productNamns = [];
   String selectedDepartment = '';
+  String selectedProductNamn = '';
+  bool isDataFetched = false;
+
+
+  
+  Future<void> fetchDepaarmentFromServer() async {
+  try {
+    final response = await http.get(Uri.parse('http://localhost:3000/all-departments'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      setState(() {
+        departmentNames = data.map((entry) => entry['DepartmentName'].toString()).toList();
+        isDataFetched = true;
+      });
+    } else {
+      print('HTTP request failed with status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error during data fetching: $error');
+  }
+}
+
+ Future<void> fetchProductFromServer() async {
+  try {
+    final response = await http.get(Uri.parse('http://localhost:3000/all-productnames'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      setState(() {
+        productNamns = data.map((entry) => entry['ArticleName'].toString()).toList();
+        isDataFetched = true;
+      });
+    } else {
+      print('HTTP request failed with status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error during data fetching: $error');
+  }
+}
+
+  
+  @override
+  void initState() {
+    super.initState();
+    fetchDepaarmentFromServer();
+    fetchProductFromServer();
+  }
   
 
   Future<void> _selectDate(BuildContext context) async {
@@ -35,6 +84,12 @@ class _PopUpInsert extends State<PopUpInsert> {
 
   @override
   Widget build(BuildContext context) {
+   if (!isDataFetched) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
@@ -46,6 +101,7 @@ class _PopUpInsert extends State<PopUpInsert> {
         mainAxisSize: MainAxisSize.min,
         children: [
       DropdownSearch<String>(
+        items: departmentNames,
          popupProps:  const PopupProps.menu(
           showSearchBox: true,
           showSelectedItems: true,
@@ -71,8 +127,7 @@ class _PopUpInsert extends State<PopUpInsert> {
            icon: const Icon(Icons.arrow_drop_down_circle_outlined),
            iconSize: 36,
          ),
-        items: departmentNames,
-         
+      
          dropdownDecoratorProps: const DropDownDecoratorProps(
          dropdownSearchDecoration: InputDecoration(
             labelText: "Avdelning: ",
@@ -98,11 +153,51 @@ class _PopUpInsert extends State<PopUpInsert> {
             decoration: const InputDecoration(labelText: 'Produktkod: ',
             hintText: 'fyll i produktkod ',),
           ),
-          TextFormField(
-            controller: produktnamnController,
-            decoration: const InputDecoration(labelText: 'Produktnamn/varunr: ',
-            hintText: 'fyll i produktnamn/varunr',),
+       
+          DropdownSearch<String>(
+         items: productNamns,
+         popupProps:  const PopupProps.menu(
+          showSearchBox: true,
+          showSelectedItems: true,
+         
+          scrollbarProps: ScrollbarProps(
+            thickness: 7,
+            radius: Radius.circular(10),
+            thumbColor: Colors.blue,
+            mainAxisMargin: 10,
+            crossAxisMargin: 10,
           ),
+
+          menuProps: MenuProps(
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            )
+         ),
+
+         
+         
+         dropdownButtonProps: DropdownButtonProps(
+           icon: const Icon(Icons.arrow_drop_down_circle_outlined),
+           iconSize: 36,
+         ),
+      
+         dropdownDecoratorProps: const DropDownDecoratorProps(
+         dropdownSearchDecoration: InputDecoration(
+            labelText: "Produktnamn: ",
+            labelStyle: TextStyle(fontSize: 18),
+            hintText: "Fyll i",
+        ),
+        
+    ),
+         onChanged: (String? value) {
+          setState(() {
+            selectedProductNamn = value!;
+          });
+         }
+         
+        ),
+         
           TextField(
             controller: dateController,
             decoration: const InputDecoration(
@@ -120,9 +215,6 @@ class _PopUpInsert extends State<PopUpInsert> {
         ElevatedButton(
           onPressed: () {
 
-             
-
-
             
             // Get the date from the date picker
             String date = dateController.text;
@@ -131,15 +223,18 @@ class _PopUpInsert extends State<PopUpInsert> {
             String input1 = selectedDepartment;
             String input2 = batchController.text;
             String input3 = produktkodController.text;
-            String input4 = produktnamnController.text;
+           // String input4 = produktnamnController.text;
+           String input4 = selectedProductNamn;
 
                
            // logic for what happens when button is pressed
             print('Date: $date');
-            print('1: $input1');
-            print('2: $input2');
-            print('3: $input3');
-            print('4: $input4');  
+            print('Department: $input1');
+            print('Batch: $input2');
+            print('ProductCode: $input3');
+            print('ProductName: $input4');  
+            print(departmentNames);
+            print(productNamns) ;
             // Close the pop up window
             Navigator.of(context).pop();
             
@@ -163,7 +258,7 @@ class _PopUpInsert extends State<PopUpInsert> {
    // otherController1.dispose();
     batchController.dispose();
     produktkodController.dispose();
-    produktnamnController.dispose();
+   // produktnamnController.dispose();
     super.dispose();
   }
 }
