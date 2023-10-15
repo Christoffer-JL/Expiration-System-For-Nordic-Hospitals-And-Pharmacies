@@ -1,20 +1,15 @@
 /*
- * Run server with "node ServerApp.js"
- * Exit with Ctrl+c
+ * Start server with "node ServerApp.js"
  */
 
-// Import required modules
 const express = require("express");
 const bodyParser = require("body-parser");
 
-// Create an Express application
 const app = express();
 
-// Use middleware to parse JSON requests
 app.use(bodyParser.json());
 
-// Start the server
-const port = process.env.PORT || 3000; // Use the specified port or 3000 as a default
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
@@ -29,7 +24,8 @@ const db = mysql.createConnection({
   port: 3306,
 });
 
-// Connect to MySQL
+module.exports = app;
+
 db.connect((err) => {
   if (err) {
     console.error("Error connecting to MySQL:", err);
@@ -38,54 +34,209 @@ db.connect((err) => {
   }
 });
 
-app.get("/department", (req, res) => {
-  const data = req.body.data;
-  // TODO: Get department name with help of DepartmentId
-  es.status(200).json({ message: "" });
+// Fetches all departments
+app.get("/all-departments", (req, res) => {
+  const departmentId = req.query.DepartmentId;
+  const query = "SELECT * FROM Departments";
+  db.query(query, [departmentId], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error getting department names" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
 });
 
+// Get all entries with optional provided filters
 app.get("/entries", (req, res) => {
-  const data = req.body.data;
-  /* TODO: Get entries with filters. If no filter is provided, return all entries.
-   * Filters should allow for filtration on DepartmentName, BatchNr, ProductCode, ProductName
-   */
-  es.status(200).json({ message: "" });
+  const { DepartmentName, BatchNr, ProductCode, ProductName } = req.query;
+  let query =
+    "SELECT E.*, P.Packaging, P.NordicNumber, P.ArticleName FROM Entries E";
+  const conditions = [];
+  const values = [];
+
+  query += " JOIN Products P ON E.ProductCode = P.ProductCode";
+
+  if (DepartmentName) {
+    conditions.push("E.DepartmentName = ?");
+    values.push(DepartmentName);
+  }
+  if (BatchNr) {
+    conditions.push("E.BatchNumber = ?");
+    values.push(BatchNr);
+  }
+  if (ProductCode) {
+    conditions.push("E.ProductCode = ?");
+    values.push(ProductCode);
+  }
+  if (ProductName) {
+    conditions.push("P.ArticleName = ?");
+    values.push(ProductName);
+  }
+
+  if (conditions.length > 0) {
+    query += " WHERE " + conditions.join(" AND ");
+  }
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error getting entries" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
 });
 
+// Get all entries with expiration date in the next 3 months
 app.get("/expiration-entries", (req, res) => {
-  const data = req.body.data;
-  // TODO: Get all entries with expiration date that has an expiration date in the following 3 months.
-  es.status(200).json({ message: "" });
+  const currentDate = new Date();
+  currentDate.setMonth(currentDate.getMonth() + 3);
+  const query =
+    "SELECT E.*, P.Packaging, P.NordicNumber, P.ArticleName FROM Entries E JOIN Products P ON E.ProductCode = P.ProductCode WHERE E.ExpirationDate <= ?";
+
+  db.query(query, [currentDate], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error getting expiration entries" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
 });
 
-// Requires e-VIS
-app.get("/entry", (req, res) => {
-  const data = req.body.data;
-  // TODO: Get ProductName and ProductNumber with help of ProductCode (This can change depending on how the // API works)
-  es.status(200).json({ message: "" });
+// Inserts an entry into a department. If there is no entry in the Entries table, add there first
+app.post("/insert-entry-in-department", (req, res) => {
+  const { DepartmentName, ProductCode, BatchNumber, ExpirationDate } = req.body;
+  const checkQuery =
+    "SELECT COUNT(*) AS entryCount FROM Entries WHERE DepartmentName = ? AND ProductCode = ?";
+
+  db.query(
+    checkQuery,
+    [DepartmentName, ProductCode],
+    (checkErr, checkResults) => {
+      if (checkErr) {
+        res.status(500).json({ error: "Error checking entry existence" });
+      } else {
+        const entryCount = checkResults[0].entryCount;
+
+        if (entryCount === 0) {
+          const insertQuery =
+            "INSERT INTO Entries (DepartmentName, ProductCode, BatchNumber, ExpirationDate) VALUES (?, ?, ?, ?)";
+          db.query(
+            insertQuery,
+            [DepartmentName, ProductCode, BatchNumber, ExpirationDate],
+            (insertErr, insertResults) => {
+              if (insertErr) {
+                res.status(500).json({ error: "Error inserting entry" });
+              } else {
+                res
+                  .status(201)
+                  .json({ message: "Entry inserted successfully" });
+              }
+            }
+          );
+        } else {
+          res.status(200).json({
+            message:
+              "Entry for the specified department and product already exists",
+          });
+        }
+      }
+    }
+  );
 });
 
-app.post("/remove-entry-from-single-departement", (req, res) => {
-  const data = req.body.data;
-  // TODO: Removes an entry from a single specified department
-  es.status(200).json({ message: "" });
+// Remove an entry from a single specified department
+app.post("/remove-entry-from-single-department", (req, res) => {
+  const { ProductCode, BatchNumber, DepartmentName } = req.body;
+  const query =
+    "DELETE FROM DepartmentEntryLinks WHERE ProductCode = ? AND BatchNumber = ? AND DepartmentName = ?";
+
+  db.query(
+    query,
+    [ProductCode, BatchNumber, DepartmentName],
+    (err, results) => {
+      if (err) {
+        res.status(500).json({ error: "Error removing entry from department" });
+      } else {
+        res.status(200).json({ message: "Entry removed from department" });
+      }
+    }
+  );
 });
 
-app.post("/remove-entry-from-all-departments", (req, res) => {
-  const data = req.body.data;
-  // TODO: Removes an entry from all departments
-  es.status(200).json({ message: "" });
+// Inserts a new entry if ProductCode is provided through automatic registry
+app.post("/insert-entry-automatic", (req, res) => {
+  const { ProductCode, BatchNumber, ExpirationDate } = req.body;
+  const productCheckQuery =
+    "SELECT COUNT(*) AS productCount FROM Products WHERE ProductCode = ?";
+
+  db.query(
+    productCheckQuery,
+    [ProductCode],
+    (productCheckErr, productCheckResults) => {
+      if (productCheckErr) {
+        res.status(500).json({ error: "Error checking product existence" });
+      } else {
+        const productCount = productCheckResults[0].productCount;
+
+        if (productCount === 0) {
+          res
+            .status(400)
+            .json({ error: "ProductCode does not exist in Products" });
+        } else {
+          const insertQuery =
+            "INSERT INTO Entries (ProductCode, BatchNumber, ExpirationDate) VALUES (?, ?, ?)";
+          db.query(
+            insertQuery,
+            [ProductCode, BatchNumber, ExpirationDate],
+            (err, results) => {
+              if (err) {
+                res.status(500).json({ error: "Error inserting entry" });
+              } else {
+                res
+                  .status(201)
+                  .json({ message: "Entry inserted successfully" });
+              }
+            }
+          );
+        }
+      }
+    }
+  );
 });
 
-app.post("/add-entry", (req, res) => {
-  const data = req.body.data;
-  // TODO: Adds an entry to the database with a unique ProductNumber, ExpirationDate, ProductName, BatchNr and // ProductCode
-  es.status(200).json({ message: "" });
-});
+// Inserts a new entry if NordicNumber is provided through manual registry
+app.post("/insert-entry-manual", (req, res) => {
+  const { NordicNumber, BatchNumber, ExpirationDate } = req.body;
+  const productCheckQuery =
+    "SELECT ProductCode FROM Products WHERE NordicNumber = ?";
 
-// Requires e-VIS
-app.post("/add-new-entry-type", (req, res) => {
-  const data = req.body.data;
-  // TODO: Adds a new ProductNumber mapped to unique ProductName
-  es.status(200).json({ message: "" });
+  db.query(
+    productCheckQuery,
+    [NordicNumber],
+    (productCheckErr, productCheckResults) => {
+      if (productCheckErr) {
+        res.status(500).json({ error: "Error checking product existence" });
+      } else if (productCheckResults.length === 0) {
+        res
+          .status(400)
+          .json({ error: "NordicNumber does not exist in Products" });
+      } else {
+        const ProductCode = productCheckResults[0].ProductCode;
+        const insertQuery =
+          "INSERT INTO Entries (ProductCode, BatchNumber, ExpirationDate) VALUES (?, ?, ?)";
+        db.query(
+          insertQuery,
+          [ProductCode, BatchNumber, ExpirationDate],
+          (err, results) => {
+            if (err) {
+              res.status(500).json({ error: "Error inserting entry" });
+            } else {
+              res.status(201).json({ message: "Entry inserted successfully" });
+            }
+          }
+        );
+      }
+    }
+  );
 });
