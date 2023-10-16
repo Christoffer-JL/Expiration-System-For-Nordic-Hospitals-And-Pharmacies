@@ -17,54 +17,58 @@ class StartScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(height: 20),
-                Container(
-                  width: 216,
-                  height: 76,
-                  child: CustomButton(
-                    text: 'Registrera',
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/qr_scan');
-                    },
-                    color: Color(0xFF73C9DF),
-                    fontSize: 25,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 216, // Set the width as desired
+                      height: 76, // Set the height as desired
+                      child: CustomButton(
+                        text: 'Registrera',
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/qr_scan');
+                        },
+                        color: Color(0xFF73C9DF),
+                        fontSize: 25,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Image.asset(
+                      'assets/scanner.png',
+                      width: 50,
+                      height: 50,
+                    ),
+                  ],
                 ),
                 SizedBox(height: 20),
-                Container(
-                  width: 216,
-                  height: 76,
-                  child: CustomButton(
-                    text: 'Katalog',
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/catalog_start');
-                    },
-                    color: Color(0xFFFDDD41),
-                    fontSize: 25,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 216, // Set the width as desired
+                      height: 76, // Set the height as desired
+                      child: CustomButton(
+                        text: 'Katalog',
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/catalog_start');
+                        },
+                        color: Color(0xFFFDDD41),
+                        fontSize: 25,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Image.asset(
+                      'assets/catalog.png',
+                      width: 50,
+                      height: 50,
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height / 2 -
-                100, // Adjust the top position as needed
-            left: MediaQuery.of(context).size.width / 2 +
-                110, // Adjust the left position as needed
-            child: Image.asset(
-              'assets/scanner.png',
-              width: 50,
-              height: 50,
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height /
-                2, // Adjust the top position as needed
-            left: MediaQuery.of(context).size.width / 2 +
-                110, // Adjust the left position as needed
-            child: Image.asset(
-              'assets/catalog.png',
-              width: 50,
-              height: 50,
             ),
           ),
         ],
