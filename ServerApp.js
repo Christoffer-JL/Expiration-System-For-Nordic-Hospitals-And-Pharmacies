@@ -47,8 +47,8 @@ app.get("/all-departments", (req, res) => {
   });
 });
 
-//Fetches all products
-app.get("/all-productnames", (req, res) => {
+// Fetches all products
+app.get("/all-product-names", (req, res) => {
   const articleName = req.query.ArticleName;
   const query = "SELECT ArticleName FROM Products";
   db.query(query, [articleName], (err, results) => {
@@ -59,8 +59,6 @@ app.get("/all-productnames", (req, res) => {
     }
   });
 });
-
-
 
 // Get all entries with optional provided filters
 app.get("/entries", (req, res) => {

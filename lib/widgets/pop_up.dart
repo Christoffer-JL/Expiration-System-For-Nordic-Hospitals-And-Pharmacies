@@ -22,14 +22,13 @@ class PopUp extends StatelessWidget {
       content: Text(content),
       actions: <Widget>[
         TextButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.of(context).pop();
           },
           child: Text(buttonText1),
         ),
-      
         TextButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.of(context).pop();
             onPressed();
           },
@@ -39,4 +38,3 @@ class PopUp extends StatelessWidget {
     );
   }
 }
-
