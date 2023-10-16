@@ -46,8 +46,10 @@ class StartScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 290, // Adjust the top position as needed
-            left: 310, // Adjust the left position as needed
+            top: MediaQuery.of(context).size.height / 2 -
+                100, // Adjust the top position as needed
+            left: MediaQuery.of(context).size.width / 2 +
+                110, // Adjust the left position as needed
             child: Image.asset(
               'assets/scanner.png',
               width: 50,
@@ -55,8 +57,10 @@ class StartScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 390, // Adjust the top position as needed
-            left: 310, // Adjust the left position as needed
+            top: MediaQuery.of(context).size.height /
+                2, // Adjust the top position as needed
+            left: MediaQuery.of(context).size.width / 2 +
+                110, // Adjust the left position as needed
             child: Image.asset(
               'assets/catalog.png',
               width: 50,
