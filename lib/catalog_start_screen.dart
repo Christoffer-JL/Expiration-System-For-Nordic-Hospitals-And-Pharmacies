@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'widgets/pop_up.dart'; // Import your PopUp widget
 import 'widgets/pop_up_insert.dart';
 
 class CatalogStartScreen extends StatelessWidget {
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,30 +32,28 @@ class CatalogStartScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   CustomImageButton(
-                    imagePath: 'assets/shin.jfif', // Provide the path to your image asset
+                    imagePath:
+                        'assets/shin.jfif', // Provide the path to your image asset
                     onPressed: () {
                       Navigator.pushNamed(context, '/catalog_expiration');
                     },
                   ),
                   SizedBox(width: 15),
                   CustomImageButton(
-                    imagePath: 'assets/pingu.jpg', // Provide the path to your image asset
-                    onPressed: () 
-                    {
+                    imagePath:
+                        'assets/pingu.jpg', // Provide the path to your image asset
+                    onPressed: () {
                       showDialog(
-                        context: context, 
-                        builder:(BuildContext context){
-                        return PopUpInsert();
-                      }
-
-                                           ) ; // Show the popup when the button is pressed
+                          context: context,
+                          builder: (BuildContext context) {
+                            return PopUpInsert();
+                          }); // Show the popup when the button is pressed
                     },
                   ),
                 ],
               ),
             ),
           ),
-
           Center(
             child: Text(
               'catalog start screen',
@@ -74,7 +69,6 @@ class CatalogStartScreen extends StatelessWidget {
     );
   }
 }
-        
 
 class CustomImageButton extends StatelessWidget {
   final String imagePath;
@@ -97,8 +91,3 @@ class CustomImageButton extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

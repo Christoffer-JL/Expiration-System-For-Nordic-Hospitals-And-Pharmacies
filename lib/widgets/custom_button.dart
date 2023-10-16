@@ -5,7 +5,8 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color color;
   final double fontSize;
-  final Color customBlack = Color.fromRGBO(0, 0, 0, 0.5); // Own custom color for the button.
+  final Color customBlack =
+      Color.fromRGBO(0, 0, 0, 0.5); // Own custom color for the button.
 
   CustomButton({
     required this.text,
@@ -23,15 +24,15 @@ class CustomButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20), // Adjust the value as needed
         ),
-        side: BorderSide(color: customBlack, width: 2), // Set the border color and width
+        side: BorderSide(
+            color: customBlack, width: 2), // Set the border color and width
       ),
       child: Text(
         text,
-        style: TextStyle(fontSize: fontSize,
+        style: TextStyle(
+          fontSize: fontSize,
         ),
       ),
     );
   }
 }
-
-
