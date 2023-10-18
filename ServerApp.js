@@ -19,7 +19,7 @@ app.listen(port, () => {
 
 // SSH Configuration
 const sshConfig = {
-  host: "188.150.228.31",
+  host: "192.168.0.110",
   port: 22, // Default SSH port
   username: "christoffer1917",
   password: "rspi_temp",
@@ -28,11 +28,10 @@ const sshConfig = {
 // MySQL Database Configuration
 const dbConfig = {
   host: "localhost", // MariaDB will be available locally through the SSH tunnel
-  port: 3306, // MariaDB's default port
-  //port: "/var/run/mysqld/mysqld.sock",
-  user: "admin",
+  port: "/var/run/mysqld/mysqld.sock",
+  user: "root",
   password: "password",
-  database: "RegionSkane",
+  database: "mysql",
 };
 
 // Create an SSH tunnel
