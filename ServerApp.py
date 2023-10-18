@@ -17,9 +17,9 @@ ssh_config = {
 db_config = {
     'host': '127.0.0.1',
     'port': 3306,
-    'user': 'mandagbarn',
+    'user': 'root',
     'password': 'password',
-    'database': 'RegionSkane'
+    'database': 'regionskane',
 }
 
 ssh_client = paramiko.SSHClient()
