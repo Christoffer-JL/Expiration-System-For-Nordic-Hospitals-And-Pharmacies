@@ -56,7 +56,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             'departments': departments,
           };
         }).toList();
-        //print(productsData);
         setState(() {
           productDataList = productsData;
         });
@@ -69,22 +68,21 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   }
 
   void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
-    // update the productDataList with the search results
-    if(searchResults.isEmpty) {
-     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return PopUp(
-          title: 'Warning',
-          content: 'Kan inte hitta vad du letar efter, vänligen kontrollera vad du har angett',
-          buttonText1: 'OK',
-          buttonText2: '',
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        );
-      },
-    );
+    if (searchResults.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return PopUp(
+            title: 'Inga läkemedel kunde hittas',
+            content: 'Vänligen kontrollera filtreringsuppgifterna',
+            buttonText1: 'OK',
+            buttonText2: '',
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      );
     }
     setState(() {
       this.searchResults = searchResults;
