@@ -15,3 +15,4 @@ class QrScanningScreen extends StatelessWidget {
     );
   }
 }
+
