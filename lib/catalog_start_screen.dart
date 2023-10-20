@@ -35,10 +35,9 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
         final departmentName = entry['DepartmentName'];
         final date = entry['ExpirationDate'];
 
-        // 解析日期时间字符串为 DateTime 对象
-        final originalDateTime = DateTime.parse(date);
         
-        // 格式化日期部分为 'yyyy-MM-dd'
+        final originalDateTime = DateTime.parse(date);
+      
         final formattedDate = DateFormat('yyyy-MM-dd').format(originalDateTime);
 
         final key = '$formattedDate, $articleName';
@@ -56,12 +55,12 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
         productDataList = productsData;
       });
     } else {
-      // 如果请求失败，返回一个空的列表或抛出异常，具体取决于您的需求
+   
       print('HTTP request failed with status code: ${response.statusCode}');
    
     }
   } catch (error) {
-    // 捕获异常并返回一个空的列表或抛出异常，具体取决于您的需求
+    
     print('Error during data fetching: $error');
   
   }
