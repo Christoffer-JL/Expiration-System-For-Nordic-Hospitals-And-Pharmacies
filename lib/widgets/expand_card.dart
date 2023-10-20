@@ -15,15 +15,13 @@ class expandCard extends StatefulWidget {
     required this.batchNumber,
   });
 
-
-
   @override
   _DatabaseCardState createState() => _DatabaseCardState();
 }
 
 class _DatabaseCardState extends State<expandCard> {
-bool isExpanded = false;
-List<String> dataList = [];
+  bool isExpanded = false;
+  List<String> dataList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,8 @@ List<String> dataList = [];
         children: [
           ListTile(
             leading: IconButton(
-              icon: Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+              icon: Icon(
+                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
               onPressed: () {
                 setState(() {
                   isExpanded = !isExpanded;
@@ -51,9 +50,8 @@ List<String> dataList = [];
                 fontSize: 18,
               ),
             ),
-            
           ),
-           if (isExpanded)
+          if (isExpanded)
             Column(
               children: [
                 // Display additional information like Product Code here
