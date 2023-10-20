@@ -82,7 +82,6 @@ app.get("/all-entries", (req, res) => {
   });
 });
 
-
 // Get all entries with optional provided filters
 app.get("/entries", (req, res) => {
   const { DepartmentName, BatchNr, ProductCode, ProductName } = req.query;
