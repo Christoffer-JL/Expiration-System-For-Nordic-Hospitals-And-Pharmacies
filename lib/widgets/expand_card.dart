@@ -4,6 +4,7 @@ class expandCard extends StatefulWidget {
   final String title;
   final String departmentName;
   final String productCode;
+  final String batchNumber;
   final Future<void> Function() onDelete;
 
   expandCard({
@@ -11,6 +12,7 @@ class expandCard extends StatefulWidget {
     required this.departmentName,
     required this.productCode,
     required this.onDelete,
+    required this.batchNumber,
   });
 
 
@@ -63,6 +65,13 @@ List<String> dataList = [];
                   ),
                 ),
                 SizedBox(height: 10),
+                Text(
+                  'Batch Number: ${widget.batchNumber}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -13,7 +13,7 @@ class CatalogStartScreen extends StatefulWidget {
 }
 
 class _CatalogStartScreenState extends State<CatalogStartScreen> {
-  List<Map<String, dynamic>> productDataList = [];
+  List<Map<dynamic, dynamic>> productDataList = [];
 
 @override
   void initState() {
@@ -32,6 +32,7 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
         //final nordicNumber = entry['NordicNumber'];
         final articleName = entry['ArticleName'];
         final productCode = entry['ProductCode'].toString();
+        final batchNumber = entry['BatchNumber'];
         final departmentName = entry['DepartmentName'];
         final date = entry['ExpirationDate'];
 
@@ -48,9 +49,10 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
           'productCode': productCode,
           'departmentName': departmentName,
           'expirationDate': formattedDate,
+          'batchNumber': batchNumber,
         };
       }).toList();
-     // print(products);
+      print(productsData);
       setState(() {
         productDataList = productsData;
       });
@@ -148,6 +150,9 @@ Future<void> deleteProduct(int index, String departmentName) async {
                   title: '${productDataList[index]['articleName']}, ${productDataList[index]['expirationDate']}',
                   departmentName: productDataList[index]['departmentName'],
                   productCode: productDataList[index]['productCode'],
+                  batchNumber: productDataList[index]['batchNumber']!= null
+                  ? productDataList[index]['batchNumber'].toString()
+                  : 'N/A',
                   onDelete: () => deleteProduct(index, productDataList[index]['departmentName']),
                 );
               },
