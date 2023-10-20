@@ -60,6 +60,29 @@ app.get("/all-product-names", (req, res) => {
   });
 });
 
+app.get("/all-entries", (req, res) => {
+  const query = `
+    SELECT 
+      P.ArticleName AS ArticleName, 
+      E.ProductCode AS ProductCode, 
+      E.BatchNumber AS BatchNumber, 
+      E.ExpirationDate AS ExpirationDate, 
+      DEL.DepartmentName AS DepartmentName 
+    FROM 
+      Products AS P 
+    INNER JOIN Entries AS E ON P.ProductCode = E.ProductCode 
+    INNER JOIN DepartmentEntryLinks AS DEL ON E.ProductCode = DEL.ProductCode AND E.BatchNumber = DEL.BatchNumber;`;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error getting product names" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+
 // Get all entries with optional provided filters
 app.get("/entries", (req, res) => {
   const { DepartmentName, BatchNr, ProductCode, ProductName } = req.query;

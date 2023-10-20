@@ -1,9 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_test_pca/widgets/expand_card.dart';
 import 'widgets/pop_up_insert.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
-class CatalogStartScreen extends StatelessWidget {
+
+class CatalogStartScreen extends StatefulWidget {
+
+  @override
+  _CatalogStartScreenState createState() => _CatalogStartScreenState();
+}
+
+class _CatalogStartScreenState extends State<CatalogStartScreen> {
+  List<Map<String, dynamic>> productDataList = [];
+
+@override
+  void initState() {
+    super.initState();
+    fetchDataFromServer();
+  }
+
+  Future<void> fetchDataFromServer() async {
+  try {
+    final response = await http.get(Uri.parse('http://localhost:3000/all-entries'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+
+      
+       final List<Map<String, dynamic>> productsData = data.map((entry) {
+        //final nordicNumber = entry['NordicNumber'];
+        final articleName = entry['ArticleName'];
+        final productCode = entry['ProductCode'].toString();
+        final departmentName = entry['DepartmentName'];
+        final date = entry['ExpirationDate'];
+
+        // 解析日期时间字符串为 DateTime 对象
+        final originalDateTime = DateTime.parse(date);
+        
+        // 格式化日期部分为 'yyyy-MM-dd'
+        final formattedDate = DateFormat('yyyy-MM-dd').format(originalDateTime);
+
+        final key = '$formattedDate, $articleName';
+
+        return {
+          'key': key,
+          'articleName': articleName,
+          'productCode': productCode,
+          'departmentName': departmentName,
+          'expirationDate': formattedDate,
+        };
+      }).toList();
+     // print(products);
+      setState(() {
+        productDataList = productsData;
+      });
+    } else {
+      // 如果请求失败，返回一个空的列表或抛出异常，具体取决于您的需求
+      print('HTTP request failed with status code: ${response.statusCode}');
+   
+    }
+  } catch (error) {
+    // 捕获异常并返回一个空的列表或抛出异常，具体取决于您的需求
+    print('Error during data fetching: $error');
+  
+  }
+}
+Future<void> deleteProduct(int index, String departmentName) async {
+    // example code: delete product from server
+    setState(() {
+      productDataList.removeAt(index);
+    });
+
+    // check if product is associated with other departments
+    
+    final isProductAssociatedWithOtherDepartments =
+        productDataList.any((product) => product['departmentName'] == departmentName);
+
+    // if not, delete product from server
+    if (!isProductAssociatedWithOtherDepartments) {
+      // example code: delete product from server
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0),
@@ -14,7 +97,7 @@ class CatalogStartScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          Align(
+           Align (
             alignment: Alignment.topLeft,
             child: IconButton(
               icon: Icon(Icons.arrow_back),
@@ -54,20 +137,29 @@ class CatalogStartScreen extends StatelessWidget {
               ),
             ),
           ),
-          Center(
-            child: Text(
-              'catalog start screen',
-              style: TextStyle(
-                fontSize: 20, // Set the font size of the text
-                fontWeight: FontWeight.bold, // Set the font weight of the text
-                color: Colors.black, // Set the color of the text
-              ),
+         Positioned(
+            top: 100,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: ListView.builder(
+              itemCount: productDataList.length,
+              itemBuilder: (context, index) {
+                return expandCard(
+                  title: '${productDataList[index]['articleName']}, ${productDataList[index]['expirationDate']}',
+                  departmentName: productDataList[index]['departmentName'],
+                  productCode: productDataList[index]['productCode'],
+                  onDelete: () => deleteProduct(index, productDataList[index]['departmentName']),
+                );
+              },
             ),
           ),
         ],
       ),
     );
   }
+
+  
 }
 
 class CustomImageButton extends StatelessWidget {
@@ -91,3 +183,4 @@ class CustomImageButton extends StatelessWidget {
     );
   }
 }
+
