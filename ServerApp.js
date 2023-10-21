@@ -47,6 +47,20 @@ app.get("/all-departments", (req, res) => {
   });
 });
 
+// Fetches all departments that have a specific entry
+app.get("departments-containing-entry", (req, res) => {
+  const departmentId = req.query.DepartmentId;
+  const query =
+    "SELECT DepartmentName FROM DepartmentEntryLinks WHERE ProductCode = ? AND BatchNumber = ?";
+  db.query(query, [ProductCode, BatchNr], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error getting department names" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
 // Fetches all products
 app.get("/all-product-names", (req, res) => {
   const articleName = req.query.ArticleName;

@@ -1,18 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class expandCard extends StatefulWidget {
   final String title;
-  final String departmentName;
-  final String productCode;
   final String batchNumber;
   final Future<void> Function() onDelete;
+  final String productCode;
+  final String nordicNumber;
 
   expandCard({
     required this.title,
-    required this.departmentName,
-    required this.productCode,
     required this.onDelete,
     required this.batchNumber,
+    required this.productCode,
+    required this.nordicNumber,
   });
 
   @override
@@ -54,9 +57,8 @@ class _DatabaseCardState extends State<expandCard> {
           if (isExpanded)
             Column(
               children: [
-                // Display additional information like Product Code here
                 Text(
-                  'Product Code: ${widget.productCode}',
+                  'Batchnr: ${widget.batchNumber}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -64,7 +66,7 @@ class _DatabaseCardState extends State<expandCard> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Batch Number: ${widget.batchNumber}',
+                  'Varunr: ${widget.nordicNumber}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -86,7 +88,12 @@ class _DatabaseCardState extends State<expandCard> {
                         color: Colors.red,
                       ),
                       onPressed: () {
-                        //widget.onDelete(); // Call the onDelete function
+                        // Call the onDelete function with the department ID or index
+                        deleteDepartment(
+                          widget.productCode,
+                          widget.batchNumber,
+                          widget.departmentName,
+                        );
                       },
                     ),
                   ],
@@ -96,5 +103,59 @@ class _DatabaseCardState extends State<expandCard> {
         ],
       ),
     );
+  }
+}
+
+Future<List<String>> getDepartments(
+    String productCode, String batchNumber) async {
+  final String baseUrl = 'http://localhost:3000'; // Replace with your API URL
+
+  final Map<String, dynamic> requestData = {
+    'ProductCode': productCode,
+    'BatchNumber': batchNumber,
+  };
+
+  final Uri uri = Uri.parse(
+      '$baseUrl/departments-containing-entry'); // Replace '1' with the actual DepartmentId
+
+  final response = await http.get(uri);
+
+  if (response.statusCode == 200) {
+    final List<dynamic> departmentData = json.decode(response.body);
+    final List<String> departmentNames = departmentData
+        .map((entry) => entry['DepartmentName'] as String)
+        .toList();
+    return departmentNames;
+  } else {
+    throw Exception('Failed to load departments: ${response.statusCode}');
+  }
+}
+
+Future<void> deleteDepartment(
+    String productCode, String batchNumber, String departmentName) async {
+  try {
+    final String baseUrl = 'http://localhost:3000';
+
+    final response = await http.post(
+      '$baseUrl/remove-entry-from-single-department',
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'ProductCode': productCode,
+        'BatchNumber': batchNumber,
+        'DepartmentName': departmentName,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Department was successfully deleted from the API
+      // You can now update your UI to reflect the removal
+    } else {
+      throw Exception('Failed to delete department: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error deleting department: $e');
+    // Handle the error as needed, e.g., show an error message to the user
   }
 }
