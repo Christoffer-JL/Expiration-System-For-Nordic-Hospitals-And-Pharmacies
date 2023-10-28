@@ -5,9 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-
 class CatalogStartScreen extends StatefulWidget {
-
   @override
   _CatalogStartScreenState createState() => _CatalogStartScreenState();
 }
@@ -15,68 +13,64 @@ class CatalogStartScreen extends StatefulWidget {
 class _CatalogStartScreenState extends State<CatalogStartScreen> {
   List<Map<dynamic, dynamic>> productDataList = [];
 
-@override
+  @override
   void initState() {
     super.initState();
     fetchDataFromServer();
   }
 
   Future<void> fetchDataFromServer() async {
-  try {
-    final response = await http.get(Uri.parse('http://localhost:3000/all-entries'));
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
+    try {
+      final response = await http
+          .get(Uri.parse('http://localhost:3000/entries-with-departments'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
 
-      
-       final List<Map<String, dynamic>> productsData = data.map((entry) {
-        //final nordicNumber = entry['NordicNumber'];
-        final articleName = entry['ArticleName'];
-        final productCode = entry['ProductCode'].toString();
-        final batchNumber = entry['BatchNumber'];
-        final departmentName = entry['DepartmentName'];
-        final date = entry['ExpirationDate'];
+        final List<Map<String, dynamic>> productsData = data.map((entry) {
+          final articleName = entry['ArticleName'];
+          final packaging = entry['Packaging'];
+          final expiration = entry['ExpirationDate'];
+          final nordicNumber = entry['NordicNumber'].toString();
+          final batchNumber = entry['BatchNumber'];
+          final departments = (entry['Departments'] as String).split(', ');
 
-        
-        final originalDateTime = DateTime.parse(date);
-      
-        final formattedDate = DateFormat('yyyy-MM-dd').format(originalDateTime);
+          final formattedExpiration =
+              DateFormat('yyyy-MM-dd').format(DateTime.parse(expiration));
 
-        final key = '$formattedDate, $articleName';
+          final key = '$articleName, $packaging, $formattedExpiration';
 
-        return {
-          'key': key,
-          'articleName': articleName,
-          'productCode': productCode,
-          'departmentName': departmentName,
-          'expirationDate': formattedDate,
-          'batchNumber': batchNumber,
-        };
-      }).toList();
-      print(productsData);
-      setState(() {
-        productDataList = productsData;
-      });
-    } else {
-   
-      print('HTTP request failed with status code: ${response.statusCode}');
-   
+          return {
+            'key': key,
+            'articleName': articleName,
+            'packaging': packaging,
+            'expiration': formattedExpiration,
+            'nordicNumber': nordicNumber,
+            'batchNumber': batchNumber,
+            'departments': departments,
+          };
+        }).toList();
+        print(productsData);
+        setState(() {
+          productDataList = productsData;
+        });
+      } else {
+        print('HTTP request failed with status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error during data fetching: $error');
     }
-  } catch (error) {
-    
-    print('Error during data fetching: $error');
-  
   }
-}
-Future<void> deleteProduct(int index, String departmentName) async {
+
+  Future<void> deleteProduct(int index, String departmentName) async {
     // example code: delete product from server
     setState(() {
       productDataList.removeAt(index);
     });
 
     // check if product is associated with other departments
-    
-    final isProductAssociatedWithOtherDepartments =
-        productDataList.any((product) => product['departmentName'] == departmentName);
+
+    final isProductAssociatedWithOtherDepartments = productDataList
+        .any((product) => product['departmentName'] == departmentName);
 
     // if not, delete product from server
     if (!isProductAssociatedWithOtherDepartments) {
@@ -84,10 +78,8 @@ Future<void> deleteProduct(int index, String departmentName) async {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0),
@@ -98,7 +90,7 @@ Future<void> deleteProduct(int index, String departmentName) async {
       ),
       body: Stack(
         children: [
-           Align (
+          Align(
             alignment: Alignment.topLeft,
             child: IconButton(
               icon: Icon(Icons.arrow_back),
@@ -138,7 +130,7 @@ Future<void> deleteProduct(int index, String departmentName) async {
               ),
             ),
           ),
-         Positioned(
+          Positioned(
             top: 100,
             left: 0,
             right: 0,
@@ -147,13 +139,15 @@ Future<void> deleteProduct(int index, String departmentName) async {
               itemCount: productDataList.length,
               itemBuilder: (context, index) {
                 return expandCard(
-                  title: '${productDataList[index]['articleName']}, ${productDataList[index]['expirationDate']}',
-                  departmentName: productDataList[index]['departmentName'],
-                  productCode: productDataList[index]['productCode'],
-                  batchNumber: productDataList[index]['batchNumber']!= null
-                  ? productDataList[index]['batchNumber'].toString()
-                  : 'N/A',
-                  onDelete: () => deleteProduct(index, productDataList[index]['departmentName']),
+                  title:
+                      '${productDataList[index]['articleName']}, ${productDataList[index]['packaging']}, ${productDataList[index]['expiration']}',
+                  nordicNumber: productDataList[index]['nordicNumber'],
+                  departments: productDataList[index]['departments'],
+                  batchNumber: productDataList[index]['batchNumber'] != null
+                      ? productDataList[index]['batchNumber'].toString()
+                      : 'N/A',
+                  onDelete: () => deleteProduct(
+                      index, productDataList[index]['articleName']),
                 );
               },
             ),
@@ -162,8 +156,6 @@ Future<void> deleteProduct(int index, String departmentName) async {
       ),
     );
   }
-
-  
 }
 
 class CustomImageButton extends StatelessWidget {
@@ -187,4 +179,3 @@ class CustomImageButton extends StatelessWidget {
     );
   }
 }
-

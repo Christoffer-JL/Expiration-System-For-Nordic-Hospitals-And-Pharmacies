@@ -10,7 +10,6 @@ class PopUpInsert extends StatefulWidget {
 
 class _PopUpInsert extends State<PopUpInsert> {
   TextEditingController dateController = TextEditingController();
-  // TextEditingController otherController1 = TextEditingController();
   TextEditingController batchController = TextEditingController();
   TextEditingController produktkodController = TextEditingController();
   TextEditingController produktnamnController = TextEditingController();

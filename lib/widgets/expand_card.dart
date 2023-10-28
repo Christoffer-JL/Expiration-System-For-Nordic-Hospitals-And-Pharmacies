@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 class expandCard extends StatefulWidget {
   final String title;
-  final String departmentName;
-  final String productCode;
+  final List<String> departments;
+  final String nordicNumber;
   final String batchNumber;
   final Future<void> Function() onDelete;
 
   expandCard({
     required this.title,
-    required this.departmentName,
-    required this.productCode,
+    required this.departments,
+    required this.nordicNumber,
     required this.onDelete,
     required this.batchNumber,
   });
@@ -56,7 +56,7 @@ class _DatabaseCardState extends State<expandCard> {
               children: [
                 // Display additional information like Product Code here
                 Text(
-                  'Product Code: ${widget.productCode}',
+                  'Varunummer: ${widget.nordicNumber}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -70,27 +70,32 @@ class _DatabaseCardState extends State<expandCard> {
                     fontSize: 16,
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'DepartmentName: ${widget.departmentName}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.remove_circle,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {
-                        //widget.onDelete(); // Call the onDelete function
-                      },
-                    ),
-                  ],
-                ),
+                Column(
+                  children: widget.departments.map((departmentName) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'DepartmentName: $departmentName',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            // Call the onDelete function with departmentName
+                            // widget.onDelete(departmentName);
+                          },
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                )
               ],
             ),
         ],

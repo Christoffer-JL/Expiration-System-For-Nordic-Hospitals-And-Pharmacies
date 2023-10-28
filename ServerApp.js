@@ -49,6 +49,42 @@ app.get("/all-departments", (req, res) => {
   });
 });
 
+// Fetches entries for catalogue purposes
+app.get("/entries-with-departments", (req, res) => {
+  const query = `
+    SELECT
+        e.BatchNumber,
+        e.ExpirationDate,
+        p.Packaging,
+        p.NordicNumber,
+        p.ArticleName,
+        (
+            SELECT GROUP_CONCAT(DISTINCT DepartmentName SEPARATOR ', ')
+            FROM DepartmentEntryLinks del
+            WHERE del.ProductCode = e.ProductCode
+            AND del.BatchNumber = e.BatchNumber
+        ) AS Departments
+    FROM Entries e
+    JOIN Products p ON e.ProductCode = p.ProductCode
+    WHERE EXISTS (
+        SELECT 1
+        FROM DepartmentEntryLinks del
+        WHERE del.ProductCode = e.ProductCode
+        AND del.BatchNumber = e.BatchNumber
+    )
+    ORDER BY e.ExpirationDate;`;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      res
+        .status(500)
+        .json({ error: "Error retrieving entries with departments" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
 // Fetches all departments that have a specific entry
 app.get("departments-containing-entry", (req, res) => {
   const departmentId = req.query.DepartmentId;
