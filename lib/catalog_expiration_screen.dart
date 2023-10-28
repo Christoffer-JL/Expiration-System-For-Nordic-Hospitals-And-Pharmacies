@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'widgets/pop_up.dart'; // Import your PopUp widget
-import 'widgets/pop_up_insert.dart';
+import 'widgets/pop_up.dart';
 
 class CatalogExpirationScreen extends StatelessWidget {
+  const CatalogExpirationScreen({super.key});
+
   void _showPopup(BuildContext context) {
     showDialog(
       context: context,
@@ -13,8 +14,7 @@ class CatalogExpirationScreen extends StatelessWidget {
           buttonText1: 'Cancel',
           buttonText2: 'OK',
           onPressed: () {
-            // Handle OK button press logic here if needed
-            Navigator.of(context).pop(); // Close the popup
+            Navigator.of(context).pop();
           },
         );
       },
@@ -25,7 +25,7 @@ class CatalogExpirationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0),
+        preferredSize: const Size.fromHeight(0),
         child: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
@@ -36,14 +36,14 @@ class CatalogExpirationScreen extends StatelessWidget {
           Align(
             alignment: Alignment.topLeft,
             child: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               color: Colors.blue,
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
           ),
-          Center(
+          const Center(
             child: Text(
               'Expiration screen',
               style: TextStyle(

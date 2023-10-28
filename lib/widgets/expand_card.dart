@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-class expandCard extends StatefulWidget {
+class ExpandCard extends StatefulWidget {
   final String title;
   final List<String> departments;
   final String nordicNumber;
   final String batchNumber;
   final Future<void> Function() onDelete;
 
-  expandCard({
+  const ExpandCard({
+    super.key,
     required this.title,
     required this.departments,
     required this.nordicNumber,
@@ -16,10 +17,10 @@ class expandCard extends StatefulWidget {
   });
 
   @override
-  _DatabaseCardState createState() => _DatabaseCardState();
+  DatabaseCardState createState() => DatabaseCardState();
 }
 
-class _DatabaseCardState extends State<expandCard> {
+class DatabaseCardState extends State<ExpandCard> {
   bool isExpanded = false;
   List<String> dataList = [];
 
@@ -27,7 +28,7 @@ class _DatabaseCardState extends State<expandCard> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
-      color: Color.fromARGB(255, 8, 98, 116),
+      color: const Color.fromARGB(255, 8, 98, 116),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
@@ -45,7 +46,7 @@ class _DatabaseCardState extends State<expandCard> {
             ),
             title: Text(
               widget.title,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
               ),
@@ -54,18 +55,17 @@ class _DatabaseCardState extends State<expandCard> {
           if (isExpanded)
             Column(
               children: [
-                // Display additional information like Product Code here
                 Text(
                   'Varunummer: ${widget.nordicNumber}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   'Batch Number: ${widget.batchNumber}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                   ),
@@ -77,19 +77,18 @@ class _DatabaseCardState extends State<expandCard> {
                       children: [
                         Text(
                           'DepartmentName: $departmentName',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                           ),
                         ),
                         IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.remove_circle,
                             color: Colors.red,
                           ),
                           onPressed: () {
-                            // Call the onDelete function with departmentName
-                            // widget.onDelete(departmentName);
+                            // TODO
                           },
                         ),
                       ],

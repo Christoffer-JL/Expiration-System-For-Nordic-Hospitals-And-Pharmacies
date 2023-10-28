@@ -7,7 +7,8 @@ class PopUp extends StatelessWidget {
   final String buttonText2;
   final VoidCallback onPressed;
 
-  PopUp({
+  const PopUp({
+    super.key,
     required this.title,
     required this.content,
     required this.buttonText1,

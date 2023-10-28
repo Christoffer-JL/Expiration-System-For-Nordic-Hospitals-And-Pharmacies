@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 class QrScanningScreen extends StatelessWidget {
+  const QrScanningScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('QR Scanning Screen'),
+        title: const Text('QR Scanning Screen'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Scan QR Code Here'),
       ),
     );
   }
 }
-

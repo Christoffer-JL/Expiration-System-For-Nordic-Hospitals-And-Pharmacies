@@ -6,9 +6,10 @@ class CustomButton extends StatelessWidget {
   final Color color;
   final double fontSize;
   final Color customBlack =
-      Color.fromRGBO(0, 0, 0, 0.5); // Own custom color for the button.
+      const Color.fromRGBO(0, 0, 0, 0.5); // Own custom color for the button.
 
-  CustomButton({
+  const CustomButton({
+    super.key,
     required this.text,
     required this.onPressed,
     required this.color,
@@ -20,7 +21,7 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        primary: color,
+        backgroundColor: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20), // Adjust the value as needed
         ),

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'widgets/custom_button.dart'; // Import your custom button widget
 
 class StartScreen extends StatelessWidget {
+  const StartScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF98FFAE),
+      backgroundColor: const Color(0xFF98FFAE),
       appBar: AppBar(
-        title: Text('Start Screen'),
+        title: const Text('Start Screen'),
       ),
       body: Stack(
         children: <Widget>[
@@ -16,11 +18,11 @@ class StartScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
+                    SizedBox(
                       width: 216, // Set the width as desired
                       height: 76, // Set the height as desired
                       child: CustomButton(
@@ -28,11 +30,11 @@ class StartScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.pushNamed(context, '/qr_scan');
                         },
-                        color: Color(0xFF73C9DF),
+                        color: const Color(0xFF73C9DF),
                         fontSize: 25,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Image.asset(
@@ -42,11 +44,11 @@ class StartScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
+                    SizedBox(
                       width: 216, // Set the width as desired
                       height: 76, // Set the height as desired
                       child: CustomButton(
@@ -54,11 +56,11 @@ class StartScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.pushNamed(context, '/catalog_start');
                         },
-                        color: Color(0xFFFDDD41),
+                        color: const Color(0xFFFDDD41),
                         fontSize: 25,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Image.asset(

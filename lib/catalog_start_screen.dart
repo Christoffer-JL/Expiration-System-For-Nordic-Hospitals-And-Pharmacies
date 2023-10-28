@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_test_pca/widgets/expand_card.dart';
+import 'package:flutter_local_test_pca/widgets/custom_image_button.dart';
 import 'widgets/pop_up_insert.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class CatalogStartScreen extends StatefulWidget {
+  const CatalogStartScreen({super.key});
+
   @override
-  _CatalogStartScreenState createState() => _CatalogStartScreenState();
+  CatalogStartScreenState createState() => CatalogStartScreenState();
 }
 
-class _CatalogStartScreenState extends State<CatalogStartScreen> {
+class CatalogStartScreenState extends State<CatalogStartScreen> {
   List<Map<dynamic, dynamic>> productDataList = [];
 
   @override
@@ -82,7 +85,7 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0),
+        preferredSize: const Size.fromHeight(0),
         child: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
@@ -93,7 +96,7 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
           Align(
             alignment: Alignment.topLeft,
             child: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               color: Colors.blue,
               onPressed: () {
                 Navigator.of(context).pop();
@@ -108,22 +111,20 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   CustomImageButton(
-                    imagePath:
-                        'assets/shin.jfif', // Provide the path to your image asset
+                    imagePath: 'assets/shin.jfif',
                     onPressed: () {
                       Navigator.pushNamed(context, '/catalog_expiration');
                     },
                   ),
-                  SizedBox(width: 15),
+                  const SizedBox(width: 15),
                   CustomImageButton(
-                    imagePath:
-                        'assets/pingu.jpg', // Provide the path to your image asset
+                    imagePath: 'assets/pingu.jpg',
                     onPressed: () {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return PopUpInsert();
-                          }); // Show the popup when the button is pressed
+                            return const PopUpInsert();
+                          });
                     },
                   ),
                 ],
@@ -138,7 +139,7 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
             child: ListView.builder(
               itemCount: productDataList.length,
               itemBuilder: (context, index) {
-                return expandCard(
+                return ExpandCard(
                   title:
                       '${productDataList[index]['articleName']}, ${productDataList[index]['packaging']}, ${productDataList[index]['expiration']}',
                   nordicNumber: productDataList[index]['nordicNumber'],
@@ -153,28 +154,6 @@ class _CatalogStartScreenState extends State<CatalogStartScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class CustomImageButton extends StatelessWidget {
-  final String imagePath;
-  final VoidCallback onPressed;
-
-  CustomImageButton({
-    required this.imagePath,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      child: Image.asset(
-        imagePath,
-        width: 50, // Set the width of the image
-        height: 50, // Set the height of the image
       ),
     );
   }

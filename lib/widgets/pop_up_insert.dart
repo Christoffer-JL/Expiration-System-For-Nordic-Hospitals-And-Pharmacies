@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class PopUpInsert extends StatefulWidget {
+  const PopUpInsert({super.key});
+
   @override
   _PopUpInsert createState() => _PopUpInsert();
 }
@@ -11,13 +13,13 @@ class PopUpInsert extends StatefulWidget {
 class _PopUpInsert extends State<PopUpInsert> {
   TextEditingController dateController = TextEditingController();
   TextEditingController batchController = TextEditingController();
-  TextEditingController produktkodController = TextEditingController();
-  TextEditingController produktnamnController = TextEditingController();
+  TextEditingController productCodeController = TextEditingController();
+  TextEditingController productNameController = TextEditingController();
 
   List<String> departmentNames = [];
-  List<String> productNamns = [];
+  List<String> productNames = [];
   String selectedDepartment = '';
-  String selectedProductNamn = '';
+  String selectedProductName = '';
   bool isDataFetched = false;
 
   Future<void> fetchDepaarmentFromServer() async {
@@ -46,7 +48,7 @@ class _PopUpInsert extends State<PopUpInsert> {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
-          productNamns = data
+          productNames = data
               .map((entry) =>
                   '${entry['NordicNumber']}, ${entry['ArticleName']}, ${entry['Packaging']}')
               .toList();
@@ -85,7 +87,7 @@ class _PopUpInsert extends State<PopUpInsert> {
   @override
   Widget build(BuildContext context) {
     if (!isDataFetched) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
@@ -116,8 +118,8 @@ class _PopUpInsert extends State<PopUpInsert> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                     )),
-                dropdownButtonProps: DropdownButtonProps(
-                  icon: const Icon(Icons.arrow_drop_down_circle_outlined),
+                dropdownButtonProps: const DropdownButtonProps(
+                  icon: Icon(Icons.arrow_drop_down_circle_outlined),
                   iconSize: 36,
                 ),
                 dropdownDecoratorProps: const DropDownDecoratorProps(
@@ -137,14 +139,14 @@ class _PopUpInsert extends State<PopUpInsert> {
                   labelText: 'Batch NR: ', hintText: 'Fyll i batch nr '),
             ),
             TextFormField(
-              controller: produktkodController,
+              controller: productCodeController,
               decoration: const InputDecoration(
                 labelText: 'Produktkod: ',
                 hintText: 'Fyll i produktkod ',
               ),
             ),
             DropdownSearch<String>(
-                items: productNamns,
+                items: productNames,
                 popupProps: const PopupProps.menu(
                     showSearchBox: true,
                     showSelectedItems: true,
@@ -160,8 +162,8 @@ class _PopUpInsert extends State<PopUpInsert> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                     )),
-                dropdownButtonProps: DropdownButtonProps(
-                  icon: const Icon(Icons.arrow_drop_down_circle_outlined),
+                dropdownButtonProps: const DropdownButtonProps(
+                  icon: Icon(Icons.arrow_drop_down_circle_outlined),
                   iconSize: 36,
                 ),
                 dropdownDecoratorProps: const DropDownDecoratorProps(
@@ -173,7 +175,7 @@ class _PopUpInsert extends State<PopUpInsert> {
                 ),
                 onChanged: (String? value) {
                   setState(() {
-                    selectedProductNamn = value!;
+                    selectedProductName = value!;
                   });
                 }),
             TextField(
@@ -197,9 +199,9 @@ class _PopUpInsert extends State<PopUpInsert> {
             // Get the text from the text fields
             String input1 = selectedDepartment;
             String input2 = batchController.text;
-            String input3 = produktkodController.text;
+            String input3 = productCodeController.text;
             // String input4 = produktnamnController.text;
-            String input4 = selectedProductNamn;
+            String input4 = selectedProductName;
 
             // logic for what happens when button is pressed
             print('Date: $date');
@@ -208,7 +210,7 @@ class _PopUpInsert extends State<PopUpInsert> {
             print('ProductCode: $input3');
             print('ProductName: $input4');
             print(departmentNames);
-            print(productNamns);
+            print(productNames);
             // Close the pop up window
             Navigator.of(context).pop();
           },
@@ -227,10 +229,8 @@ class _PopUpInsert extends State<PopUpInsert> {
   @override
   void dispose() {
     dateController.dispose();
-    // otherController1.dispose();
     batchController.dispose();
-    produktkodController.dispose();
-    // produktnamnController.dispose();
+    productCodeController.dispose();
     super.dispose();
   }
 }

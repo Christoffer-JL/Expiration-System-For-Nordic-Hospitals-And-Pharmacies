@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class InputScreen extends StatelessWidget {
+  const InputScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input Screen'),
+        title: const Text('Input Screen'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Input Data Here'),
       ),
     );
