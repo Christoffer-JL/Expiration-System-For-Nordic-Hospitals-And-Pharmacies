@@ -15,6 +15,7 @@ class CatalogStartScreen extends StatefulWidget {
 
 class CatalogStartScreenState extends State<CatalogStartScreen> {
   List<Map<dynamic, dynamic>> productDataList = [];
+  List<Map<dynamic, dynamic>> searchResults = [];
 
   @override
   void initState() {
@@ -23,6 +24,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   }
 
   Future<void> fetchDataFromServer() async {
+     
     try {
       final response = await http
           .get(Uri.parse('http://localhost:3000/entries-with-departments'));
@@ -37,8 +39,8 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           final batchNumber = entry['BatchNumber'];
           final departments = (entry['Departments'] as String).split(', ');
 
-          final formattedExpiration =
-              DateFormat('yyyy-MM-dd').format(DateTime.parse(expiration));
+          final parsedExpiration = DateTime.parse(expiration).toLocal(); // Parse and convert to local time zone
+          final formattedExpiration = DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
           final key = '$articleName, $packaging, $formattedExpiration';
 
@@ -52,7 +54,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             'departments': departments,
           };
         }).toList();
-        print(productsData);
+        //print(productsData);
         setState(() {
           productDataList = productsData;
         });
@@ -63,6 +65,15 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
       print('Error during data fetching: $error');
     }
   }
+
+  void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
+  // update the productDataList with the search results
+  setState(() {
+   this.searchResults = searchResults;
+   print(this.searchResults);
+  });
+}
+
 
   Future<void> deleteProduct(int index, String departmentName) async {
     // example code: delete product from server
@@ -123,7 +134,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return const PopUpInsert();
+                            return PopUpInsert(onSearch: updateProductDataList);
                           });
                     },
                   ),
@@ -137,16 +148,15 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             right: 0,
             bottom: 0,
             child: ListView.builder(
-              itemCount: productDataList.length,
+              itemCount: searchResults.isNotEmpty
+                  ? searchResults.length
+                  : productDataList.length,
               itemBuilder: (context, index) {
                 return ExpandCard(
-                  title:
-                      '${productDataList[index]['articleName']}, ${productDataList[index]['packaging']}, ${productDataList[index]['expiration']}',
-                  nordicNumber: productDataList[index]['nordicNumber'],
-                  departments: productDataList[index]['departments'],
-                  batchNumber: productDataList[index]['batchNumber'] != null
-                      ? productDataList[index]['batchNumber'].toString()
-                      : 'N/A',
+                  title: '${searchResults.isNotEmpty ? searchResults[index]['articleName'] : productDataList[index]['articleName']}, ${searchResults.isNotEmpty ? searchResults[index]['packaging'] : productDataList[index]['packaging']}, ${searchResults.isNotEmpty ? searchResults[index]['expiration'] : productDataList[index]['expiration']}',
+                  nordicNumber: searchResults.isNotEmpty ? searchResults[index]['nordicNumber'] : productDataList[index]['nordicNumber'],
+                  departments: searchResults.isNotEmpty ? searchResults[index]['departments'] : productDataList[index]['departments'],
+                  batchNumber: searchResults.isNotEmpty ? (searchResults[index]['batchNumber'] != null ? searchResults[index]['batchNumber'].toString() : 'N/A') : (productDataList[index]['batchNumber'] != null ? productDataList[index]['batchNumber'].toString() : 'N/A'),
                   onDelete: () => deleteProduct(
                       index, productDataList[index]['articleName']),
                 );
