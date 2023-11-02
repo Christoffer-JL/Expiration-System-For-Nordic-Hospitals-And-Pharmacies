@@ -84,6 +84,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(247, 247, 220, 87),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
         child: AppBar(
