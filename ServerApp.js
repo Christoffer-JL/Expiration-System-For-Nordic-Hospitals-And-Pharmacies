@@ -163,22 +163,21 @@ app.get("/entries", (req, res) => {
 
   const conditions = [];
   const values = [];
-
   if (DepartmentName) {
-    conditions.push("FIND_IN_SET(?, subresult.Departments) > 0");
-    values.push(DepartmentName);
+    conditions.push("subresult.Departments LIKE ?");
+    values.push(`%${DepartmentName}%`);
   }
   if (BatchNr) {
-    conditions.push("subresult.BatchNumber = ?");
-    values.push(BatchNr);
+    conditions.push("subresult.BatchNumber LIKE ?");
+    values.push(`%${BatchNr}%`);
   }
   if (NordicNumber) {
-    conditions.push("subresult.NordicNumber = ?");
-    values.push(NordicNumber);
+    conditions.push("subresult.NordicNumber LIKE ?");
+    values.push(`%${NordicNumber}%`);
   }
   if (ProductName) {
-    conditions.push("subresult.ArticleName = ?");
-    values.push(ProductName);
+    conditions.push("subresult.ArticleName LIKE ?");
+    values.push(`%${ProductName}%`);
   }
   if (ExpirationDate) {
     conditions.push("subresult.ExpirationDate = ?");
