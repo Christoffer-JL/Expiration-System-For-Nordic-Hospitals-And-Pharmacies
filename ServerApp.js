@@ -62,7 +62,7 @@ app.get("/entries-with-departments", (req, res) => {
             SELECT GROUP_CONCAT(DISTINCT DepartmentName SEPARATOR ', ')
             FROM DepartmentEntryLinks del
             WHERE del.ProductCode = e.ProductCode
-            AND del.BatchNumber = e.BatchNumber
+            AND del.ExpirationDate = e.ExpirationDate
         ) AS Departments
     FROM Entries e
     JOIN Products p ON e.ProductCode = p.ProductCode
@@ -70,7 +70,7 @@ app.get("/entries-with-departments", (req, res) => {
         SELECT 1
         FROM DepartmentEntryLinks del
         WHERE del.ProductCode = e.ProductCode
-        AND del.BatchNumber = e.BatchNumber
+        AND del.ExpirationDate = e.ExpirationDate
     )
     ORDER BY e.ExpirationDate;`;
 
