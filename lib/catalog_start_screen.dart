@@ -42,7 +42,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
               DateFormat('yyyy-MM-dd').format(DateTime.parse(expiration));
 
           final key = '$articleName, $packaging, $formattedExpiration';
-
           return {
             'key': key,
             'articleName': articleName,
@@ -53,6 +52,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             'departments': departments,
           };
         }).toList();
+
         print(productsData);
         setState(() {
           productDataList = productsData;
@@ -113,14 +113,14 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   CustomImageButton(
-                    imagePath: 'assets/shin.jfif',
+                    imagePath: 'assets/clipboard.png',
                     onPressed: () {
                       Navigator.pushNamed(context, '/catalog_expiration');
                     },
                   ),
                   const SizedBox(width: 15),
                   CustomImageButton(
-                    imagePath: 'assets/pingu.jpg',
+                    imagePath: 'assets/filter.png',
                     onPressed: () {
                       showDialog(
                           context: context,
