@@ -8,7 +8,7 @@ class ExpandCard extends StatefulWidget {
   final Future<void> Function() onDelete;
 
   const ExpandCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.departments,
     required this.nordicNumber,
@@ -35,9 +35,13 @@ class DatabaseCardState extends State<ExpandCard> {
         children: [
           ListTile(
             leading: IconButton(
-              icon: Icon(
-                isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                color: const Color.fromARGB(255, 50, 189, 131),
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  key: ValueKey<bool>(isExpanded),
+                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: const Color.fromARGB(255, 50, 189, 131),
+                ),
               ),
               onPressed: () {
                 setState(() {
@@ -53,114 +57,119 @@ class DatabaseCardState extends State<ExpandCard> {
               ),
             ),
           ),
-          if (isExpanded)
-            Column(
-              children: [
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 16),
-                      child: Text(
-                        'Varunummer:',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Text(
-                        widget.nordicNumber,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 16),
-                      child: Text(
-                        'Batchnummer:',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Text(
-                        widget.batchNumber,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Divider(
-                  color: Colors.black,
-                  thickness: 1,
-                  indent: 16,
-                  endIndent: 16,
-                ),
-                Column(
-                  children: widget.departments
-                      .asMap()
-                      .entries
-                      .map(
-                        (entry) => Column(
-                          children: [
-                            ListTile(
-                              contentPadding:
-                                  EdgeInsets.only(left: 16, right: 16),
-                              title: Text(
-                                '${entry.value}',
-                                style: const TextStyle(
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: isExpanded
+                ? Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 16),
+                            child: Text(
+                              'Varunummer:',
+                              style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 18,
-                                ),
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.remove_circle,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  // TODO
-                                },
-                              ),
-                              dense: true,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            if (entry.key < widget.departments.length - 1)
-                              const Divider(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Text(
+                              widget.nordicNumber,
+                              style: const TextStyle(
                                 color: Colors.black,
-                                thickness: 1,
-                                indent: 16,
-                                endIndent: 16,
+                                fontSize: 18,
                               ),
-                          ],
-                        ),
-                      )
-                      .toList(),
-                ),
-                const Divider(
-                  color: Colors.black,
-                  thickness: 1,
-                  indent: 16,
-                  endIndent: 16,
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                ),
-              ],
-            ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 16),
+                            child: Text(
+                              'Batchnummer:',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Text(
+                              widget.batchNumber,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                        thickness: 1,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                      Column(
+                        children: widget.departments
+                            .asMap()
+                            .entries
+                            .map(
+                              (entry) => Column(
+                                children: [
+                                  ListTile(
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 16, right: 16),
+                                    title: Text(
+                                      entry.value,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: const Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        // TODO
+                                      },
+                                    ),
+                                    dense: true,
+                                  ),
+                                  if (entry.key < widget.departments.length - 1)
+                                    const Divider(
+                                      color: Colors.black,
+                                      thickness: 1,
+                                      indent: 16,
+                                      endIndent: 16,
+                                    ),
+                                ],
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                        thickness: 1,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                      ),
+                    ],
+                  )
+                : Container(),
+          ),
         ],
       ),
     );
