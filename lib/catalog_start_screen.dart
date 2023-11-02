@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_test_pca/config.dart';
 import 'package:flutter_local_test_pca/widgets/expand_card.dart';
 import 'package:flutter_local_test_pca/widgets/custom_image_button.dart';
 import 'widgets/pop_up_insert.dart';
@@ -27,7 +28,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
      
     try {
       final response = await http
-          .get(Uri.parse('http://localhost:3000/entries-with-departments'));
+          .get(Uri.parse('${AppConfig.apiUrl}/entries-with-departments'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
@@ -43,7 +44,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           final formattedExpiration = DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
           final key = '$articleName, $packaging, $formattedExpiration';
-
           return {
             'key': key,
             'articleName': articleName,
@@ -95,6 +95,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(247, 247, 220, 87),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
         child: AppBar(
@@ -122,14 +123,14 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   CustomImageButton(
-                    imagePath: 'assets/shin.jfif',
+                    imagePath: 'assets/clipboard.png',
                     onPressed: () {
                       Navigator.pushNamed(context, '/catalog_expiration');
                     },
                   ),
                   const SizedBox(width: 15),
                   CustomImageButton(
-                    imagePath: 'assets/pingu.jpg',
+                    imagePath: 'assets/filter.png',
                     onPressed: () {
                       showDialog(
                           context: context,

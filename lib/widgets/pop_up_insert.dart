@@ -3,8 +3,9 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
+import '../config.dart';
 typedef SearchCallback = void Function(List<Map<dynamic, dynamic>>);
+
 
 class PopUpInsert extends StatefulWidget {
   final SearchCallback onSearch;
@@ -30,7 +31,7 @@ class _PopUpInsert extends State<PopUpInsert> {
   Future<void> fetchDepaarmentFromServer() async {
     try {
       final response =
-          await http.get(Uri.parse('http://localhost:3000/all-departments'));
+          await http.get(Uri.parse('${AppConfig.apiUrl}/all-departments'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
@@ -48,8 +49,7 @@ class _PopUpInsert extends State<PopUpInsert> {
 
   Future<void> fetchProductFromServer() async {
     try {
-      final response =
-          await http.get(Uri.parse('http://localhost:3000/entries'));
+      final response = await http.get(Uri.parse('${AppConfig.apiUrl}/entries'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
