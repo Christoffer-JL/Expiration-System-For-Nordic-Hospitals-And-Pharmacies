@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_test_pca/config.dart';
 import 'package:flutter_local_test_pca/widgets/expand_card.dart';
 import 'package:flutter_local_test_pca/widgets/custom_image_button.dart';
 import 'widgets/pop_up_insert.dart';
@@ -25,7 +26,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   Future<void> fetchDataFromServer() async {
     try {
       final response = await http
-          .get(Uri.parse('http://localhost:3000/entries-with-departments'));
+          .get(Uri.parse('${AppConfig.apiUrl}/entries-with-departments'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 

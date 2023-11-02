@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../config.dart';
 
 class PopUpInsert extends StatefulWidget {
   const PopUpInsert({super.key});
@@ -25,7 +26,7 @@ class _PopUpInsert extends State<PopUpInsert> {
   Future<void> fetchDepaarmentFromServer() async {
     try {
       final response =
-          await http.get(Uri.parse('http://localhost:3000/all-departments'));
+          await http.get(Uri.parse('${AppConfig.apiUrl}/all-departments'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
@@ -43,8 +44,7 @@ class _PopUpInsert extends State<PopUpInsert> {
 
   Future<void> fetchProductFromServer() async {
     try {
-      final response =
-          await http.get(Uri.parse('http://localhost:3000/entries'));
+      final response = await http.get(Uri.parse('${AppConfig.apiUrl}/entries'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
