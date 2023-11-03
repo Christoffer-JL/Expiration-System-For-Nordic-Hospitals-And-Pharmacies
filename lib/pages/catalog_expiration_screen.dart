@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/pop_up.dart';
+import '../widgets/pop_up.dart';
 
 class CatalogExpirationScreen extends StatelessWidget {
   const CatalogExpirationScreen({super.key});
