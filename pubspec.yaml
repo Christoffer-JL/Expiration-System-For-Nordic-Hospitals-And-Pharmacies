@@ -1,5 +1,5 @@
 name: flutter_local_test_pca
-description: A new Flutter project.
+description: Providing hospital administartion solutions to you!
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -38,8 +38,14 @@ dependencies:
   dropdown_search: ^5.0.6
   intl: ^0.18.1
 dev_dependencies:
+  flutter_launcher_icons: "^0.13.1"
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/PharmAware-application-icon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
