@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/custom_button.dart'; // Import your custom button widget
+import '../widgets/custom_button.dart'; // Import your custom button widget
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -38,7 +38,7 @@ class StartScreen extends StatelessWidget {
                       width: 10,
                     ),
                     Image.asset(
-                      'assets/scanner.png',
+                      'assets/qr-code-scan-icon-blue.png',
                       width: 50,
                       height: 50,
                     ),
@@ -64,7 +64,7 @@ class StartScreen extends StatelessWidget {
                       width: 10,
                     ),
                     Image.asset(
-                      'assets/catalog.png',
+                      'assets/catalogue-icon-yellow.png',
                       width: 50,
                       height: 50,
                     ),

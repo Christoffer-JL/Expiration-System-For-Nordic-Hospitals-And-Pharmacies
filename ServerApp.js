@@ -62,7 +62,7 @@ app.get("/entries-with-departments", (req, res) => {
             SELECT GROUP_CONCAT(DISTINCT DepartmentName SEPARATOR ', ')
             FROM DepartmentEntryLinks del
             WHERE del.ProductCode = e.ProductCode
-            AND del.BatchNumber = e.BatchNumber
+            AND del.ExpirationDate = e.ExpirationDate
         ) AS Departments
     FROM Entries e
     JOIN Products p ON e.ProductCode = p.ProductCode
@@ -70,7 +70,7 @@ app.get("/entries-with-departments", (req, res) => {
         SELECT 1
         FROM DepartmentEntryLinks del
         WHERE del.ProductCode = e.ProductCode
-        AND del.BatchNumber = e.BatchNumber
+        AND del.ExpirationDate = e.ExpirationDate
     )
     ORDER BY e.ExpirationDate;`;
 
@@ -136,29 +136,52 @@ app.get("/all-entries", (req, res) => {
 
 // Get all entries with optional provided filters
 app.get("/entries", (req, res) => {
-  const { DepartmentName, BatchNr, ProductCode, ProductName } = req.query;
-  let query =
-    "SELECT E.*, P.Packaging, P.NordicNumber, P.ArticleName FROM Entries E";
+  const { DepartmentName, BatchNr, NordicNumber, ProductName, ExpirationDate } = req.query;
+  const subquery = `
+    SELECT
+        e.BatchNumber,
+        e.ExpirationDate,
+        p.Packaging,
+        p.NordicNumber,
+        p.ArticleName,
+        (
+            SELECT GROUP_CONCAT(DISTINCT DepartmentName SEPARATOR ', ')
+            FROM DepartmentEntryLinks del
+            WHERE del.ProductCode = e.ProductCode
+            AND del.ExpirationDate = e.ExpirationDate
+        ) AS Departments
+    FROM Entries e
+    JOIN Products p ON e.ProductCode = p.ProductCode
+    WHERE EXISTS (
+        SELECT 1
+        FROM DepartmentEntryLinks del
+        WHERE del.ProductCode = e.ProductCode
+        AND del.ExpirationDate = e.ExpirationDate
+    )
+  `;
+  let query = `SELECT * FROM (${subquery}) AS subresult`;
+
   const conditions = [];
   const values = [];
-
-  query += " JOIN Products P ON E.ProductCode = P.ProductCode";
-
   if (DepartmentName) {
-    conditions.push("E.DepartmentName = ?");
-    values.push(DepartmentName);
+    conditions.push("subresult.Departments LIKE ?");
+    values.push(`%${DepartmentName}%`);
   }
   if (BatchNr) {
-    conditions.push("E.BatchNumber = ?");
-    values.push(BatchNr);
+    conditions.push("subresult.BatchNumber LIKE ?");
+    values.push(`%${BatchNr}%`);
   }
-  if (ProductCode) {
-    conditions.push("E.ProductCode = ?");
-    values.push(ProductCode);
+  if (NordicNumber) {
+    conditions.push("subresult.NordicNumber LIKE ?");
+    values.push(`%${NordicNumber}%`);
   }
   if (ProductName) {
-    conditions.push("P.ArticleName = ?");
-    values.push(ProductName);
+    conditions.push("subresult.ArticleName LIKE ?");
+    values.push(`%${ProductName}%`);
+  }
+  if (ExpirationDate) {
+    conditions.push("subresult.ExpirationDate = ?");
+    values.push(ExpirationDate);
   }
 
   if (conditions.length > 0) {
@@ -173,6 +196,7 @@ app.get("/entries", (req, res) => {
     }
   });
 });
+
 
 // Get all entries with expiration date in the next 3 months
 app.get("/expiration-entries", (req, res) => {
