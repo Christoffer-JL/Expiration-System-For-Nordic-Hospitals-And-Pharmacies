@@ -58,6 +58,7 @@ class _PopUpInsert extends State<PopUpInsert> {
                   '${entry['NordicNumber']}, ${entry['ArticleName']}, ${entry['Packaging']}')
               .toList();
           isDataFetched = true;
+          //print(products);
         });
       } else {
         print('HTTP request failed with status code: ${response.statusCode}');
@@ -109,7 +110,10 @@ class _PopUpInsert extends State<PopUpInsert> {
   }
 
   if (selectedProductName.isNotEmpty) {
-    queryParams['ProductName'] = selectedProductName;
+    final parts = selectedProductName.split(', ');
+    queryParams['NordicNumber'] = parts[0];
+    queryParams['ProductName'] = parts[1];
+    queryParams['Packaging'] = parts[2];
   }
 
   if (dateController.text.isNotEmpty) {

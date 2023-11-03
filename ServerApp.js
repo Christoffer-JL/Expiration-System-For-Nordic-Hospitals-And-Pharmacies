@@ -136,7 +136,7 @@ app.get("/all-entries", (req, res) => {
 
 // Get all entries with optional provided filters
 app.get("/entries", (req, res) => {
-  const { DepartmentName, BatchNr, NordicNumber, ProductName, ExpirationDate } = req.query;
+  const { DepartmentName, BatchNr, NordicNumber, ProductName, ExpirationDate,Packaging } = req.query;
   const subquery = `
     SELECT
         e.BatchNumber,
@@ -178,6 +178,10 @@ app.get("/entries", (req, res) => {
   if (ProductName) {
     conditions.push("subresult.ArticleName LIKE ?");
     values.push(`%${ProductName}%`);
+  }
+  if(Packaging) {
+    conditions.push("subresult.Packaging LIKE ?");
+    values.push(`%${Packaging}%`);
   }
   if (ExpirationDate) {
     conditions.push("subresult.ExpirationDate = ?");
