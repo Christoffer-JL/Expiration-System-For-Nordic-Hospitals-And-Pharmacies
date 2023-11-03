@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'start_screen.dart';
-import 'department_screen.dart';
-import 'qr_scanning_screen.dart';
-import 'input_screen.dart';
-import 'catalog_start_screen.dart';
-import 'ean_scanning_screen.dart';
-import 'catalog_expiration_screen.dart';
+import 'pages/start_screen.dart';
+import 'pages/department_screen.dart';
+import 'pages/qr_scanning_screen.dart';
+import 'pages/input_screen.dart';
+import 'pages/catalog_start_screen.dart';
+import 'pages/ean_scanning_screen.dart';
+import 'pages/catalog_expiration_screen.dart';
 
 void main() {
   runApp(const MyApp());

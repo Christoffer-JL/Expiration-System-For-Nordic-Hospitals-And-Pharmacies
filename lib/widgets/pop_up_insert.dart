@@ -3,17 +3,16 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import '../config.dart';
-typedef SearchCallback = void Function(List<Map<dynamic, dynamic>>);
+import '../config/config.dart';
 
+typedef SearchCallback = void Function(List<Map<dynamic, dynamic>>);
 
 class PopUpInsert extends StatefulWidget {
   final SearchCallback onSearch;
- const PopUpInsert({Key? key, required this.onSearch}) : super(key: key);
+  const PopUpInsert({Key? key, required this.onSearch}) : super(key: key);
 
   @override
   _PopUpInsert createState() => _PopUpInsert();
-
 }
 
 class _PopUpInsert extends State<PopUpInsert> {
@@ -67,9 +66,6 @@ class _PopUpInsert extends State<PopUpInsert> {
     }
   }
 
-
-
-
   @override
   void initState() {
     super.initState();
@@ -93,40 +89,41 @@ class _PopUpInsert extends State<PopUpInsert> {
   }
 
   void searchButtonPressed() async {
-  final queryParams = <String, String>{};
+    final queryParams = <String, String>{};
 
-  if (selectedDepartment.isNotEmpty) {
-    //String partialDepartment ='%$selectedDepartment%';
-    queryParams['DepartmentName'] = selectedDepartment;
-  }
+    if (selectedDepartment.isNotEmpty) {
+      //String partialDepartment ='%$selectedDepartment%';
+      queryParams['DepartmentName'] = selectedDepartment;
+    }
 
-  if (batchController.text.isNotEmpty) {
-    queryParams['BatchNr'] = batchController.text;
-  }
+    if (batchController.text.isNotEmpty) {
+      queryParams['BatchNr'] = batchController.text;
+    }
 
-  if (nordicNumberCodeController.text.isNotEmpty) {
-    queryParams['NordicNumber'] = nordicNumberCodeController.text;
-  }
+    if (nordicNumberCodeController.text.isNotEmpty) {
+      queryParams['NordicNumber'] = nordicNumberCodeController.text;
+    }
 
-  if (selectedProductName.isNotEmpty) {
-    queryParams['ProductName'] = selectedProductName;
-  }
+    if (selectedProductName.isNotEmpty) {
+      queryParams['ProductName'] = selectedProductName;
+    }
 
-  if (dateController.text.isNotEmpty) {
-    queryParams['ExpirationDate'] = dateController.text; // Assuming the date is in the correct format
-  }
+    if (dateController.text.isNotEmpty) {
+      queryParams['ExpirationDate'] =
+          dateController.text; // Assuming the date is in the correct format
+    }
 
-  final uri = Uri.http('localhost:3000', '/entries', queryParams);
-  try {
-    final response = await http.get(
-      uri,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
+    final uri = Uri.http('localhost:3000', '/entries', queryParams);
+    try {
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
 
-    if (response.statusCode == 200) {
-       final List<dynamic> data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
 
         final List<Map<String, dynamic>> searchData = data.map((entry) {
           final articleName = entry['ArticleName'];
@@ -136,8 +133,10 @@ class _PopUpInsert extends State<PopUpInsert> {
           final batchNumber = entry['BatchNumber'];
           final departments = (entry['Departments'] as String).split(', ');
 
-         final parsedExpiration = DateTime.parse(expiration).toLocal(); // Parse and convert to local time zone
-         final formattedExpiration = DateFormat('yyyy-MM-dd').format(parsedExpiration);
+          final parsedExpiration = DateTime.parse(expiration)
+              .toLocal(); // Parse and convert to local time zone
+          final formattedExpiration =
+              DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
           final key = '$articleName, $packaging, $formattedExpiration';
 
@@ -151,17 +150,14 @@ class _PopUpInsert extends State<PopUpInsert> {
             'departments': departments,
           };
         }).toList();
-      widget.onSearch(searchData);
-    } else {
-      print('Search request failed with status code: ${response.statusCode}');
+        widget.onSearch(searchData);
+      } else {
+        print('Search request failed with status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error during search: $error');
     }
-  } catch (error) {
-    print('Error during search: $error');
   }
-}
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -272,12 +268,9 @@ class _PopUpInsert extends State<PopUpInsert> {
       actions: [
         ElevatedButton(
           onPressed: () {
-           
             searchButtonPressed();
             print(dateController);
             Navigator.of(context).pop();
-            
-            
           },
           child: const Text('Search'),
         ),
