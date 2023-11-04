@@ -149,6 +149,7 @@ app.get("/entries", (req, res) => {
             FROM DepartmentEntryLinks del
             WHERE del.ProductCode = e.ProductCode
             AND del.ExpirationDate = e.ExpirationDate
+            
         ) AS Departments
     FROM Entries e
     JOIN Products p ON e.ProductCode = p.ProductCode
@@ -157,6 +158,7 @@ app.get("/entries", (req, res) => {
         FROM DepartmentEntryLinks del
         WHERE del.ProductCode = e.ProductCode
         AND del.ExpirationDate = e.ExpirationDate
+     
     )
   `;
   let query = `SELECT * FROM (${subquery}) AS subresult`;

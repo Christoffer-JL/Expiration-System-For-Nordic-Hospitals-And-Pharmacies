@@ -3,6 +3,7 @@ import 'package:flutter_local_test_pca/config/config.dart';
 import 'package:flutter_local_test_pca/widgets/expand_card.dart';
 import 'package:flutter_local_test_pca/widgets/custom_image_button.dart';
 import '../widgets/pop_up_insert.dart';
+import '../widgets/pop_up.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -69,6 +70,22 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
 
   void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
     // update the productDataList with the search results
+    if(searchResults.isEmpty) {
+     showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PopUp(
+          title: 'Warning',
+          content: 'Kan inte hitta vad du letar efter, vänligen kontrollera vad du har angett',
+          buttonText1: 'OK',
+          buttonText2: '',
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+    }
     setState(() {
       this.searchResults = searchResults;
       print(this.searchResults);

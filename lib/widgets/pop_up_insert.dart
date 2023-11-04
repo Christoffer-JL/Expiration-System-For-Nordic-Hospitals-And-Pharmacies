@@ -93,6 +93,7 @@ class _PopUpInsert extends State<PopUpInsert> {
     final queryParams = <String, String>{};
 
     if (selectedDepartment.isNotEmpty) {
+     
       //String partialDepartment ='%$selectedDepartment%';
       queryParams['DepartmentName'] = selectedDepartment;
     }
@@ -130,12 +131,17 @@ class _PopUpInsert extends State<PopUpInsert> {
         final List<dynamic> data = json.decode(response.body);
 
         final List<Map<String, dynamic>> searchData = data.map((entry) {
+        final departmentList = (entry['Departments'] as String).split(', ');
+        final matchingDepartments = departmentList
+            .where((department) => department == selectedDepartment)
+            .toList();
+
           final articleName = entry['ArticleName'];
           final packaging = entry['Packaging'];
           final expiration = entry['ExpirationDate'];
           final nordicNumber = entry['NordicNumber'].toString();
           final batchNumber = entry['BatchNumber'];
-          final departments = (entry['Departments'] as String).split(', ');
+          //final departments = (entry['Departments'] as String).split(', ');
 
           final parsedExpiration = DateTime.parse(expiration)
               .toLocal(); // Parse and convert to local time zone
@@ -151,7 +157,7 @@ class _PopUpInsert extends State<PopUpInsert> {
             'expiration': formattedExpiration,
             'nordicNumber': nordicNumber,
             'batchNumber': batchNumber,
-            'departments': departments,
+            'departments': matchingDepartments,
           };
         }).toList();
         widget.onSearch(searchData);
