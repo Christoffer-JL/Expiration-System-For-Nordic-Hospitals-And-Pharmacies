@@ -113,7 +113,10 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
       if (response.statusCode == 200) {
         // Medication deleted successfully
         print('Medication deleted successfully');
-        await initState();
+        await fetchDataFromServer();
+        setState(() {
+          searchResults = [];
+        });
         // You can handle success here, e.g., update UI or show a success message.
       } else if (response.statusCode == 500) {
         // Error deleting medication
@@ -210,8 +213,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                             : 'N/A'),
                     onDelete: () => deleteProduct(
                           index,
-                          productDataList[index][
-                              'departments'], // Cast the departments to List<String>
+                          productDataList[index]['departments'],
                           productDataList[index]['expiration'],
                           productDataList[index]['productCode'],
                         ));
