@@ -117,7 +117,7 @@ class _PopUpInsert extends State<PopUpInsert> {
           dateController.text; // Assuming the date is in the correct format
     }
 
-    final uri = Uri.http('localhost:3000', '/entries', queryParams);
+    final uri = Uri.http('${AppConfig.apiUrl}', '/entries', queryParams);
     try {
       final response = await http.get(
         uri,

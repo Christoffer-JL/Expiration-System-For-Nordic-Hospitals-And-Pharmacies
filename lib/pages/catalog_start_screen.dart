@@ -40,8 +40,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           final batchNumber = entry['BatchNumber'];
           final departments = (entry['Departments'] as String).split(', ');
 
-          final parsedExpiration = DateTime.parse(expiration)
-              .toLocal(); // Parse and convert to local time zone
+          final parsedExpiration = DateTime.parse(expiration).toLocal();
           final formattedExpiration =
               DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
