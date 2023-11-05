@@ -150,15 +150,27 @@ class _PopUpInsert extends State<PopUpInsert> {
 
           final key = '$articleName, $packaging, $formattedExpiration';
 
-          return {
-            'key': key,
-            'articleName': articleName,
-            'packaging': packaging,
-            'expiration': formattedExpiration,
-            'nordicNumber': nordicNumber,
-            'batchNumber': batchNumber,
-            'departments': matchingDepartments,
-          };
+          if (selectedDepartment.isNotEmpty) {
+           return {
+      'key': key,
+      'articleName': articleName,
+      'packaging': packaging,
+      'expiration': formattedExpiration,
+      'nordicNumber': nordicNumber,
+      'batchNumber': batchNumber,
+      'departments': matchingDepartments,
+        };
+          } else {
+           return {
+      'key': key,
+      'articleName': articleName,
+      'packaging': packaging,
+      'expiration': formattedExpiration,
+      'nordicNumber': nordicNumber,
+      'batchNumber': batchNumber,
+      'departments': departmentList,
+        };
+     }
         }).toList();
         widget.onSearch(searchData);
       } else {
