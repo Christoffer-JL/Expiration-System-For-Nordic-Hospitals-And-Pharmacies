@@ -105,19 +105,19 @@ class _PopUpInsert extends State<PopUpInsert> {
       queryParams['NordicNumber'] = nordicNumberCodeController.text;
     }
 
-  if (selectedProductName.isNotEmpty) {
-    final parts = selectedProductName.split(', ');
-    queryParams['NordicNumber'] = parts[0];
-    queryParams['ProductName'] = parts[1];
-    queryParams['Packaging'] = parts[2];
-  }
+    if (selectedProductName.isNotEmpty) {
+      final parts = selectedProductName.split(', ');
+      queryParams['NordicNumber'] = parts[0];
+      queryParams['ProductName'] = parts[1];
+      queryParams['Packaging'] = parts[2];
+    }
 
     if (dateController.text.isNotEmpty) {
       queryParams['ExpirationDate'] =
           dateController.text; // Assuming the date is in the correct format
     }
 
-    final uri = Uri.http('localhost:3000', '/entries', queryParams);
+    final uri = Uri.http('${AppConfig.apiUrl}', '/entries', queryParams);
     try {
       final response = await http.get(
         uri,
@@ -130,12 +130,18 @@ class _PopUpInsert extends State<PopUpInsert> {
         final List<dynamic> data = json.decode(response.body);
 
         final List<Map<String, dynamic>> searchData = data.map((entry) {
+          final departmentList = (entry['Departments'] as String).split(', ');
+          final matchingDepartments = <String>[];
+          if (selectedDepartment.isNotEmpty) {
+            matchingDepartments.addAll(departmentList
+                .where((department) => department == selectedDepartment));
+          }
+
           final articleName = entry['ArticleName'];
           final packaging = entry['Packaging'];
           final expiration = entry['ExpirationDate'];
           final nordicNumber = entry['NordicNumber'].toString();
           final batchNumber = entry['BatchNumber'];
-          final departments = (entry['Departments'] as String).split(', ');
 
           final parsedExpiration = DateTime.parse(expiration)
               .toLocal(); // Parse and convert to local time zone
@@ -151,7 +157,9 @@ class _PopUpInsert extends State<PopUpInsert> {
             'expiration': formattedExpiration,
             'nordicNumber': nordicNumber,
             'batchNumber': batchNumber,
-            'departments': departments,
+            'departments': selectedDepartment.isNotEmpty
+                ? matchingDepartments
+                : departmentList,
           };
         }).toList();
         widget.onSearch(searchData);
@@ -276,13 +284,13 @@ class _PopUpInsert extends State<PopUpInsert> {
             print(dateController);
             Navigator.of(context).pop();
           },
-          child: const Text('Search'),
+          child: const Text('Sök'),
         ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Cancel'),
+          child: const Text('Avbryt'),
         ),
       ],
     );

@@ -3,6 +3,7 @@ import 'package:flutter_local_test_pca/config/config.dart';
 import 'package:flutter_local_test_pca/widgets/expand_card.dart';
 import 'package:flutter_local_test_pca/widgets/custom_image_button.dart';
 import '../widgets/pop_up_insert.dart';
+import '../widgets/pop_up.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -40,8 +41,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           final batchNumber = entry['BatchNumber'];
           final departments = (entry['Departments'] as String).split(', ');
 
-          final parsedExpiration = DateTime.parse(expiration)
-              .toLocal(); // Parse and convert to local time zone
+          final parsedExpiration = DateTime.parse(expiration).toLocal();
           final formattedExpiration =
               DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
@@ -57,7 +57,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             'departments': departments,
           };
         }).toList();
-        //print(productsData);
         setState(() {
           productDataList = productsData;
         });
@@ -70,7 +69,22 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   }
 
   void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
-    // update the productDataList with the search results
+    if (searchResults.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return PopUp(
+            title: 'Inga läkemedel kunde hittas',
+            content: 'Vänligen kontrollera filtreringsuppgifterna',
+            buttonText1: 'OK',
+            buttonText2: '',
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      );
+    }
     setState(() {
       this.searchResults = searchResults;
       print(this.searchResults);
