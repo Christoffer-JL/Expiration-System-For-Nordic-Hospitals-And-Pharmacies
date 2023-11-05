@@ -3,7 +3,6 @@ import 'package:flutter_local_test_pca/config/config.dart';
 import 'package:flutter_local_test_pca/widgets/expand_card.dart';
 import 'package:flutter_local_test_pca/widgets/custom_image_button.dart';
 import '../widgets/pop_up_insert.dart';
-import '../widgets/pop_up.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -41,7 +40,8 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           final batchNumber = entry['BatchNumber'];
           final departments = (entry['Departments'] as String).split(', ');
 
-          final parsedExpiration = DateTime.parse(expiration).toLocal();
+          final parsedExpiration = DateTime.parse(expiration)
+              .toLocal(); // Parse and convert to local time zone
           final formattedExpiration =
               DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
@@ -57,6 +57,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             'departments': departments,
           };
         }).toList();
+        //print(productsData);
         setState(() {
           productDataList = productsData;
         });
@@ -69,22 +70,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   }
 
   void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
-    if (searchResults.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return PopUp(
-            title: 'Inga läkemedel kunde hittas',
-            content: 'Vänligen kontrollera filtreringsuppgifterna',
-            buttonText1: 'OK',
-            buttonText2: '',
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          );
-        },
-      );
-    }
     setState(() {
       this.searchResults = searchResults;
       print(this.searchResults);
@@ -94,10 +79,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   Future<void> deleteProduct(int index, List<String> departments,
       String expiration, int productCode) async {
     try {
-      print('Deleting product with ProductCode: $productCode');
-      print('Deleting product with ProductCode: ${departments.first}');
-      print('Deleting product with ProductCode: $expiration');
-
       final response = await http.delete(
         Uri.parse('${AppConfig.apiUrl}/delete-medication'),
         body: json.encode({
@@ -111,23 +92,18 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
       );
 
       if (response.statusCode == 200) {
-        // Medication deleted successfully
         print('Medication deleted successfully');
         await fetchDataFromServer();
         setState(() {
           searchResults = [];
         });
-        // You can handle success here, e.g., update UI or show a success message.
       } else if (response.statusCode == 500) {
         // Error deleting medication
         print('Error deleting medication: ${response.body}');
-        // You can handle the error here, e.g., show an error message to the user.
       } else {
-        // Handle other status codes if needed
         print('Unexpected status code: ${response.statusCode}');
       }
     } catch (error) {
-      // Handle other errors, e.g., network issues
       print('Error during medication deletion: $error');
     }
   }
@@ -193,8 +169,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                   ? searchResults.length
                   : productDataList.length,
               itemBuilder: (context, index) {
-                print(productDataList[index]['departments']);
-                print(productDataList[index]['productCode']);
                 return ExpandCard(
                     title:
                         '${searchResults.isNotEmpty ? searchResults[index]['articleName'] : productDataList[index]['articleName']}, ${searchResults.isNotEmpty ? searchResults[index]['packaging'] : productDataList[index]['packaging']}, ${searchResults.isNotEmpty ? searchResults[index]['expiration'] : productDataList[index]['expiration']}',
