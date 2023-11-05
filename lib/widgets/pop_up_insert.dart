@@ -132,9 +132,13 @@ class _PopUpInsert extends State<PopUpInsert> {
 
         final List<Map<String, dynamic>> searchData = data.map((entry) {
         final departmentList = (entry['Departments'] as String).split(', ');
-        final matchingDepartments = departmentList
-            .where((department) => department == selectedDepartment)
-            .toList();
+        final matchingDepartments = <String>[];
+        if (selectedDepartment.isNotEmpty) {
+          matchingDepartments.addAll(
+          departmentList.where((department) => department == selectedDepartment)
+           );
+        }
+
 
           final articleName = entry['ArticleName'];
           final packaging = entry['Packaging'];
@@ -150,27 +154,16 @@ class _PopUpInsert extends State<PopUpInsert> {
 
           final key = '$articleName, $packaging, $formattedExpiration';
 
-          if (selectedDepartment.isNotEmpty) {
+         
            return {
-      'key': key,
-      'articleName': articleName,
-      'packaging': packaging,
-      'expiration': formattedExpiration,
-      'nordicNumber': nordicNumber,
-      'batchNumber': batchNumber,
-      'departments': matchingDepartments,
-        };
-          } else {
-           return {
-      'key': key,
-      'articleName': articleName,
-      'packaging': packaging,
-      'expiration': formattedExpiration,
-      'nordicNumber': nordicNumber,
-      'batchNumber': batchNumber,
-      'departments': departmentList,
-        };
-     }
+             'key': key,
+             'articleName': articleName,
+             'packaging': packaging,
+             'expiration': formattedExpiration,
+             'nordicNumber': nordicNumber,
+             'batchNumber': batchNumber,
+             'departments': selectedDepartment.isNotEmpty ? matchingDepartments : departmentList,
+           };
         }).toList();
         widget.onSearch(searchData);
       } else {
