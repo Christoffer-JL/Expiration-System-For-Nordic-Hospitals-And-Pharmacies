@@ -93,7 +93,6 @@ class _PopUpInsert extends State<PopUpInsert> {
     final queryParams = <String, String>{};
 
     if (selectedDepartment.isNotEmpty) {
-     
       //String partialDepartment ='%$selectedDepartment%';
       queryParams['DepartmentName'] = selectedDepartment;
     }
@@ -106,12 +105,12 @@ class _PopUpInsert extends State<PopUpInsert> {
       queryParams['NordicNumber'] = nordicNumberCodeController.text;
     }
 
-  if (selectedProductName.isNotEmpty) {
-    final parts = selectedProductName.split(', ');
-    queryParams['NordicNumber'] = parts[0];
-    queryParams['ProductName'] = parts[1];
-    queryParams['Packaging'] = parts[2];
-  }
+    if (selectedProductName.isNotEmpty) {
+      final parts = selectedProductName.split(', ');
+      queryParams['NordicNumber'] = parts[0];
+      queryParams['ProductName'] = parts[1];
+      queryParams['Packaging'] = parts[2];
+    }
 
     if (dateController.text.isNotEmpty) {
       queryParams['ExpirationDate'] =
@@ -131,17 +130,16 @@ class _PopUpInsert extends State<PopUpInsert> {
         final List<dynamic> data = json.decode(response.body);
 
         final List<Map<String, dynamic>> searchData = data.map((entry) {
-        final departmentList = (entry['Departments'] as String).split(', ');
-        final matchingDepartments = departmentList
-            .where((department) => department == selectedDepartment)
-            .toList();
+          final departmentList = (entry['Departments'] as String).split(', ');
+          final matchingDepartments = departmentList
+              .where((department) => department == selectedDepartment)
+              .toList();
 
           final articleName = entry['ArticleName'];
           final packaging = entry['Packaging'];
           final expiration = entry['ExpirationDate'];
           final nordicNumber = entry['NordicNumber'].toString();
           final batchNumber = entry['BatchNumber'];
-          //final departments = (entry['Departments'] as String).split(', ');
 
           final parsedExpiration = DateTime.parse(expiration)
               .toLocal(); // Parse and convert to local time zone
@@ -151,26 +149,26 @@ class _PopUpInsert extends State<PopUpInsert> {
           final key = '$articleName, $packaging, $formattedExpiration';
 
           if (selectedDepartment.isNotEmpty) {
-           return {
-      'key': key,
-      'articleName': articleName,
-      'packaging': packaging,
-      'expiration': formattedExpiration,
-      'nordicNumber': nordicNumber,
-      'batchNumber': batchNumber,
-      'departments': matchingDepartments,
-        };
+            return {
+              'key': key,
+              'articleName': articleName,
+              'packaging': packaging,
+              'expiration': formattedExpiration,
+              'nordicNumber': nordicNumber,
+              'batchNumber': batchNumber,
+              'departments': matchingDepartments,
+            };
           } else {
-           return {
-      'key': key,
-      'articleName': articleName,
-      'packaging': packaging,
-      'expiration': formattedExpiration,
-      'nordicNumber': nordicNumber,
-      'batchNumber': batchNumber,
-      'departments': departmentList,
-        };
-     }
+            return {
+              'key': key,
+              'articleName': articleName,
+              'packaging': packaging,
+              'expiration': formattedExpiration,
+              'nordicNumber': nordicNumber,
+              'batchNumber': batchNumber,
+              'departments': departmentList,
+            };
+          }
         }).toList();
         widget.onSearch(searchData);
       } else {
@@ -294,13 +292,13 @@ class _PopUpInsert extends State<PopUpInsert> {
             print(dateController);
             Navigator.of(context).pop();
           },
-          child: const Text('Search'),
+          child: const Text('Sök'),
         ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Cancel'),
+          child: const Text('Avbryt'),
         ),
       ],
     );

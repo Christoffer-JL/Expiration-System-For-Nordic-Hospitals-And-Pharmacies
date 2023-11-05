@@ -136,7 +136,14 @@ app.get("/all-entries", (req, res) => {
 
 // Get all entries with optional provided filters
 app.get("/entries", (req, res) => {
-  const { DepartmentName, BatchNr, NordicNumber, ProductName, ExpirationDate,Packaging } = req.query;
+  const {
+    DepartmentName,
+    BatchNr,
+    NordicNumber,
+    ProductName,
+    ExpirationDate,
+    Packaging,
+  } = req.query;
   const subquery = `
     SELECT
         e.BatchNumber,
@@ -181,7 +188,7 @@ app.get("/entries", (req, res) => {
     conditions.push("subresult.ArticleName LIKE ?");
     values.push(`%${ProductName}%`);
   }
-  if(Packaging) {
+  if (Packaging) {
     conditions.push("subresult.Packaging LIKE ?");
     values.push(`%${Packaging}%`);
   }
@@ -202,7 +209,6 @@ app.get("/entries", (req, res) => {
     }
   });
 });
-
 
 // Get all entries with expiration date in the next 3 months
 app.get("/expiration-entries", (req, res) => {
