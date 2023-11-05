@@ -140,7 +140,8 @@ class DatabaseCardState extends State<ExpandCard> {
                                         color: Colors.red,
                                       ),
                                       onPressed: () {
-                                        // TODO
+                                        widget
+                                            .onDelete(); // Call the onDelete function when pressed
                                       },
                                     ),
                                     dense: true,

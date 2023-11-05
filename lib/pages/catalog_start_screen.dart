@@ -32,6 +32,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
         final List<dynamic> data = json.decode(response.body);
 
         final List<Map<String, dynamic>> productsData = data.map((entry) {
+          final productCode = entry['ProductCode'];
           final articleName = entry['ArticleName'];
           final packaging = entry['Packaging'];
           final expiration = entry['ExpirationDate'];
@@ -47,6 +48,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           final key = '$articleName, $packaging, $formattedExpiration';
           return {
             'key': key,
+            'productCode': productCode,
             'articleName': articleName,
             'packaging': packaging,
             'expiration': formattedExpiration,
@@ -75,20 +77,41 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
     });
   }
 
-  Future<void> deleteProduct(int index, String departmentName) async {
-    // example code: delete product from server
-    setState(() {
-      productDataList.removeAt(index);
-    });
+  Future<void> deleteProduct(int index, List<String> departments,
+      String expiration, int productCode) async {
+    try {
+      print('Deleting product with ProductCode: $productCode');
+      print('Deleting product with ProductCode: ${departments.first}');
+      print('Deleting product with ProductCode: $expiration');
 
-    // check if product is associated with other departments
+      final response = await http.delete(
+        Uri.parse('${AppConfig.apiUrl}/delete-medication'),
+        body: json.encode({
+          'DepartmentName': departments.first,
+          'ExpirationDate': expiration,
+          'ProductCode': productCode,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
 
-    final isProductAssociatedWithOtherDepartments = productDataList
-        .any((product) => product['departmentName'] == departmentName);
-
-    // if not, delete product from server
-    if (!isProductAssociatedWithOtherDepartments) {
-      // example code: delete product from server
+      if (response.statusCode == 200) {
+        // Medication deleted successfully
+        print('Medication deleted successfully');
+        await initState();
+        // You can handle success here, e.g., update UI or show a success message.
+      } else if (response.statusCode == 500) {
+        // Error deleting medication
+        print('Error deleting medication: ${response.body}');
+        // You can handle the error here, e.g., show an error message to the user.
+      } else {
+        // Handle other status codes if needed
+        print('Unexpected status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle other errors, e.g., network issues
+      print('Error during medication deletion: $error');
     }
   }
 
@@ -153,25 +176,31 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                   ? searchResults.length
                   : productDataList.length,
               itemBuilder: (context, index) {
+                print(productDataList[index]['departments']);
+                print(productDataList[index]['productCode']);
                 return ExpandCard(
-                  title:
-                      '${searchResults.isNotEmpty ? searchResults[index]['articleName'] : productDataList[index]['articleName']}, ${searchResults.isNotEmpty ? searchResults[index]['packaging'] : productDataList[index]['packaging']}, ${searchResults.isNotEmpty ? searchResults[index]['expiration'] : productDataList[index]['expiration']}',
-                  nordicNumber: searchResults.isNotEmpty
-                      ? searchResults[index]['nordicNumber']
-                      : productDataList[index]['nordicNumber'],
-                  departments: searchResults.isNotEmpty
-                      ? searchResults[index]['departments']
-                      : productDataList[index]['departments'],
-                  batchNumber: searchResults.isNotEmpty
-                      ? (searchResults[index]['batchNumber'] != null
-                          ? searchResults[index]['batchNumber'].toString()
-                          : 'N/A')
-                      : (productDataList[index]['batchNumber'] != null
-                          ? productDataList[index]['batchNumber'].toString()
-                          : 'N/A'),
-                  onDelete: () => deleteProduct(
-                      index, productDataList[index]['articleName']),
-                );
+                    title:
+                        '${searchResults.isNotEmpty ? searchResults[index]['articleName'] : productDataList[index]['articleName']}, ${searchResults.isNotEmpty ? searchResults[index]['packaging'] : productDataList[index]['packaging']}, ${searchResults.isNotEmpty ? searchResults[index]['expiration'] : productDataList[index]['expiration']}',
+                    nordicNumber: searchResults.isNotEmpty
+                        ? searchResults[index]['nordicNumber']
+                        : productDataList[index]['nordicNumber'],
+                    departments: searchResults.isNotEmpty
+                        ? searchResults[index]['departments']
+                        : productDataList[index]['departments'],
+                    batchNumber: searchResults.isNotEmpty
+                        ? (searchResults[index]['batchNumber'] != null
+                            ? searchResults[index]['batchNumber'].toString()
+                            : 'N/A')
+                        : (productDataList[index]['batchNumber'] != null
+                            ? productDataList[index]['batchNumber'].toString()
+                            : 'N/A'),
+                    onDelete: () => deleteProduct(
+                          index,
+                          productDataList[index][
+                              'departments'], // Cast the departments to List<String>
+                          productDataList[index]['expiration'],
+                          productDataList[index]['productCode'],
+                        ));
               },
             ),
           ),

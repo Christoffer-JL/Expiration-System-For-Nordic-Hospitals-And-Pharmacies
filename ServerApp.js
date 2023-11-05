@@ -53,6 +53,7 @@ app.get("/all-departments", (req, res) => {
 app.get("/entries-with-departments", (req, res) => {
   const query = `
     SELECT
+        e.ProductCode,
         e.BatchNumber,
         e.ExpirationDate,
         p.Packaging,
@@ -354,4 +355,25 @@ app.post("/insert-entry-manual", (req, res) => {
       }
     }
   );
+});
+app.delete("/delete-medication", (req, res) => {
+  const { ProductCode, DepartmentName, ExpirationDate } = req.body;
+
+  // Now, you can delete the medication record from the departmentslinkEntry table using the three keys
+  const deleteQuery = "DELETE From DepartmentEntryLinks WHERE ProductCode = ? AND ExpirationDate = ? AND DepartmentName = ?";
+ 
+
+ // DELETE From DepartmentEntryLinks WHERE ProductCode = 4 AND ExpirationDate = 2023-09-10 AND DepartmentName = Radiology;
+
+  db.query(deleteQuery, [ProductCode, ExpirationDate, DepartmentName], (err, results) => {
+    console.log(ExpirationDate);
+    console.log(ProductCode);
+    console.log(DepartmentName);
+      if (err) {
+          res.status(500).json({ error: "Error deleting medication" });
+      } else {
+          res.status(200).json({ message: "Medication deleted successfully" });
+      }
+  });
+  
 });
