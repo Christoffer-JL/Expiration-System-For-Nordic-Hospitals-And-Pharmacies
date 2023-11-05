@@ -210,14 +210,12 @@ app.get("/entries", (req, res) => {
   });
 });
 
-// Get all entries with expiration date in the next 3 months
+// Get entries with expiration dates in the upcoming 3 months and those that have already expired
 app.get("/expiration-entries", (req, res) => {
-  const currentDate = new Date();
-  currentDate.setMonth(currentDate.getMonth() + 3);
   const query =
-    "SELECT E.*, P.Packaging, P.NordicNumber, P.ArticleName FROM Entries E JOIN Products P ON E.ProductCode = P.ProductCode WHERE E.ExpirationDate <= ?";
+    "SELECT E.*, P.Packaging, P.NordicNumber, P.ArticleName FROM Entries E JOIN Products P ON E.ProductCode = P.ProductCode WHERE E.ExpirationDate <= DATE_ADD(NOW(), INTERVAL 3 MONTH) OR E.ExpirationDate <= NOW()";
 
-  db.query(query, [currentDate], (err, results) => {
+  db.query(query, (err, results) => {
     if (err) {
       res.status(500).json({ error: "Error getting expiration entries" });
     } else {
