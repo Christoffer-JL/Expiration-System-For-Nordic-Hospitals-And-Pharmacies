@@ -140,8 +140,31 @@ class DatabaseCardState extends State<ExpandCard> {
                                         color: Colors.red,
                                       ),
                                       onPressed: () {
-                                        widget
-                                            .onDelete(); // Call the onDelete function when pressed
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Confirm Deletion'),
+                                              content: Text(
+                                                  'Are you sure you want to delete this item?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Text('No'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Text('Yes'),
+                                                  onPressed: () {
+                                                    widget.onDelete();
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
                                       },
                                     ),
                                     dense: true,
