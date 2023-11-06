@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_test_pca/config/config.dart';
 import 'package:flutter_local_test_pca/widgets/expand_card.dart';
 import 'package:flutter_local_test_pca/widgets/custom_image_button.dart';
+import 'package:flutter_local_test_pca/widgets/pop_up.dart';
 import '../widgets/pop_up_insert.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -70,6 +71,22 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   }
 
   void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
+    if (searchResults.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return PopUp(
+            title: 'Inga läkemedel kunde hittas',
+            content: 'Vänligen kontrollera filtreringsuppgifterna',
+            buttonText1: 'OK',
+            buttonText2: '',
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      );
+    }
     setState(() {
       this.searchResults = searchResults;
       print(this.searchResults);
