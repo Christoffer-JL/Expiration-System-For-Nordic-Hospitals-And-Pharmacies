@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CatalogStartScreen extends StatelessWidget {
+  const CatalogStartScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Catalog Start Screen'),
+        title: const Text('Catalog Start Screen'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Start Your Catalog Here'),
       ),
     );

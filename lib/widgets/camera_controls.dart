@@ -4,7 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 class CameraControlsWidget extends StatelessWidget {
   final MobileScannerController controller;
 
-  CameraControlsWidget({
+  const CameraControlsWidget({super.key, 
     required this.controller,
   });
 
@@ -17,7 +17,7 @@ class CameraControlsWidget extends StatelessWidget {
           icon: ValueListenableBuilder(
             valueListenable: controller.torchState,
             builder: (context, state, child) {
-              switch (state as TorchState) {
+              switch (state) {
                 case TorchState.off:
                   return const Icon(Icons.flash_off, color: Colors.grey);
                 case TorchState.on:
@@ -33,7 +33,7 @@ class CameraControlsWidget extends StatelessWidget {
           icon: ValueListenableBuilder(
             valueListenable: controller.cameraFacingState,
             builder: (context, state, child) {
-              switch (state as CameraFacing) {
+              switch (state) {
                 case CameraFacing.front:
                   return const Icon(Icons.camera_front);
                 case CameraFacing.back:

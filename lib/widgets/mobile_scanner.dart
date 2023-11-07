@@ -10,7 +10,7 @@ class CustomMobileScanner extends StatelessWidget {
   final Function(String pc, String exp, String batch, String serial)
       onDataUpdate;
 
-  CustomMobileScanner({
+  const CustomMobileScanner({super.key, 
     required this.controller,
     required this.onDetect,
     required this.onDataUpdate,
@@ -44,8 +44,7 @@ class CustomMobileScanner extends StatelessWidget {
         // Find and extract PC
         final pcStartIndex = qrCodeData.indexOf('01');
         if (pcStartIndex != -1) {
-          pc = "PC: " +
-              qrCodeData.substring(pcStartIndex + 2, pcStartIndex + 16);
+          pc = "PC: ${qrCodeData.substring(pcStartIndex + 2, pcStartIndex + 16)}";
           qrCodeData = qrCodeData.substring(0, pcStartIndex) +
               qrCodeData.substring(pcStartIndex + 16);
         }
@@ -53,22 +52,20 @@ class CustomMobileScanner extends StatelessWidget {
         // Find and extract SERIAL from the end of the string
         final serialStartIndex = qrCodeData.length - delimiter;
         if (serialStartIndex != -1) {
-          serial = "SERIAL: " + qrCodeData.substring(serialStartIndex + 2);
+          serial = "SERIAL: ${qrCodeData.substring(serialStartIndex + 2)}";
           qrCodeData = qrCodeData.substring(0, serialStartIndex);
         }
 
         // Find and extract EXP
         final expStartIndex = qrCodeData.indexOf('17');
         if (expStartIndex != -1) {
-          exp = "EXP: " +
-              qrCodeData.substring(expStartIndex + 2, expStartIndex + 8);
+          exp = "EXP: ${qrCodeData.substring(expStartIndex + 2, expStartIndex + 8)}";
           qrCodeData = qrCodeData.substring(0, expStartIndex) +
               qrCodeData.substring(expStartIndex + 8);
         }
 
         // Whatever is left should be BATCH
-        batch = "BATCH: " +
-            qrCodeData.replaceAll(RegExp(r'[^A-Za-z0-9]'), '').substring(2);
+        batch = "BATCH: ${qrCodeData.replaceAll(RegExp(r'[^A-Za-z0-9]'), '').substring(2)}";
 
         pc = pc;
         exp = exp;

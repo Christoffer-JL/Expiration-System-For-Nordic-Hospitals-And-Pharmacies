@@ -8,23 +8,25 @@ import 'ean_scanning_screen.dart';
 import 'catalog_expiration_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PharmAware',
       initialRoute: '/',
       routes: {
-        '/': (context) => StartScreen(),
-        '/department': (context) => DepartmentScreen(),
-        '/qr_scan': (context) => QrScanningScreen(),
-        '/input': (context) => InputScreen(),
-        '/catalog_start': (context) => CatalogStartScreen(),
-        '/ean_scan': (context) => EanScanningScreen(),
-        '/catalog_expiration': (context) => CatalogExpirationScreen(),
+        '/': (context) => const StartScreen(),
+        '/department': (context) => const DepartmentScreen(),
+        '/qr_scan': (context) => const QrScanningScreen(),
+        '/input': (context) => const InputScreen(),
+        '/catalog_start': (context) => const CatalogStartScreen(),
+        '/ean_scan': (context) => const EanScanningScreen(),
+        '/catalog_expiration': (context) => const CatalogExpirationScreen(),
       },
     );
   }

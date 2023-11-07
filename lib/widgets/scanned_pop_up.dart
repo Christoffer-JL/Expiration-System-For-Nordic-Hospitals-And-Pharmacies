@@ -7,7 +7,7 @@ class CustomPopup extends StatelessWidget {
   final String serial;
   final Function onPopupDismissed;
 
-  CustomPopup({
+  const CustomPopup({super.key, 
     required this.pc,
     required this.exp,
     required this.batch,
@@ -18,9 +18,9 @@ class CustomPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
+      title: const Text(
           "Produkt skannades, vill du registrera denna vara?"), // Set your title here
-      content: Container(
+      content: SizedBox(
         height: 200, // Set the desired height here
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,7 @@ class CustomPopup extends StatelessWidget {
             Navigator.of(context).pop(); // Close the popup when OK is pressed
             onPopupDismissed();
           },
-          child: Text("OK"),
+          child: const Text("OK"),
         ),
       ],
     );

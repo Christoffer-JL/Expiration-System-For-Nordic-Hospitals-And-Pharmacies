@@ -6,7 +6,7 @@ class BottomSheetWidget extends StatefulWidget {
   String batch;
   String serial;
 
-  BottomSheetWidget({
+  BottomSheetWidget({super.key, 
     required this.pc,
     required this.exp,
     required this.batch,
@@ -30,7 +30,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
