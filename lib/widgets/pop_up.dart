@@ -30,8 +30,8 @@ class PopUp extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop();
             onPressed();
+            Navigator.of(context).pop();
           },
           child: Text(buttonText2),
         ),

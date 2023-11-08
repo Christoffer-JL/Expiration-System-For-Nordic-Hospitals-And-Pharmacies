@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_test_pca/widgets/pop_up.dart';
-import '../widgets/pop_up_insert.dart';
 import 'scanner_overlay.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
 import 'dart:typed_data';
-
+import '../pages/ean_scanning_screen.dart';
 
 class ScannerWidget extends StatefulWidget {
   final Function(String, String, String, String) onQRCodeDetected;
@@ -110,14 +109,17 @@ class _scannerWidgetState extends State<ScannerWidget> {
                       return PopUp(
                         title:
                             "Produkt skannades, vill du registrera denna vara?",
-                        content:
-                            'PC: $pc \n EXP: $exp \n BATCH: $batch \n SERIAL: $serial',
-                        buttonText1: 'OK',
-                        buttonText2: '',
+                        content: ' $pc \n $exp \n $batch \n $serial',
+                        buttonText1: '',
+                        buttonText2: 'OK',
                         onPressed: () {
-                          // Enable scanning after the popup is dismissed
+                          print('okej');
                           setState(() {
                             scanEnabled = true;
+                            pc = "";
+                            exp = "";
+                            batch = "";
+                            serial = "";
                           });
                         },
                       );
@@ -127,8 +129,16 @@ class _scannerWidgetState extends State<ScannerWidget> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return const AlertDialog(
-                        title: Text("Oops, du skannade en EAN-kod"),
+                      return PopUp(
+                        title: "Det är en EAN-kod",
+                        content: 'Vill du skanna en EAN-kod istället?',
+                        buttonText1: 'Nej',
+                        buttonText2: 'Ja',
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => EanScanningScreen(), 
+                          ));
+                        },
                       );
                     },
                   );
@@ -141,9 +151,8 @@ class _scannerWidgetState extends State<ScannerWidget> {
           ),
           // 添加任何覆盖层或UI组件
           ScannerOverlay(
-          overlayColor: widget.overlayColor,
-
-        ),
+            overlayColor: widget.overlayColor,
+          ),
         ],
       ),
     );
