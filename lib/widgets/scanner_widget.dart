@@ -149,7 +149,6 @@ class _scannerWidgetState extends State<ScannerWidget> {
               }
             },
           ),
-          // 添加任何覆盖层或UI组件
           ScannerOverlay(
             overlayColor: widget.overlayColor,
           ),
