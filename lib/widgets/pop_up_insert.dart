@@ -57,7 +57,6 @@ class _PopUpInsert extends State<PopUpInsert> {
                   '${entry['NordicNumber']}, ${entry['ArticleName']}, ${entry['Packaging']}')
               .toList();
           isDataFetched = true;
-          //print(products);
         });
       } else {
         print('HTTP request failed with status code: ${response.statusCode}');
@@ -93,7 +92,6 @@ class _PopUpInsert extends State<PopUpInsert> {
     final queryParams = <String, String>{};
 
     if (selectedDepartment.isNotEmpty) {
-      //String partialDepartment ='%$selectedDepartment%';
       queryParams['DepartmentName'] = selectedDepartment;
     }
 
@@ -113,11 +111,10 @@ class _PopUpInsert extends State<PopUpInsert> {
     }
 
     if (dateController.text.isNotEmpty) {
-      queryParams['ExpirationDate'] =
-          dateController.text; // Assuming the date is in the correct format
+      queryParams['ExpirationDate'] = dateController.text;
     }
 
-    final uri = Uri.http('localhost:3000', '/entries', queryParams); // TODO
+    final uri = Uri.http('${AppConfig.apiIp}:3000', '/entries', queryParams);
     try {
       final response = await http.get(
         uri,
@@ -206,7 +203,7 @@ class _PopUpInsert extends State<PopUpInsert> {
                       ),
                     )),
                 dropdownButtonProps: const DropdownButtonProps(
-                  icon: Icon(Icons.arrow_drop_down_circle_outlined),
+                  icon: Icon(Icons.keyboard_arrow_down),
                   iconSize: 36,
                 ),
                 dropdownDecoratorProps: const DropDownDecoratorProps(
@@ -214,7 +211,7 @@ class _PopUpInsert extends State<PopUpInsert> {
                       labelText: "Avdelning: ",
                       labelStyle: TextStyle(fontSize: 18),
                     ),
-                    textAlign: TextAlign.center),
+                    textAlign: TextAlign.left),
                 onChanged: (String? value) {
                   setState(() {
                     selectedDepartment = value!;
@@ -250,7 +247,7 @@ class _PopUpInsert extends State<PopUpInsert> {
                       ),
                     )),
                 dropdownButtonProps: const DropdownButtonProps(
-                  icon: Icon(Icons.arrow_drop_down_circle_outlined),
+                  icon: Icon(Icons.keyboard_arrow_down),
                   iconSize: 36,
                 ),
                 dropdownDecoratorProps: const DropDownDecoratorProps(

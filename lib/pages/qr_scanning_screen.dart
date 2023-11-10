@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/scanner_widget.dart';
 
 class QrScanningScreen extends StatelessWidget {
   const QrScanningScreen({super.key});
@@ -6,11 +7,14 @@ class QrScanningScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('QR Scanning Screen'),
-      ),
-      body: const Center(
-        child: Text('Scan QR Code Here'),
+      body: QRScannerWidget(
+        onQRCodeDetected: (pc, serial, exp, batch) {
+          print('$pc');
+          print('$exp');
+          print('$batch');
+          print('$serial');
+        },
+        overlayColor: Colors.black.withOpacity(0.3),
       ),
     );
   }
