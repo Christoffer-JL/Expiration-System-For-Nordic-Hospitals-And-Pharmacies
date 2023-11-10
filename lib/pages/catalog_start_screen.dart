@@ -33,7 +33,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
         final List<dynamic> data = json.decode(response.body);
 
         final List<Map<String, dynamic>> productsData = data.map((entry) {
-          final productCode = entry['ProductCode'];
+          final productCode = entry['ProductCode'].toString();
           final articleName = entry['ArticleName'];
           final packaging = entry['Packaging'];
           final expiration = entry['ExpirationDate'];
@@ -94,7 +94,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   }
 
   Future<void> deleteProduct(int index, List<String> departments,
-      String expiration, int productCode) async {
+      String expiration, String productCode) async {
     try {
       final response = await http.delete(
         Uri.parse('${AppConfig.apiUrl}/delete-medication'),
@@ -206,7 +206,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                           index,
                           productDataList[index]['departments'],
                           productDataList[index]['expiration'],
-                          productDataList[index]['productCode'],
+                          productDataList[index]['productCode'].toString(),
                         ));
               },
             ),
