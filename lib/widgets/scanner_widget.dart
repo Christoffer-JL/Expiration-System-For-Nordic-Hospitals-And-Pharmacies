@@ -6,11 +6,11 @@ import 'package:vibration/vibration.dart';
 import 'dart:typed_data';
 import '../pages/ean_scanning_screen.dart';
 
-class ScannerWidget extends StatefulWidget {
+class QRScannerWidget extends StatefulWidget {
   final Function(String, String, String, String) onQRCodeDetected;
   final Color overlayColor;
 
-  ScannerWidget({
+  QRScannerWidget({
     required this.onQRCodeDetected,
     this.overlayColor = Colors.white,
   });
@@ -18,7 +18,7 @@ class ScannerWidget extends StatefulWidget {
   _scannerWidgetState createState() => _scannerWidgetState();
 }
 
-class _scannerWidgetState extends State<ScannerWidget> {
+class _scannerWidgetState extends State<QRScannerWidget> {
   late MobileScannerController cameraController;
   String pc = "";
   String serial = "";
@@ -100,6 +100,8 @@ class _scannerWidgetState extends State<ScannerWidget> {
                     serial = serial;
                   });
 
+                  //widget.onQRCodeDetected(pc, serial, exp, batch);
+
                   Vibration.vibrate(duration: 100);
 
                   debugPrint("Barcode found $pc");
@@ -135,9 +137,11 @@ class _scannerWidgetState extends State<ScannerWidget> {
                         buttonText1: 'Nej',
                         buttonText2: 'Ja',
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => EanScanningScreen(), 
-                          ));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EanScanningScreen(),
+                              ));
                         },
                       );
                     },
@@ -151,6 +155,77 @@ class _scannerWidgetState extends State<ScannerWidget> {
           ),
           ScannerOverlay(
             overlayColor: widget.overlayColor,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DepartmentScannerWidget extends StatefulWidget {
+  final Function(String) onDepartmentCodeDetected;
+  final Color overlayColor;
+
+  DepartmentScannerWidget({
+    required this.onDepartmentCodeDetected,
+    this.overlayColor = Colors.white,
+  });
+  @override
+  _departmentScannerWidgetState createState() =>
+      _departmentScannerWidgetState();
+}
+
+class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
+  late MobileScannerController cameraController;
+  String departmentCode = "";
+  bool scanEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    cameraController = MobileScannerController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Department Code Scanner'),
+        actions: [
+          TorchAndCameraSwitchButton(cameraController: cameraController),
+        ],
+      ),
+      body: Stack(
+        children: [
+          MobileScanner(
+            controller: cameraController,
+            onDetect: (capture) {
+              if (scanEnabled) {
+                final List<Barcode> barcodes = capture.barcodes;
+                final barcode = barcodes.first;
+                String departmentCode = barcode.displayValue!;
+
+                List<String> parts = departmentCode.split("|");
+
+                if (parts.length >= 3) {
+                  String validInfo = parts[2].trim(); 
+                  setState(() {
+                    departmentCode = validInfo;
+                  });
+                  print(validInfo);
+                } else {
+                  print("invalid department code");
+                }
+                widget.onDepartmentCodeDetected(departmentCode);
+
+              }
+            },
+            
+          ),
+          ScannerOverlay(
+            overlayColor: widget.overlayColor,
+            scanAreaHeight: 200,
+            scanAreaWidth: 400,
           ),
         ],
       ),

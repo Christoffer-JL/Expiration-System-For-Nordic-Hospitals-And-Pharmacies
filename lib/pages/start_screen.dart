@@ -28,7 +28,7 @@ class StartScreen extends StatelessWidget {
                       child: CustomButton(
                         text: 'Registrera',
                         onPressed: () {
-                          Navigator.pushNamed(context, '/qr_scan');
+                          Navigator.pushNamed(context, '/department');
                         },
                         color: const Color(0xFF73C9DF),
                         fontSize: 25,

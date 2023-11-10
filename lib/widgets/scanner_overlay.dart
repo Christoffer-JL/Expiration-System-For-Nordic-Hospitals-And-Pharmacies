@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 
 class ScannerOverlay extends StatelessWidget {
   final Color overlayColor;
-  final double scanAreaSize;
+  //final double scanAreaSize;
   final double borderWidth;
   final double borderRadius;
+  final double scanAreaWidth;
+  final double scanAreaHeight;
 
   ScannerOverlay({
     this.overlayColor = Colors.black,
-    this.scanAreaSize = 200.0,
-    this.borderWidth = 4.0,
+    //this.scanAreaSize = 200.0,
+    this.borderWidth = 4,
     this.borderRadius = 20.0,
+    this.scanAreaWidth = 200.0,
+    this.scanAreaHeight = 200.0,
   });
 
   @override
@@ -21,6 +25,8 @@ class ScannerOverlay extends StatelessWidget {
           overlayColor: overlayColor,
           borderWidth: borderWidth,
           borderRadius: borderRadius,
+          scanAreaWidth: scanAreaWidth,
+          scanAreaHeight: scanAreaHeight,
         ),
         Align(
           alignment: Alignment.center,
@@ -30,8 +36,8 @@ class ScannerOverlay extends StatelessWidget {
               borderRadius: borderRadius,
             ),
             child: SizedBox(
-              width: scanAreaSize + 25,
-              height: scanAreaSize + 25,
+              width: scanAreaWidth + 25,
+              height: scanAreaHeight + 25,
             ),
           ),
         ),
@@ -44,19 +50,19 @@ class CustomOverlayPainter extends StatelessWidget {
   final Color overlayColor;
   final double borderWidth;
   final double borderRadius;
-  final double scanAreaSize ;
+  final double scanAreaWidth;
+  final double scanAreaHeight;
 
   CustomOverlayPainter({
     this.overlayColor = Colors.white,
     this.borderWidth = 4.0,
     this.borderRadius = 20.0,
-    this.scanAreaSize = 200.0,
+    this.scanAreaWidth = 200.0,
+    this.scanAreaHeight = 200.0,
   });
 
   @override
   Widget build(BuildContext context) {
-    //final double tRadius = 3 * borderRadius;
-
     return ColorFiltered(
       colorFilter: ColorFilter.mode(
         overlayColor,
@@ -72,12 +78,12 @@ class CustomOverlayPainter extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.center,
-            child: Container(
-              height: scanAreaSize,
-              width: scanAreaSize,
-              decoration: BoxDecoration(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(borderRadius),
+              child: Container(
+                height: scanAreaHeight,
+                width: scanAreaWidth,
                 color: Colors.red,
-                borderRadius: BorderRadius.circular(borderRadius),
               ),
             ),
           ),
@@ -87,13 +93,16 @@ class CustomOverlayPainter extends StatelessWidget {
   }
 }
 
+
 class BorderPainter extends CustomPainter {
   final double borderWidth;
   final double borderRadius;
+  
 
   BorderPainter({
     this.borderWidth = 4.0,
     this.borderRadius = 20.0,
+
   });
 
   @override
@@ -102,8 +111,8 @@ class BorderPainter extends CustomPainter {
     final rect = Rect.fromLTWH(
       borderWidth,
       borderWidth,
-      size.width - 2 * borderWidth,
-      size.height - 2 * borderWidth,
+      size.width -2 * borderWidth,
+      size.height -2 * borderWidth,
     );
     final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
     final clippingRect0 = Rect.fromLTWH(0, 0, tRadius, tRadius);

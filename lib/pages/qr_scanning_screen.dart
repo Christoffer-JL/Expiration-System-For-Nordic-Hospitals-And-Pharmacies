@@ -7,7 +7,7 @@ class QrScanningScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ScannerWidget(
+      body: QRScannerWidget(
         onQRCodeDetected: (pc, serial, exp, batch) {
           print('$pc');
           print('$exp');
