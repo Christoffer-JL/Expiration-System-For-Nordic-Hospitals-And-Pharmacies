@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_test_pca/widgets/pop_up.dart';
 import '../widgets/scanner_widget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'dart:convert';
@@ -10,14 +11,14 @@ class DepartmentScreen extends StatefulWidget {
 
   @override
   DepartmentScreenState createState() => DepartmentScreenState();
-  }
+}
 
 class DepartmentScreenState extends State<DepartmentScreen> {
   List<String> departmentNames = [];
   bool isDataFetched = false;
   String selectedDepartment = '';
 
- @override
+  @override
   void initState() {
     super.initState();
     fetchDepartmentFromServer();
@@ -26,11 +27,14 @@ class DepartmentScreenState extends State<DepartmentScreen> {
   Future<void> fetchDepartmentFromServer() async {
     if (!isDataFetched) {
       try {
-        final response = await http.get(Uri.parse('${AppConfig.apiUrl}/all-departments'));
+        final response =
+            await http.get(Uri.parse('${AppConfig.apiUrl}/all-departments'));
         if (response.statusCode == 200) {
           final List<dynamic> data = json.decode(response.body);
           setState(() {
-            departmentNames = data.map((entry) => entry['DepartmentName'].toString()).toList();
+            departmentNames = data
+                .map((entry) => entry['DepartmentName'].toString())
+                .toList();
             isDataFetched = true;
           });
         } else {
@@ -41,8 +45,6 @@ class DepartmentScreenState extends State<DepartmentScreen> {
       }
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,50 +58,83 @@ class DepartmentScreenState extends State<DepartmentScreen> {
             overlayColor: Colors.black.withOpacity(0.3),
           ),
           Positioned(
-            bottom: 100, 
+            bottom: 10,
             left: 20,
             right: 20,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                DropdownSearch<String>(
-                    items: departmentNames,
-                    popupProps: const PopupProps.menu(
-                        showSearchBox: true,
-                        showSelectedItems: true,
-                        scrollbarProps: ScrollbarProps(
-                          thickness: 7,
-                          radius: Radius.circular(10),
-                          thumbColor: Colors.blue,
-                          mainAxisMargin: 10,
-                          crossAxisMargin: 10,
-                        ),
-                        menuProps: MenuProps(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                Container(
+                  child: DropdownSearch<String>(
+                      items: departmentNames,
+                      popupProps: const PopupProps.menu(
+                          showSearchBox: true,
+                          showSelectedItems: true,
+                          scrollbarProps: ScrollbarProps(
+                            thickness: 7,
+                            radius: Radius.circular(10),
+                            thumbColor: Colors.blue,
+                            mainAxisMargin: 10,
+                            crossAxisMargin: 10,
                           ),
-                        )),
-                    dropdownButtonProps: const DropdownButtonProps(
-                      icon: Icon(Icons.arrow_drop_down_circle_outlined),
-                      iconSize: 36,
-                    ),
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          labelText: "Avdelning: ",
-                          labelStyle: TextStyle(fontSize: 18),
-                        ),
-                        textAlign: TextAlign.center),
-                    onChanged: (String? value) {
-                      setState(() {
-                        selectedDepartment = value!;
-                      });
-                    }),
-                const SizedBox(height: 20),
+                          menuProps: MenuProps(
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                          )),
+                      dropdownButtonProps: const DropdownButtonProps(
+                        icon: Icon(Icons.arrow_drop_down_circle_outlined),
+                        iconSize: 36,
+                      ),
+                      dropdownDecoratorProps: const DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Avdelning: ",
+                            labelStyle: TextStyle(fontSize: 18),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2.0),
+                            ),
+                          ),
+                          textAlign: TextAlign.center),
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedDepartment = value!;
+                        });
+                      }),
+                ),
+                const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
+                    bool isMatch = departmentNames.contains(selectedDepartment);
+
+                    if (isMatch) {
+                      Navigator.pushNamed(
+                        context,
+                        '/qr_scan',
+                        arguments: {'selectedDepartment': selectedDepartment},
+                      );
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return PopUp(
+                              title: "Hitta inte avdelning",
+                              content:
+                                  'Avdelningen du söker finns inte i systemet.',
+                              buttonText1: '',
+                              buttonText2: 'OK',
+                              onPressed: () {},
+                            );
+                          });
+                    }
                     //
                   },
-                  child: Text('Ok'),
+                  child: Text('OK'),
                 ),
               ],
             ),

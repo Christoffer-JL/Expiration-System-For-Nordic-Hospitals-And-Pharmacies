@@ -5,13 +5,17 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
 import 'dart:typed_data';
 import '../pages/ean_scanning_screen.dart';
+import '../config/config.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class QRScannerWidget extends StatefulWidget {
-  final Function(String, String, String, String) onQRCodeDetected;
+  final String selectedDepartment;
   final Color overlayColor;
 
   QRScannerWidget({
-    required this.onQRCodeDetected,
+    required this.selectedDepartment,
     this.overlayColor = Colors.white,
   });
   @override
@@ -24,12 +28,43 @@ class _scannerWidgetState extends State<QRScannerWidget> {
   String serial = "";
   String exp = "";
   String batch = "";
+  String selectedDepartment = "";
   bool scanEnabled = true;
 
   @override
   void initState() {
     super.initState();
     cameraController = MobileScannerController();
+  }
+
+  Future<bool> insertDataToDatabase(String pc, String exp, String batch,
+      String serial, String selectedDepartment) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${AppConfig.apiUrl}/insert-entry-in-department'),
+        body: json.encode({
+          "DepartmentName": selectedDepartment,
+          "ProductCode": pc,
+          "BatchNumber": batch,
+          "ExpirationDate": exp,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 201) {
+        // Entry inserted successfully
+        return true;
+      } else {
+        // Failed to insert entry
+        print("Failed to insert entry. Status code: ${response.statusCode}");
+        return false;
+      }
+    } catch (error) {
+      print("Error during HTTP request: $error");
+      return false;
+    }
   }
 
   @override
@@ -98,31 +133,47 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                     exp = exp;
                     batch = batch;
                     serial = serial;
+                    selectedDepartment = widget.selectedDepartment;
                   });
-
-                  //widget.onQRCodeDetected(pc, serial, exp, batch);
 
                   Vibration.vibrate(duration: 100);
 
                   debugPrint("Barcode found $pc");
+
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return PopUp(
-                        title:
-                            "Produkt skannades, vill du registrera denna vara?",
+                        title: "vill du registrera denna vara?",
                         content: ' $pc \n $exp \n $batch \n $serial',
                         buttonText1: '',
                         buttonText2: 'OK',
-                        onPressed: () {
-                          print('okej');
-                          setState(() {
-                            scanEnabled = true;
-                            pc = "";
-                            exp = "";
-                            batch = "";
-                            serial = "";
-                          });
+                        onPressed: () async {
+                          bool result = await insertDataToDatabase(
+                              pc, exp, batch, serial, selectedDepartment);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return PopUp(
+                                title: result ? "Lyckas" : "Misslyckas",
+                                content: result
+                                    ? 'Lyckad vararegistrering'
+                                    : 'Det gick inte att registrera posten, försök igen',
+                                buttonText1: '',
+                                buttonText2: 'OK',
+                                onPressed: () {
+                                  print('okej');
+                                  setState(() {
+                                    scanEnabled = true;
+                                    pc = "";
+                                    exp = "";
+                                    batch = "";
+                                    serial = "";
+                                  });
+                                },
+                              );
+                            },
+                          );
                         },
                       );
                     },
@@ -208,23 +259,160 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
                 List<String> parts = departmentCode.split("|");
 
                 if (parts.length >= 3) {
-                  String validInfo = parts[2].trim(); 
+                  String validInfo = parts[2].trim();
                   setState(() {
                     departmentCode = validInfo;
                   });
+                  Vibration.vibrate(duration: 100);
                   print(validInfo);
                 } else {
                   print("invalid department code");
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return PopUp(
+                          title: "Felaktig avdelningskod",
+                          content: 'Försök igen',
+                          buttonText1: '',
+                          buttonText2: 'OK',
+                          onPressed: () {
+                            setState(() {
+                              scanEnabled = true;
+                              departmentCode = "";
+                            });
+                          },
+                        );
+                      });
                 }
                 widget.onDepartmentCodeDetected(departmentCode);
-
               }
             },
-            
           ),
           ScannerOverlay(
             overlayColor: widget.overlayColor,
-            scanAreaHeight: 200,
+            scanAreaHeight: 100,
+            scanAreaWidth: 400,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EanscannerWidget extends StatefulWidget {
+  final Color overlayColor;
+
+  EanscannerWidget({
+    this.overlayColor = Colors.white,
+  });
+  @override
+  _eanScannerWidgetState createState() => _eanScannerWidgetState();
+}
+
+class _eanScannerWidgetState extends State<EanscannerWidget> {
+  late MobileScannerController cameraController;
+  String eanCode = "";
+  bool scanEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    cameraController = MobileScannerController();
+  }
+
+  Future<bool> insertEntryAutomatic(
+      String productCode, String batchNumber, String expirationDate) async {
+   
+
+    try {
+      final response = await http.post(
+        Uri.parse('${AppConfig.apiUrl}/insert-entry-in-department'),
+        body: json.encode({
+          'ProductCode': productCode,
+          'BatchNumber': batchNumber,
+          'ExpirationDate': expirationDate,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 201) {
+       
+        return true;
+      } else if (response.statusCode == 400) {
+       
+        return false;
+      } else {
+     
+        return false;
+      }
+    } catch (error) {
+      print('Error during HTTP request: $error');
+      return false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Ean Code Scanner'),
+        actions: [
+          TorchAndCameraSwitchButton(cameraController: cameraController),
+        ],
+      ),
+      body: Stack(
+        children: [
+          MobileScanner(
+            controller: cameraController,
+            onDetect: (capture) {
+              if (scanEnabled) {
+                final List<Barcode> barcodes = capture.barcodes;
+                final barcode = barcodes.first;
+                String eanCode = barcode.displayValue!;
+
+                if (eanCode.length == 13) {
+                  setState(() {
+                    eanCode = eanCode;
+                  });
+                  Vibration.vibrate(duration: 100);
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return PopUp(
+                          title: "Registrera med EAN-kod",
+                          content: '$eanCode',
+                          buttonText1: 'Nej',
+                          buttonText2: 'Ja',
+                          onPressed: () {},
+                        );
+                      });
+                }
+              } else {
+                print("invalid ean code");
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return PopUp(
+                        title: "Felaktig EAN-kod",
+                        content: 'Försök igen',
+                        buttonText1: '',
+                        buttonText2: 'OK',
+                        onPressed: () {
+                          setState(() {
+                            scanEnabled = true;
+                            eanCode = "";
+                          });
+                        },
+                      );
+                    });
+              }
+            },
+          ),
+          ScannerOverlay(
+            overlayColor: widget.overlayColor,
+            scanAreaHeight: 100,
             scanAreaWidth: 400,
           ),
         ],
