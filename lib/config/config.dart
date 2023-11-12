@@ -1,7 +1,7 @@
 // Please do not push changes made to this file
 
 class AppConfig {
-  static const String apiIp = IPAddresses.externalPi;
+  static const String apiIp = IPAddresses.localHost;
   static const String apiPort = '3000';
   static const String apiUrl = 'http://${apiIp}:${apiPort}';
 }
