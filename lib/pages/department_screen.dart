@@ -118,6 +118,8 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                         '/qr_scan',
                         arguments: {'selectedDepartment': selectedDepartment},
                       );
+                      setState(() {
+                      });
                     } else {
                       showDialog(
                           context: context,
@@ -128,7 +130,10 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                                   'Avdelningen du söker finns inte i systemet.',
                               buttonText1: '',
                               buttonText2: 'OK',
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              
                             );
                           });
                     }

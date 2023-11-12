@@ -37,6 +37,12 @@ class _scannerWidgetState extends State<QRScannerWidget> {
     cameraController = MobileScannerController();
   }
 
+  @override
+  void dispose() {
+    cameraController.dispose();
+    super.dispose();
+  }
+
   Future<bool> insertDataToDatabase(String pc, String exp, String batch,
       String serial, String selectedDepartment) async {
     try {
@@ -179,6 +185,8 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                     },
                   );
                 } else if (qrCodeData.length == 13) {
+                  setState(() {
+                  });
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -188,11 +196,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                         buttonText1: 'Nej',
                         buttonText2: 'Ja',
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EanScanningScreen(),
-                              ));
+                          Navigator.pushNamed(context, '/ean_scan');
                         },
                       );
                     },
@@ -238,6 +242,12 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
   }
 
   @override
+  void dispose() {
+    cameraController.dispose(); 
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -267,6 +277,9 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
                   print(validInfo);
                 } else {
                   print("invalid department code");
+                  setState(() {
+                    scanEnabled=false;
+                  });
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -320,10 +333,14 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
     cameraController = MobileScannerController();
   }
 
+  @override
+  void dispose() {
+    cameraController.dispose(); 
+    super.dispose();
+  }
+
   Future<bool> insertEntryAutomatic(
       String productCode, String batchNumber, String expirationDate) async {
-   
-
     try {
       final response = await http.post(
         Uri.parse('${AppConfig.apiUrl}/insert-entry-in-department'),
@@ -338,13 +355,10 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
       );
 
       if (response.statusCode == 201) {
-       
         return true;
       } else if (response.statusCode == 400) {
-       
         return false;
       } else {
-     
         return false;
       }
     } catch (error) {

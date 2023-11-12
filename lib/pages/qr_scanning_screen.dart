@@ -23,7 +23,7 @@ class QrScanningScreen extends StatelessWidget {
 
           // 贴纸效果，放置在上层
           Positioned(
-            top: 100.0,
+            top: 200.0,
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               width: MediaQuery.of(context).size.width,
