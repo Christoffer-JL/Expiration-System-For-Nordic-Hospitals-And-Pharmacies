@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_test_pca/config/config.dart';
+import 'package:flutter_local_test_pca/pages/catalog_expiration_screen.dart';
 import 'package:flutter_local_test_pca/widgets/expand_card.dart';
 import 'package:flutter_local_test_pca/widgets/custom_image_button.dart';
 import 'package:flutter_local_test_pca/widgets/pop_up.dart';
@@ -158,7 +159,13 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                   CustomImageButton(
                     imagePath: 'assets/clipboard.png',
                     onPressed: () {
-                      Navigator.pushNamed(context, '/catalog_expiration');
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  CatalogExpirationScreen())).then((value) {
+                        fetchDataFromServer();
+                      });
                     },
                   ),
                   const SizedBox(width: 15),

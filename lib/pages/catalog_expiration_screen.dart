@@ -54,7 +54,6 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
             'productCode': productCode,
           };
         }).toList();
-        //print(productsData);
         setState(() {
           productDataList = productsData;
         });
@@ -78,7 +77,7 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
             buttonText1: 'OK',
             buttonText2: '',
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
             },
           );
         },
@@ -112,7 +111,8 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
       if (response.statusCode == 200) {
         print('Medication deleted successfully');
         setState(() {
-          searchResults = [];
+          productDataList
+              .removeAt(index); // Remove the item from the product list
         });
       } else if (response.statusCode == 500) {
         // Error deleting medication
