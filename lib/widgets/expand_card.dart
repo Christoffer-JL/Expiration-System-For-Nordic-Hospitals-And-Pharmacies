@@ -257,42 +257,59 @@ class DatabaseCardStates extends State<ExpandCardExpire> {
               ),
             ),
           ),
+          if (isExpanded)
+            const Divider(
+              color: Colors.black,
+              thickness: 1,
+              indent: 16,
+              endIndent: 16,
+            ),
           AnimatedSize(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             child: isExpanded
-                ? Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            ' ${widget.articleName}  ${widget.packaging}  ${widget.expirationDate}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                ' ${widget.articleName}  ${widget.packaging}  ${widget.expirationDate}',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                ),
+                              ),
                             ),
-                          ),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              child: isExpanded
+                                  ? IconButton(
+                                      key: ValueKey<bool>(isExpanded),
+                                      icon: const Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        widget.onDelete();
+                                      },
+                                    )
+                                  : Container(),
+                            ),
+                          ],
                         ),
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: isExpanded
-                              ? IconButton(
-                                  key: ValueKey<bool>(isExpanded),
-                                  icon: const Icon(
-                                    Icons.remove_circle,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () {
-                                    widget.onDelete();
-                                  },
-                                )
-                              : Container(),
-                        ),
-                      ],
-                    ),
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                        thickness: 1,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                    ],
                   )
                 : Container(),
           ),

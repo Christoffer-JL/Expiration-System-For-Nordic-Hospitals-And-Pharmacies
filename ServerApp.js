@@ -219,7 +219,7 @@ app.get("/expiration-entries", (req, res) => {
     "JOIN Entries E ON DEL.ProductCode = E.ProductCode AND DEL.ExpirationDate = E.ExpirationDate " +
     "JOIN Products P ON E.ProductCode = P.ProductCode " +
     "JOIN Departments D ON DEL.DepartmentName = D.DepartmentName " +
-    "WHERE E.ExpirationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 MONTH)";
+    "WHERE E.ExpirationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH)";
 
   db.query(query, (err, results) => {
     if (err) {
