@@ -214,7 +214,12 @@ app.get("/entries", (req, res) => {
 // Get entries with expiration dates in the upcoming 3 months and those that have already expired
 app.get("/expiration-entries", (req, res) => {
   const query =
-    "SELECT E.*, P.Packaging, P.NordicNumber, P.ArticleName FROM Entries E JOIN Products P ON E.ProductCode = P.ProductCode WHERE E.ExpirationDate <= DATE_ADD(NOW(), INTERVAL 3 MONTH) OR E.ExpirationDate <= NOW()";
+    "SELECT DEL.ProductCode, DEL.DepartmentName, E.ExpirationDate, P.Packaging, P.ArticleName " +
+    "FROM DepartmentEntryLinks DEL " +
+    "JOIN Entries E ON DEL.ProductCode = E.ProductCode AND DEL.ExpirationDate = E.ExpirationDate " +
+    "JOIN Products P ON E.ProductCode = P.ProductCode " +
+    "JOIN Departments D ON DEL.DepartmentName = D.DepartmentName " +
+    "WHERE E.ExpirationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 MONTH)";
 
   db.query(query, (err, results) => {
     if (err) {

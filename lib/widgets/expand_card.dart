@@ -39,9 +39,7 @@ class DatabaseCardState extends State<ExpandCard> {
                 duration: const Duration(milliseconds: 300),
                 child: Icon(
                   key: ValueKey<bool>(isExpanded),
-                  isExpanded
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
+                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                   color: const Color.fromARGB(255, 50, 189, 131),
                 ),
               ),
@@ -193,6 +191,108 @@ class DatabaseCardState extends State<ExpandCard> {
                         padding: EdgeInsets.symmetric(vertical: 8.0),
                       ),
                     ],
+                  )
+                : Container(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ExpandCardExpire extends StatefulWidget {
+  final String title;
+  final String expirationDate;
+  final String packaging;
+  final String articleName;
+  final Future<void> Function() onDelete;
+
+  const ExpandCardExpire({
+    Key? key,
+    required this.title,
+    required this.packaging,
+    required this.onDelete,
+    required this.articleName,
+    required this.expirationDate,
+  }) : super(key: key);
+
+  @override
+  DatabaseCardStates createState() => DatabaseCardStates();
+}
+
+class DatabaseCardStates extends State<ExpandCardExpire> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      color: const Color.fromARGB(255, 217, 217, 217),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            leading: IconButton(
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  key: ValueKey<bool>(isExpanded),
+                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: const Color.fromARGB(255, 50, 189, 131),
+                ),
+              ),
+              onPressed: () {
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
+              },
+            ),
+            title: Text(
+              widget.title,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+              ),
+            ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: isExpanded
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            ' ${widget.articleName}  ${widget.packaging}  ${widget.expirationDate}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: isExpanded
+                              ? IconButton(
+                                  key: ValueKey<bool>(isExpanded),
+                                  icon: const Icon(
+                                    Icons.remove_circle,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    widget.onDelete();
+                                  },
+                                )
+                              : Container(),
+                        ),
+                      ],
+                    ),
                   )
                 : Container(),
           ),
