@@ -17,7 +17,9 @@ sftp_port = 22
 sftp_user = 'pe465'
 sftp_password = 'ZaGa8K\\Z[M(#'
 sftp_remote_dir = '6'
-remote_zip_file = 'vara-export-6_20231106_003156.zip'
+remote_zip_file = 'vara-export-6_20231110_003233.zip'
+
+
 
 local_unzip_dir = 'unzip_folder'
 
@@ -26,6 +28,7 @@ ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
 try:
     ssh.connect(sftp_host, port=sftp_port, username=sftp_user, password=sftp_password)
+    ssh.get_transport().set_keepalive(120)
     sftp = ssh.open_sftp()
 
     sftp.chdir(sftp_remote_dir)
