@@ -199,3 +199,122 @@ class DatabaseCardState extends State<ExpandCard> {
     );
   }
 }
+
+class ExpandCardExpire extends StatefulWidget {
+  final String title;
+  final String expirationDate;
+  final String packaging;
+  final String articleName;
+  final Future<void> Function() onDelete;
+
+  const ExpandCardExpire({
+    Key? key,
+    required this.title,
+    required this.packaging,
+    required this.onDelete,
+    required this.articleName,
+    required this.expirationDate,
+  }) : super(key: key);
+
+  @override
+  DatabaseCardStates createState() => DatabaseCardStates();
+}
+
+class DatabaseCardStates extends State<ExpandCardExpire> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      color: const Color.fromARGB(255, 217, 217, 217),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            leading: IconButton(
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  key: ValueKey<bool>(isExpanded),
+                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: const Color.fromARGB(255, 50, 189, 131),
+                ),
+              ),
+              onPressed: () {
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
+              },
+            ),
+            title: Text(
+              widget.title,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+              ),
+            ),
+          ),
+          if (isExpanded)
+            const Divider(
+              color: Colors.black,
+              thickness: 1,
+              indent: 16,
+              endIndent: 16,
+            ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: isExpanded
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                ' ${widget.articleName}  ${widget.packaging}  ${widget.expirationDate}',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              child: isExpanded
+                                  ? IconButton(
+                                      key: ValueKey<bool>(isExpanded),
+                                      icon: const Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        widget.onDelete();
+                                      },
+                                    )
+                                  : Container(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                        thickness: 1,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                    ],
+                  )
+                : Container(),
+          ),
+        ],
+      ),
+    );
+  }
+}
