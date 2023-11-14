@@ -51,13 +51,30 @@ class _PopUpInsert extends State<PopUpInsert> {
       final response = await http.get(Uri.parse('${AppConfig.apiUrl}/entries'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        setState(() {
-          products = data
-              .map((entry) =>
-                  '${entry['NordicNumber']}, ${entry['ArticleName']}, ${entry['Packaging']}')
-              .toList();
-          isDataFetched = true;
-        });
+
+        Set<String> uniqueEntries = Set<String>();
+
+    setState(() {
+        products = data
+            .map((entry) {
+              
+              String entryString =
+                  '${entry['NordicNumber']}, ${entry['ArticleName']}, ${entry['Packaging']}';
+
+              if (!uniqueEntries.contains(entryString)) {
+               
+                uniqueEntries.add(entryString);
+                return entryString;
+              } else {
+                return null;
+              }
+            })
+            .where((entry) => entry != null) 
+            .cast<String>() 
+            .toList();
+
+        isDataFetched = true;
+      });
       } else {
         print('HTTP request failed with status code: ${response.statusCode}');
       }
@@ -97,10 +114,6 @@ class _PopUpInsert extends State<PopUpInsert> {
 
     if (batchController.text.isNotEmpty) {
       queryParams['BatchNr'] = batchController.text;
-    }
-
-    if (nordicNumberCodeController.text.isNotEmpty) {
-      queryParams['NordicNumber'] = nordicNumberCodeController.text;
     }
 
     if (selectedProductName.isNotEmpty) {
@@ -222,13 +235,6 @@ class _PopUpInsert extends State<PopUpInsert> {
               decoration: const InputDecoration(
                   labelText: 'Batch NR: ', hintText: 'Fyll i batch nr '),
             ),
-            TextFormField(
-              controller: nordicNumberCodeController,
-              decoration: const InputDecoration(
-                labelText: 'Varunummer: ',
-                hintText: 'Fyll i varunummer ',
-              ),
-            ),
             DropdownSearch<String>(
                 items: products,
                 popupProps: const PopupProps.menu(
@@ -297,7 +303,6 @@ class _PopUpInsert extends State<PopUpInsert> {
   void dispose() {
     dateController.dispose();
     batchController.dispose();
-    nordicNumberCodeController.dispose();
     super.dispose();
   }
 }
