@@ -17,9 +17,9 @@ sftp_port = 22
 sftp_user = 'pe465'
 sftp_password = 'ZaGa8K\\Z[M(#'
 sftp_remote_dir = '6'
-remote_zip_file = 'vara-export-6_20231106_003156.zip'
 
 local_unzip_dir = 'unzip_folder'
+prefix_to_match = 'vara'
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -29,15 +29,24 @@ try:
     sftp = ssh.open_sftp()
 
     sftp.chdir(sftp_remote_dir)
-    sftp.get(remote_zip_file, remote_zip_file)
 
-    with zipfile.ZipFile(remote_zip_file, 'r') as zip_ref:
-        zip_ref.extractall(local_unzip_dir)
+    files = sftp.listdir()
+    matching_files = [file for file in files if file.startswith(prefix_to_match)]
 
-    xml_file_path = os.path.join(local_unzip_dir, 'vara-export', 'lm-data.xml')
-    print(xml_file_path)
-    tree = ET.parse(xml_file_path)
-    root = tree.getroot()
+
+    if not matching_files:
+        print("No matching files found.")
+    else:
+        remote_zip_file = max(matching_files)
+        sftp.get(remote_zip_file, remote_zip_file)
+
+        with zipfile.ZipFile(remote_zip_file, 'r') as zip_ref:
+            zip_ref.extractall(local_unzip_dir)
+
+        xml_file_path = os.path.join(local_unzip_dir, 'vara-export', 'lm-data.xml')
+        print(xml_file_path)
+        tree = ET.parse(xml_file_path)
+        root = tree.getroot()
 
     db_config = {
         "host": "sql11.freesqldatabase.com",
