@@ -93,7 +93,6 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                 String qrCodeData = barcode.displayValue!;
 
                 if (qrCodeData.substring(1, 3).compareTo("01") == 0) {
-                  scanEnabled = false;
                   Uint8List data = barcode.rawBytes!;
 
                   int delimiter = 0;
@@ -140,6 +139,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                     batch = batch;
                     serial = serial;
                     selectedDepartment = widget.selectedDepartment;
+                    scanEnabled = false;
                   });
 
                   Vibration.vibrate(duration: 100);
@@ -186,6 +186,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                   );
                 } else if (qrCodeData.length == 13) {
                   setState(() {
+                    scanEnabled=false;
                   });
                   showDialog(
                     context: context,
