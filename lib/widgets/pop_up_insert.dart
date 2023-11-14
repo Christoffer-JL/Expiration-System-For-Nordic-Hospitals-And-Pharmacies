@@ -18,7 +18,6 @@ class PopUpInsert extends StatefulWidget {
 class _PopUpInsert extends State<PopUpInsert> {
   TextEditingController dateController = TextEditingController();
   TextEditingController batchController = TextEditingController();
-  TextEditingController productNameController = TextEditingController();
 
   List<String> departmentNames = [];
   List<String> products = [];
