@@ -26,6 +26,7 @@ ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
 try:
     ssh.connect(sftp_host, port=sftp_port, username=sftp_user, password=sftp_password)
+    ssh.get_transport().set_keepalive(120)
     sftp = ssh.open_sftp()
 
     sftp.chdir(sftp_remote_dir)
