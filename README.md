@@ -2,7 +2,6 @@
 
 HEJ!
 Hej!!!!!!!!!!!!
-Hej :(
 
 ## Exempel flutter till SQL
 
