@@ -1,7 +1,5 @@
 # Pharm Aware
 
-Please work
-
 ## Exempel flutter till SQL
 
 checka ut på FlutterTest branch och testa där
