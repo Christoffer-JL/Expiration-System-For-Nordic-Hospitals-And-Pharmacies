@@ -48,10 +48,10 @@ try:
             root = tree.getroot()
 
             db_config = {
-                "host": "sql11.freesqldatabase.com",
-                "user": "sql11662138",
-                "password": "Pz56X4bBkW",
-                "database": "sql11662138",
+                "host": "104.248.81.249",
+                "user": "mandag",
+                "password": "regionskane",
+                "database": "region_skane",
                 "port": 3306,
             }
 
