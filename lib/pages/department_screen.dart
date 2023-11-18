@@ -65,6 +65,10 @@ class DepartmentScreenState extends State<DepartmentScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: DropdownSearch<String>(
                       items: departmentNames,
                       popupProps: const PopupProps.menu(
@@ -89,18 +93,22 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                       ),
                       dropdownDecoratorProps: const DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
-                            labelText: "Avdelning: ",
-                            labelStyle: TextStyle(fontSize: 18),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2.0),
-                            ),
+                            labelText: "Avdelning:",
+                            labelStyle: TextStyle(fontSize: 18,fontWeight: FontWeight.normal),
+                            floatingLabelAlignment:FloatingLabelAlignment.start,
+                            
+                            //filled: true,
+                            //fillColor: Colors.white,
+                            //border: OutlineInputBorder(
+                             // borderRadius:
+                                //  BorderRadius.all(Radius.circular(10)),
+                              //borderSide:
+                                //  BorderSide(color: Colors.blue, width: 2.0),
+                            //),
                           ),
-                          textAlign: TextAlign.center),
+                          baseStyle: TextStyle(fontSize: 16,fontWeight: FontWeight.normal),
+                          textAlign: TextAlign.center,
+                          ),
                       onChanged: (String? value) {
                         setState(() {
                           selectedDepartment = value!;
