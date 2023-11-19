@@ -130,13 +130,6 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                         '/qr_scan',
                         arguments: {'selectedDepartment': selectedDepartment},
                       );
-<<<<<<< HEAD
-                      
-                      
-                      
-=======
-                      setState(() {});
->>>>>>> refs/remotes/origin/main
                     } else {
                       showDialog(
                           context: context,
