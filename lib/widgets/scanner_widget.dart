@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_test_pca/pages/start_screen.dart';
 import 'package:flutter_local_test_pca/widgets/pop_up.dart';
+import '../pages/department_screen.dart';
 import 'scanner_overlay.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
@@ -23,25 +25,13 @@ class QRScannerWidget extends StatefulWidget {
 }
 
 class _scannerWidgetState extends State<QRScannerWidget> {
-  late MobileScannerController cameraController;
   String pc = "";
   String serial = "";
   String exp = "";
   String batch = "";
   String selectedDepartment = "";
   bool scanEnabled = true;
-
-  @override
-  void initState() {
-    super.initState();
-    cameraController = MobileScannerController();
-  }
-
-  @override
-  void dispose() {
-    cameraController.dispose();
-    super.dispose();
-  }
+  MobileScannerController controller = MobileScannerController();
 
   Future<bool> insertDataToDatabase(String pc, String exp, String batch,
       String serial, String selectedDepartment) async {
@@ -77,15 +67,24 @@ class _scannerWidgetState extends State<QRScannerWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('QR Code Scanner'),
-        actions: [
-          TorchAndCameraSwitchButton(cameraController: cameraController),
-        ],
-      ),
+          title: Text('QR Code Scanner'),
+          actions: [
+            TorchAndCameraSwitchButton(cameraController: controller),
+          ],
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              controller.stop();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => DepartmentScreen()),
+              );
+            },
+          )),
       body: Stack(
         children: [
           MobileScanner(
-            controller: cameraController,
+            controller: controller,
             onDetect: (capture) {
               if (scanEnabled) {
                 final List<Barcode> barcodes = capture.barcodes;
@@ -186,7 +185,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                   );
                 } else if (qrCodeData.length == 13) {
                   setState(() {
-                    scanEnabled=false;
+                    scanEnabled = false;
                   });
                   showDialog(
                     context: context,
@@ -219,33 +218,47 @@ class _scannerWidgetState extends State<QRScannerWidget> {
 }
 
 class DepartmentScannerWidget extends StatefulWidget {
-  final Function(String) onDepartmentCodeDetected;
+  // final Function(String) onDepartmentCodeDetected;
   final Color overlayColor;
+  final MobileScannerController controller;
 
   DepartmentScannerWidget({
-    required this.onDepartmentCodeDetected,
+    // required this.onDepartmentCodeDetected,
     this.overlayColor = Colors.white,
+    required this.controller,
   });
+
   @override
   _departmentScannerWidgetState createState() =>
       _departmentScannerWidgetState();
 }
 
 class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
-  late MobileScannerController cameraController;
   String departmentCode = "";
   bool scanEnabled = true;
+  bool isDataFetched = false;
+  List<String> departmentNames = [];
 
-  @override
-  void initState() {
-    super.initState();
-    cameraController = MobileScannerController();
-  }
-
-  @override
-  void dispose() {
-    cameraController.dispose(); 
-    super.dispose();
+  Future<void> fetchDepartmentFromServer() async {
+    if (!isDataFetched) {
+      try {
+        final response =
+            await http.get(Uri.parse('${AppConfig.apiUrl}/all-departments'));
+        if (response.statusCode == 200) {
+          final List<dynamic> data = json.decode(response.body);
+          setState(() {
+            departmentNames = data
+                .map((entry) => entry['DepartmentName'].toString())
+                .toList();
+            isDataFetched = true;
+          });
+        } else {
+          print('HTTP request failed with status code: ${response.statusCode}');
+        }
+      } catch (error) {
+        print('Error during data fetching: $error');
+      }
+    }
   }
 
   @override
@@ -254,13 +267,23 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
       appBar: AppBar(
         title: Text('Department Code Scanner'),
         actions: [
-          TorchAndCameraSwitchButton(cameraController: cameraController),
+          TorchAndCameraSwitchButton(cameraController: widget.controller),
         ],
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            widget.controller.stop();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => StartScreen()),
+            );
+          },
+        )
       ),
       body: Stack(
         children: [
           MobileScanner(
-            controller: cameraController,
+            controller: widget.controller,
             onDetect: (capture) {
               if (scanEnabled) {
                 final List<Barcode> barcodes = capture.barcodes;
@@ -276,10 +299,20 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
                   });
                   Vibration.vibrate(duration: 100);
                   print(validInfo);
+                  bool isMatch = departmentNames.contains(departmentCode);
+                  if (isMatch) {
+                    widget.controller.stop();
+                    Navigator.pushNamed(
+                      context,
+                      '/qr_scan',
+                      arguments: {'selectedDepartment': departmentCode},
+                    );
+                  }
+                  ;
                 } else {
                   print("invalid department code");
                   setState(() {
-                    scanEnabled=false;
+                    scanEnabled = false;
                   });
                   showDialog(
                       context: context,
@@ -298,7 +331,7 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
                         );
                       });
                 }
-                widget.onDepartmentCodeDetected(departmentCode);
+                // widget.onDepartmentCodeDetected(departmentCode);
               }
             },
           ),
@@ -336,7 +369,7 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
 
   @override
   void dispose() {
-    cameraController.dispose(); 
+    cameraController.dispose();
     super.dispose();
   }
 

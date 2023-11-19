@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_test_pca/widgets/pop_up.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import '../widgets/scanner_widget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'dart:convert';
@@ -17,9 +18,11 @@ class DepartmentScreenState extends State<DepartmentScreen> {
   List<String> departmentNames = [];
   bool isDataFetched = false;
   String selectedDepartment = '';
+  late MobileScannerController controller;
 
   @override
   void initState() {
+    controller = MobileScannerController();
     super.initState();
     fetchDepartmentFromServer();
   }
@@ -52,9 +55,7 @@ class DepartmentScreenState extends State<DepartmentScreen> {
       body: Stack(
         children: [
           DepartmentScannerWidget(
-            onDepartmentCodeDetected: (departmentCode) {
-              print(departmentCode);
-            },
+            controller: controller,
             overlayColor: Colors.black.withOpacity(0.3),
           ),
           Positioned(
@@ -122,14 +123,13 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                 ElevatedButton(
                   onPressed: () {
                     bool isMatch = departmentNames.contains(selectedDepartment);
-
                     if (isMatch) {
+                      controller.stop();
                       Navigator.pushNamed(
                         context,
                         '/qr_scan',
                         arguments: {'selectedDepartment': selectedDepartment},
                       );
-                      setState(() {});
                     } else {
                       showDialog(
                           context: context,
