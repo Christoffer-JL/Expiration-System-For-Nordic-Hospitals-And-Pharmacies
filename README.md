@@ -1,7 +1,4 @@
-# PharmAware
-
-HEJ!
-Hej!!!!!!!!!!!!
+# Pharm Aware
 
 ## Exempel flutter till SQL
 
