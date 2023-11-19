@@ -38,10 +38,11 @@ class DatabaseCardState extends State<ExpandCard> {
               icon: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: Icon(
-                  key: ValueKey<bool>(isExpanded),
-                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: const Color.fromARGB(255, 50, 189, 131),
-                ),
+                    key: ValueKey<bool>(isExpanded),
+                    isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Color.fromARGB(255, 0, 0, 0)),
               ),
               onPressed: () {
                 setState(() {
@@ -201,26 +202,22 @@ class DatabaseCardState extends State<ExpandCard> {
 }
 
 class ExpandCardExpire extends StatefulWidget {
-  final String title;
-  final String expirationDate;
-  final String packaging;
-  final String articleName;
+  final String departments;
+  final List<Map<String, dynamic>> medications;
   final Future<void> Function() onDelete;
 
   const ExpandCardExpire({
     Key? key,
-    required this.title,
-    required this.packaging,
+    required this.departments,
+    required this.medications,
     required this.onDelete,
-    required this.articleName,
-    required this.expirationDate,
   }) : super(key: key);
 
   @override
-  DatabaseCardStates createState() => DatabaseCardStates();
+  _ExpandCardExpireState createState() => _ExpandCardExpireState();
 }
 
-class DatabaseCardStates extends State<ExpandCardExpire> {
+class _ExpandCardExpireState extends State<ExpandCardExpire> {
   bool isExpanded = false;
 
   @override
@@ -250,7 +247,7 @@ class DatabaseCardStates extends State<ExpandCardExpire> {
               },
             ),
             title: Text(
-              widget.title,
+              widget.departments,
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -269,50 +266,64 @@ class DatabaseCardStates extends State<ExpandCardExpire> {
             curve: Curves.easeInOut,
             child: isExpanded
                 ? Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                ' ${widget.articleName}  ${widget.packaging}  ${widget.expirationDate}',
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
+                    children: widget.medications.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final medication = entry.value;
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    ' ${medication['articleName']}  ${medication['packaging']}  ${medication['expiration']}',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: isExpanded
+                                      ? IconButton(
+                                          key: ValueKey<bool>(isExpanded),
+                                          icon: const Icon(
+                                            Icons.remove_circle,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () {
+                                            widget.onDelete();
+                                          },
+                                        )
+                                      : Container(),
+                                ),
+                              ],
                             ),
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              child: isExpanded
-                                  ? IconButton(
-                                      key: ValueKey<bool>(isExpanded),
-                                      icon: const Icon(
-                                        Icons.remove_circle,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
-                                        widget.onDelete();
-                                      },
-                                    )
-                                  : Container(),
+                          ),
+                          if (index < widget.medications.length - 1)
+                            const Divider(
+                              color: Colors.black,
+                              thickness: 1,
+                              indent: 16,
+                              endIndent: 16,
                             ),
-                          ],
-                        ),
-                      ),
-                      const Divider(
-                        color: Colors.black,
-                        thickness: 1,
-                        indent: 16,
-                        endIndent: 16,
-                      ),
-                    ],
+                        ],
+                      );
+                    }).toList(),
                   )
                 : Container(),
           ),
+          if (isExpanded)
+            const Divider(
+              color: Colors.black,
+              thickness: 1,
+              indent: 16,
+              endIndent: 16,
+            ),
         ],
       ),
     );

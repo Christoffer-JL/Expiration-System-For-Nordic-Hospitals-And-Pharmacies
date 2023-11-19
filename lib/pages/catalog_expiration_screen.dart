@@ -18,11 +18,15 @@ class CatalogExpirationScreen extends StatefulWidget {
 class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
   List<Map<String, dynamic>> productDataList = [];
   List<Map<dynamic, dynamic>> searchResults = [];
+  Set<String> uniqueDepartments = <String>{};
 
   @override
   void initState() {
     super.initState();
     fetchDataFromServer();
+    uniqueDepartments = productDataList
+        .map<String>((product) => product['departments'] as String)
+        .toSet();
   }
 
   Future<void> fetchDataFromServer() async {
@@ -56,6 +60,7 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
         }).toList();
         setState(() {
           productDataList = productsData;
+          updateUniqueDepartments();
         });
       } else {
         print('HTTP request failed with status code: ${response.statusCode}');
@@ -63,6 +68,14 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
     } catch (error) {
       print('Error during data fetching: $error');
     }
+  }
+
+  void updateUniqueDepartments() {
+    uniqueDepartments = <String>{};
+    uniqueDepartments.addAll(
+        productDataList.map((product) => product['departments'] as String));
+    uniqueDepartments.addAll(
+        searchResults.map((product) => product['departments'] as String));
   }
 
   void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
@@ -85,6 +98,7 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
     }
     setState(() {
       this.searchResults = searchResults;
+      updateUniqueDepartments();
       print(this.searchResults);
     });
   }
@@ -111,8 +125,9 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
       if (response.statusCode == 200) {
         print('Medication deleted successfully');
         setState(() {
-          productDataList
-              .removeAt(index); // Remove the item from the product list
+          productDataList.removeAt(index);
+          updateUniqueDepartments();
+          // Remove the item from the product list
         });
       } else if (response.statusCode == 500) {
         // Error deleting medication
@@ -157,32 +172,16 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
             right: 0,
             bottom: 0,
             child: ListView.builder(
-              itemCount: productDataList.length,
+              itemCount: uniqueDepartments.length,
               itemBuilder: (context, index) {
                 return ExpandCardExpire(
-                    title:
+                    departments:
                         '${searchResults.isNotEmpty ? searchResults[index]['departments'] : productDataList[index]['departments']}',
-                    articleName: searchResults.isNotEmpty
-                        ? (searchResults[index]['articleName'] != null
-                            ? searchResults[index]['articleName'].toString()
-                            : 'N/A')
-                        : (productDataList[index]['articleName'] != null
-                            ? productDataList[index]['articleName'].toString()
-                            : 'N/A'),
-                    packaging: searchResults.isNotEmpty
-                        ? (searchResults[index]['packaging'] != null
-                            ? searchResults[index]['packaging'].toString()
-                            : 'N/A')
-                        : (productDataList[index]['packaging'] != null
-                            ? productDataList[index]['packaging'].toString()
-                            : 'N/A'),
-                    expirationDate: searchResults.isNotEmpty
-                        ? (searchResults[index]['expiration'] != null
-                            ? searchResults[index]['expiration'].toString()
-                            : 'N/A')
-                        : (productDataList[index]['expiration'] != null
-                            ? productDataList[index]['expiration'].toString()
-                            : 'N/A'),
+                    medications: productDataList
+                        .where((product) =>
+                            product['departments'] ==
+                            productDataList[index]['departments'])
+                        .toList(),
                     onDelete: () => deleteProduct(
                           index,
                           productDataList[index]['departments'],
