@@ -33,7 +33,10 @@ class QrScanningScreen extends StatelessWidget {
               ),
               child: Text(
                 'Inloggad som : $selectedDepartment',
-                style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
                 maxLines: 1,
               ),
@@ -47,7 +50,11 @@ class QrScanningScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/input');
+                  Navigator.pushNamed(
+                    context,
+                    '/input',
+                    arguments: {'selectedDepartment': selectedDepartment},
+                  );
                 },
                 child: Text('Registrera manuellt'),
               ),
