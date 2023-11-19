@@ -12,5 +12,6 @@ class IPAddresses {
       '104.248.81.249'; // Webhook is live, so you can use this config. It auto deploys
   static const String DEPRECATEDexternalPi = '188.150.228.31';
   static const String DEPRECATEDinternalPi = '192.168.0.105';
-  static const String DEPRECATEDcomputer = '192.168.0.4'; // Run ipconfig and choose IPv4
+  static const String DEPRECATEDcomputer =
+      '192.168.1.172'; // Run ipconfig and choose IPv4
 }

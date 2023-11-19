@@ -89,27 +89,30 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                             ),
                           )),
                       dropdownButtonProps: const DropdownButtonProps(
-                        icon: Icon(Icons.arrow_drop_down_circle_outlined),
+                        icon: Icon(Icons.keyboard_arrow_down_rounded),
                         iconSize: 36,
                       ),
                       dropdownDecoratorProps: const DropDownDecoratorProps(
-                          dropdownSearchDecoration: InputDecoration(
-                            labelText: "Avdelning:",
-                            labelStyle: TextStyle(fontSize: 18,fontWeight: FontWeight.normal),
-                            floatingLabelAlignment:FloatingLabelAlignment.start,
-                            
-                            //filled: true,
-                            //fillColor: Colors.white,
-                            //border: OutlineInputBorder(
-                             // borderRadius:
-                                //  BorderRadius.all(Radius.circular(10)),
-                              //borderSide:
-                                //  BorderSide(color: Colors.blue, width: 2.0),
-                            //),
-                          ),
-                          baseStyle: TextStyle(fontSize: 16,fontWeight: FontWeight.normal),
-                          textAlign: TextAlign.center,
-                          ),
+                        dropdownSearchDecoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                          labelText: "Avdelning:",
+                          labelStyle: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.normal),
+                          floatingLabelAlignment: FloatingLabelAlignment.start,
+
+                          //filled: true,
+                          //fillColor: Colors.white,
+                          //border: OutlineInputBorder(
+                          // borderRadius:
+                          //  BorderRadius.all(Radius.circular(10)),
+                          //borderSide:
+                          //  BorderSide(color: Colors.blue, width: 2.0),
+                          //),
+                        ),
+                        baseStyle: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.normal),
+                        textAlign: TextAlign.center,
+                      ),
                       onChanged: (String? value) {
                         setState(() {
                           selectedDepartment = value!;
@@ -127,9 +130,13 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                         '/qr_scan',
                         arguments: {'selectedDepartment': selectedDepartment},
                       );
+<<<<<<< HEAD
                       
                       
                       
+=======
+                      setState(() {});
+>>>>>>> refs/remotes/origin/main
                     } else {
                       showDialog(
                           context: context,
@@ -143,7 +150,6 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              
                             );
                           });
                     }
