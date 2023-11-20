@@ -16,7 +16,7 @@ sftp_host = 'sftp.ehalsomyndigheten.se'
 sftp_port = 22
 sftp_user = 'pe465'
 sftp_password = 'ZaGa8K\\Z[M(#'
-sftp_remote_dir = '6'
+sftp_remote_dir = '5'
 local_unzip_dir = 'unzip_folder'
 prefix_to_match = 'vara'
 
@@ -62,32 +62,28 @@ try:
                 cursor = cnx.cursor()
 
                 values_to_insert = []
-
                 for lmprodukt in root.findall('.//def:lmprodukt', namespaces=namespaces):
-                    
-                    produktnamn = lmprodukt.find('./def:produktnamn', namespaces=namespaces).text
-                    varunummer_element = lmprodukt.find('.//def:artikel_id[@artikel_id_typ="nordiskt-varunr"]', namespaces=namespaces)
-                    varunummer = varunummer_element.attrib['id_varde'] if varunummer_element is not None else None
-                    forpackning_text_element = lmprodukt.find('.//def:forpackning_text', namespaces=namespaces)
-                    forpackning_text = forpackning_text_element.text if forpackning_text_element is not None else None
-                    streckkod_element = lmprodukt.find('.//def:artikel_id[@artikel_id_typ="streck-kod"]', namespaces=namespaces)
-                    streckkod = streckkod_element.attrib['id_varde'] if streckkod_element is not None else None
+                    produktnamn = lmprodukt.find('./def:produktnamn', namespaces=namespaces)
+                    for lmartikel in lmprodukt.findall('.//def:artiklar/def:lmartikel', namespaces=namespaces):
+                        varunummer = lmartikel.find('.//def:varunummer', namespaces=namespaces)
+                        forpackning_text = lmartikel.find('.//def:forpackning_text', namespaces=namespaces)
+                        streckkod = lmartikel.find('.//def:streckkod', namespaces=namespaces)
 
-                    if varunummer is not None and forpackning_text is not None and streckkod is not None:
-                        data = (streckkod, forpackning_text, varunummer, produktnamn)
-                        values_to_insert.append(data)
+                        if varunummer.text is not None and forpackning_text.text is not None and streckkod.text is not None:
+                            data = (streckkod.text, forpackning_text.text, varunummer.text, produktnamn.text)
+                            values_to_insert.append(data)
 
-                        if len(values_to_insert) >= batch_size:
-                            insert_query = """
-                                INSERT INTO Products (ProductCode, Packaging, NordicNumber, ArticleName)
-                                VALUES (%s, %s, %s, %s)
-                                ON DUPLICATE KEY UPDATE
-                                Packaging = VALUES(Packaging), NordicNumber = VALUES(NordicNumber), ArticleName = VALUES(ArticleName)
-                            """
-                            cursor.executemany(insert_query, values_to_insert)
-                            cnx.commit()
+                            if len(values_to_insert) >= batch_size:
+                                insert_query = """
+                                    INSERT INTO Products (ProductCode, Packaging, NordicNumber, ArticleName)
+                                    VALUES (%s, %s, %s, %s)
+                                    ON DUPLICATE KEY UPDATE
+                                    Packaging = VALUES(Packaging), NordicNumber = VALUES(NordicNumber), ArticleName = VALUES(ArticleName)
+                                """
+                                cursor.executemany(insert_query, values_to_insert)
+                                cnx.commit()
 
-                            values_to_insert = []
+                                values_to_insert = []
 
                 # Insert any remaining values
                 if values_to_insert:
