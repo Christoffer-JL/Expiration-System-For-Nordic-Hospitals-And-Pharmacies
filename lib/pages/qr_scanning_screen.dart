@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/scanner_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import '../widgets/scanner_widget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -10,27 +9,26 @@ import '../config/config.dart';
 class QrScanningScreen extends StatefulWidget {
   const QrScanningScreen({Key? key}) : super(key: key);
 
-
   @override
   QrScanningScreenState createState() => QrScanningScreenState();
 }
 
 class QrScanningScreenState extends State<QrScanningScreen> {
-late MobileScannerController controller;
+  late MobileScannerController controller;
 
-@override
+  @override
   void initState() {
     controller = MobileScannerController();
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-     final Map<String, dynamic>? args =
+    final Map<String, dynamic>? args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
     final String selectedDepartment = args?['selectedDepartment'] ?? '';
-    
+
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,

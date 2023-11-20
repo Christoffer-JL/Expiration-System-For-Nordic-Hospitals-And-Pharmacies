@@ -23,7 +23,9 @@ class _InputScreenState extends State<InputScreen> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
     final String selectedDepartment = args?['selectedDepartment'] ?? '';
+    final String productCode = args?['productCode'] ?? '';
     final String url = '${AppConfig.apiUrl}/insert-entry-in-department';
+    productCodeController.text = productCode;
 
     final Map<String, dynamic> data = {
       'DepartmentName': selectedDepartment,
@@ -98,11 +100,6 @@ class _InputScreenState extends State<InputScreen> {
                   ),
                 ),
               ),
-              /*SizedBox(height: 20),
-              TextFormField(
-                controller: productNameController,
-                decoration: InputDecoration(labelText: 'Product Name'),
-              ),*/
               SizedBox(height: 10),
               Row(
                 children: [
@@ -114,7 +111,11 @@ class _InputScreenState extends State<InputScreen> {
                   ),
                   IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/ean_scan');
+                      Navigator.pushNamed(
+                        context,
+                        '/ean_scan',
+                        arguments: {'selectedDepartment': selectedDepartment},
+                      );
                     },
                     icon: Icon(Icons.image),
                   ),
