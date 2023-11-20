@@ -15,8 +15,10 @@ import 'package:intl/intl.dart';
 class QRScannerWidget extends StatefulWidget {
   final String selectedDepartment;
   final Color overlayColor;
+  final MobileScannerController controller;
 
   QRScannerWidget({
+    required this.controller,
     required this.selectedDepartment,
     this.overlayColor = Colors.white,
   });
@@ -31,8 +33,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
   String batch = "";
   String selectedDepartment = "";
   bool scanEnabled = true;
-  MobileScannerController controller = MobileScannerController();
-
+  
   Future<bool> insertDataToDatabase(String pc, String exp, String batch,
       String serial, String selectedDepartment) async {
     try {
@@ -69,12 +70,12 @@ class _scannerWidgetState extends State<QRScannerWidget> {
       appBar: AppBar(
           title: Text('QR Code Scanner'),
           actions: [
-            TorchAndCameraSwitchButton(cameraController: controller),
+            TorchAndCameraSwitchButton(cameraController: widget.controller),
           ],
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              controller.stop();
+              widget.controller.stop();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => DepartmentScreen()),
@@ -84,7 +85,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
       body: Stack(
         children: [
           MobileScanner(
-            controller: controller,
+            controller: widget.controller,
             onDetect: (capture) {
               if (scanEnabled) {
                 final List<Barcode> barcodes = capture.barcodes;
@@ -196,7 +197,8 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                         buttonText1: 'Nej',
                         buttonText2: 'Ja',
                         onPressed: () {
-                          Navigator.pushNamed(context, '/ean_scan');
+                          widget.controller.stop();
+                          Navigator.pushNamed(context, '/ean_scan',arguments: {'selectedDepartment': selectedDepartment});
                         },
                       );
                     },

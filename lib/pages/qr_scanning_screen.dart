@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
 import '../widgets/scanner_widget.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import '../widgets/scanner_widget.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../config/config.dart';
 
-class QrScanningScreen extends StatelessWidget {
+class QrScanningScreen extends StatefulWidget {
   const QrScanningScreen({Key? key}) : super(key: key);
 
+
+  @override
+  QrScanningScreenState createState() => QrScanningScreenState();
+}
+
+class QrScanningScreenState extends State<QrScanningScreen> {
+late MobileScannerController controller;
+
+@override
+  void initState() {
+    controller = MobileScannerController();
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic>? args =
+     final Map<String, dynamic>? args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
     final String selectedDepartment = args?['selectedDepartment'] ?? '';
-
+    
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
         children: [
           // QRScannerWidget，放置在底层
           QRScannerWidget(
+            controller: controller,
             selectedDepartment: selectedDepartment,
             overlayColor: Colors.black.withOpacity(0.3),
           ),
@@ -50,6 +71,7 @@ class QrScanningScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
                 onPressed: () {
+                  controller.stop();
                   Navigator.pushNamed(
                     context,
                     '/input',
