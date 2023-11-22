@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_test_pca/pages/start_screen.dart';
 import 'package:flutter_local_test_pca/widgets/pop_up.dart';
 import '../pages/department_screen.dart';
+import '../pages/input_screen.dart';
 import 'scanner_overlay.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
@@ -15,8 +16,10 @@ import 'package:intl/intl.dart';
 class QRScannerWidget extends StatefulWidget {
   final String selectedDepartment;
   final Color overlayColor;
+  final MobileScannerController controller;
 
   QRScannerWidget({
+    required this.controller,
     required this.selectedDepartment,
     this.overlayColor = Colors.white,
   });
@@ -31,7 +34,6 @@ class _scannerWidgetState extends State<QRScannerWidget> {
   String batch = "";
   String selectedDepartment = "";
   bool scanEnabled = true;
-  MobileScannerController controller = MobileScannerController();
 
   Future<bool> insertDataToDatabase(String pc, String exp, String batch,
       String serial, String selectedDepartment) async {
@@ -69,12 +71,12 @@ class _scannerWidgetState extends State<QRScannerWidget> {
       appBar: AppBar(
           title: Text('QR Code Scanner'),
           actions: [
-            TorchAndCameraSwitchButton(cameraController: controller),
+            TorchAndCameraSwitchButton(cameraController: widget.controller),
           ],
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              controller.stop();
+              widget.controller.stop();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => DepartmentScreen()),
@@ -84,7 +86,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
       body: Stack(
         children: [
           MobileScanner(
-            controller: controller,
+            controller: widget.controller,
             onDetect: (capture) {
               if (scanEnabled) {
                 final List<Barcode> barcodes = capture.barcodes;
@@ -196,7 +198,10 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                         buttonText1: 'Nej',
                         buttonText2: 'Ja',
                         onPressed: () {
-                          Navigator.pushNamed(context, '/ean_scan');
+                          widget.controller.stop();
+                          Navigator.pushNamed(context, '/ean_scan', arguments: {
+                            'selectedDepartment': selectedDepartment
+                          });
                         },
                       );
                     },
@@ -265,21 +270,20 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Department Code Scanner'),
-        actions: [
-          TorchAndCameraSwitchButton(cameraController: widget.controller),
-        ],
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            widget.controller.stop();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => StartScreen()),
-            );
-          },
-        )
-      ),
+          title: Text('Department Code Scanner'),
+          actions: [
+            TorchAndCameraSwitchButton(cameraController: widget.controller),
+          ],
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              widget.controller.stop();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => StartScreen()),
+              );
+            },
+          )),
       body: Stack(
         children: [
           MobileScanner(
@@ -374,30 +378,40 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
   }
 
   Future<bool> insertEntryAutomatic(
-      String productCode, String batchNumber, String expirationDate) async {
+      String pc, String exp, String batch, String selectedDepartment) async {
     try {
       final response = await http.post(
         Uri.parse('${AppConfig.apiUrl}/insert-entry-in-department'),
         body: json.encode({
-          'ProductCode': productCode,
-          'BatchNumber': batchNumber,
-          'ExpirationDate': expirationDate,
+          "DepartmentName": selectedDepartment,
+          "ProductCode": pc,
+          "BatchNumber": batch,
+          "ExpirationDate": exp,
         }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       );
 
       if (response.statusCode == 201) {
+        // Entry inserted successfully
         return true;
-      } else if (response.statusCode == 400) {
-        return false;
       } else {
+        // Failed to insert entry
+        print("Failed to insert entry. Status code: ${response.statusCode}");
         return false;
       }
     } catch (error) {
-      print('Error during HTTP request: $error');
+      print("Error during HTTP request: $error");
       return false;
+    }
+  }
+
+  void startScanner() {
+    if (!scanEnabled) {
+      setState(() {
+        scanEnabled = true;
+      });
     }
   }
 
@@ -421,25 +435,51 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
                 String eanCode = barcode.displayValue!;
 
                 if (eanCode.length == 13) {
+                  eanCode = '0$eanCode';
                   setState(() {
                     eanCode = eanCode;
                   });
                   Vibration.vibrate(duration: 100);
+
+                  // Pause the scanner while the popup is displayed
+                  setState(() {
+                    scanEnabled = false;
+                  });
+
+                  // Extract the product code from the scanned EAN code
+
+                  String productCode = eanCode;
+
+                  // Fetch product information using the extracted product code
+
+                  print(productCode);
+
                   showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return PopUp(
-                          title: "Registrera med EAN-kod",
-                          content: '$eanCode',
-                          buttonText1: 'Nej',
-                          buttonText2: 'Ja',
-                          onPressed: () {},
-                        );
-                      });
-                }
-              } else {
-                print("invalid ean code");
-                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return PopUp(
+                        title: "Registrera med EAN-kod",
+                        content: '$eanCode',
+                        buttonText1: 'Nej',
+                        buttonText2: 'Ja',
+                        onPressed: () {
+                          cameraController.stop();
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => InputScreen(),
+                            ),
+                          );
+                          startScanner();
+                          // Continue scanning after closing the popup
+                        },
+                      );
+                    },
+                  );
+                } else {
+                  print("invalid ean code");
+                  showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return PopUp(
@@ -454,7 +494,9 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
                           });
                         },
                       );
-                    });
+                    },
+                  );
+                }
               }
             },
           ),
