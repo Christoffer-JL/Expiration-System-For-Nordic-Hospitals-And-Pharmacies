@@ -566,7 +566,6 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
                           print('Product Code: $productCode');
                           // Close the dialog
                           Navigator.of(context).pop();
-
                           // Introduce a delay before navigating to the next screen
                           await Future.delayed(Duration(milliseconds: 100));
 

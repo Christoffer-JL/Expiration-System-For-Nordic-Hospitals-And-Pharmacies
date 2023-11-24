@@ -17,16 +17,12 @@ class CatalogExpirationScreen extends StatefulWidget {
 
 class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
   List<Map<String, dynamic>> productDataList = [];
-  List<Map<dynamic, dynamic>> searchResults = [];
   Set<String> uniqueDepartments = <String>{};
 
   @override
   void initState() {
     super.initState();
     fetchDataFromServer();
-    uniqueDepartments = productDataList
-        .map<String>((product) => product['departments'] as String)
-        .toSet();
   }
 
   Future<void> fetchDataFromServer() async {
@@ -71,39 +67,10 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
   }
 
   void updateUniqueDepartments() {
-    uniqueDepartments = <String>{};
-    uniqueDepartments.addAll(
-        productDataList.map((product) => product['departments'] as String));
-    uniqueDepartments.addAll(
-        searchResults.map((product) => product['departments'] as String));
-    print(uniqueDepartments);
-  }
-
-  void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
-    print('Search Results: $searchResults');
-    if (searchResults.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return PopUp(
-            title: 'Inga läkemedel kunde hittas',
-            content: 'Vänligen kontrollera filtreringsuppgifterna',
-            buttonText1: 'OK',
-            buttonText2: '',
-            onPressed1: () {
-              Navigator.pop(context);
-            },
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          );
-        },
-      );
-    }
     setState(() {
-      this.searchResults = searchResults;
-      updateUniqueDepartments();
-      print(this.searchResults);
+      uniqueDepartments = productDataList
+          .map<String>((product) => product['departments'] as String)
+          .toSet();
     });
   }
 
@@ -126,26 +93,48 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
         },
       );
 
-      if (response.statusCode == 200) {
-        print('Medication deleted successfully');
-        setState(() {
-          productDataList.removeAt(index);
-          updateUniqueDepartments();
-          // Remove the item from the product list
-        });
-      } else if (response.statusCode == 500) {
-        // Error deleting medication
-        print('Error deleting medication: ${response.body}');
-      } else {
-        print('Unexpected status code: ${response.statusCode}');
+      if (mounted) {
+        if (response.statusCode == 200) {
+          print('Medication deleted successfully');
+          setState(() {
+            // Find the correct medication for deletion
+            final medicationIndex = productDataList.indexWhere((medication) =>
+                medication['departments'] == departments &&
+                medication['expiration'] == expiration &&
+                medication['productCode'].toString() == productCode);
+
+            if (medicationIndex != -1) {
+              productDataList.removeAt(medicationIndex);
+              updateUniqueDepartments();
+            }
+          });
+        } else if (response.statusCode == 500) {
+          // Error deleting medication
+          print('Error deleting medication: ${response.body}');
+        } else {
+          print('Unexpected status code: ${response.statusCode}');
+        }
       }
     } catch (error) {
-      print('Error during medication deletion: $error');
+      if (mounted) {
+        print('Error during medication deletion: $error');
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Map<String, List<Map<String, dynamic>>> groupedData = {};
+
+    // Group medications by department
+    for (var product in productDataList) {
+      String department = product['departments'];
+      if (!groupedData.containsKey(department)) {
+        groupedData[department] = [];
+      }
+      groupedData[department]!.add(product);
+    }
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
@@ -157,8 +146,7 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
       body: Stack(
         children: [
           Container(
-            color:
-                Color.fromARGB(247, 247, 220, 87), // Set background color here
+            color: Color.fromARGB(247, 247, 220, 87),
             child: Align(
               alignment: Alignment.topLeft,
               child: IconButton(
@@ -176,22 +164,19 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
             right: 0,
             bottom: 0,
             child: ListView.builder(
-              itemCount: uniqueDepartments.length,
+              itemCount: groupedData.length,
               itemBuilder: (context, index) {
+                String department = groupedData.keys.elementAt(index);
+                List<Map<String, dynamic>> medications =
+                    groupedData[department]!;
+
                 return ExpandCardExpire(
-                    departments:
-                        '${searchResults.isNotEmpty ? searchResults[index]['departments'] : productDataList[index]['departments']}',
-                    medications: productDataList
-                        .where((product) =>
-                            product['departments'] ==
-                            productDataList[index]['departments'])
-                        .toList(),
-                    onDelete: () => deleteProduct(
-                          index,
-                          productDataList[index]['departments'],
-                          productDataList[index]['expiration'],
-                          productDataList[index]['productCode'].toString(),
-                        ));
+                  departments: department,
+                  medications: medications,
+                  onDelete: (int index, String department, String expiration,
+                          String productCode) =>
+                      deleteProduct(index, department, expiration, productCode),
+                );
               },
             ),
           ),
