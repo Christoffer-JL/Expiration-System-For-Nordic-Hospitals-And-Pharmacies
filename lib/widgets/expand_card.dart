@@ -254,66 +254,90 @@ class _ExpandCardExpireState extends State<ExpandCardExpire> {
               ),
             ),
           ),
-          if (isExpanded)
-            const Divider(
-              color: Colors.black,
-              thickness: 1,
-              indent: 16,
-              endIndent: 16,
-            ),
           AnimatedSize(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             child: isExpanded
-                ? Column(
-                    children: widget.medications.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final medication = entry.value;
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    ' ${medication['articleName']}  ${medication['packaging']}  ${medication['expiration']}',
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
+                ? Container(
+                    child: Column(
+                      children: widget.medications.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final medication = entry.value;
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      ' ${medication['articleName']}  ${medication['packaging']}  ${medication['expiration']}',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
-                                  child: isExpanded
-                                      ? IconButton(
-                                          key: ValueKey<bool>(isExpanded),
-                                          icon: const Icon(
-                                            Icons.remove_circle,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            widget.onDelete();
-                                          },
-                                        )
-                                      : Container(),
-                                ),
-                              ],
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 300),
+                                    child: isExpanded
+                                        ? IconButton(
+                                            key: ValueKey<bool>(isExpanded),
+                                            icon: const Icon(
+                                              Icons.remove_circle,
+                                              color: Colors.red,
+                                            ),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text(
+                                                        'Confirm Deletion'),
+                                                    content: Text(
+                                                        'Are you sure you want to delete this item?'),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        child: Text('No'),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                      TextButton(
+                                                        child: Text('Yes'),
+                                                        onPressed: () {
+                                                          widget.onDelete();
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          )
+                                        : Container(),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          if (index < widget.medications.length - 1)
-                            const Divider(
-                              color: Colors.black,
-                              thickness: 1,
-                              indent: 16,
-                              endIndent: 16,
-                            ),
-                        ],
-                      );
-                    }).toList(),
+                            if (index < widget.medications.length - 1)
+                              const Divider(
+                                color: Colors.black,
+                                thickness: 1,
+                                indent: 16,
+                                endIndent: 16,
+                              ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
                   )
                 : Container(),
           ),

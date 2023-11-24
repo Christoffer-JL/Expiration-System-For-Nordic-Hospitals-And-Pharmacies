@@ -408,15 +408,20 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
   }
 
   void startScanner() {
-    if (!scanEnabled) {
-      setState(() {
-        scanEnabled = true;
-      });
-    }
+    setState(() {
+      scanEnabled = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic>? args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+
+    final String selectedDepartment = args?['selectedDepartment'] ?? '';
+
+    print('Selected Department in EanscannerWidget: $selectedDepartment');
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Ean Code Scanner'),
@@ -462,17 +467,34 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
                         content: '$eanCode',
                         buttonText1: 'Nej',
                         buttonText2: 'Ja',
-                        onPressed: () {
-                          cameraController.stop();
+                        onPressed: () async {
+                          print('Ja pressed');
+                          print('Product Code: $productCode');
+                          // Close the dialog
+                          Navigator.of(context).pop();
 
-                          Navigator.pushReplacement(
+                          // Introduce a delay before navigating to the next screen
+                          await Future.delayed(Duration(milliseconds: 100));
+
+// Start the scanner
+                          startScanner();
+
+// Pop until there's no InputScreen on the stack
+                          Navigator.popUntil(context,
+                              (route) => !(route.settings.name == '/input'));
+// Navigate to InputScreen with the correct arguments
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => InputScreen(),
+                              settings: RouteSettings(
+                                arguments: {
+                                  'productCode': productCode,
+                                  'selectedDepartment': selectedDepartment,
+                                },
+                              ),
                             ),
                           );
-                          startScanner();
-                          // Continue scanning after closing the popup
                         },
                       );
                     },
