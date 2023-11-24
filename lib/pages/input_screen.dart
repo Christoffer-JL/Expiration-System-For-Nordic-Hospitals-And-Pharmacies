@@ -70,7 +70,7 @@ class _InputScreenState extends State<InputScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Input Screen'),
+        title: const Text('Manuell inmatning'),
       ),
       body: Center(
         child: Container(

@@ -236,8 +236,10 @@ class _ExpandCardExpireState extends State<ExpandCardExpire> {
                 duration: const Duration(milliseconds: 300),
                 child: Icon(
                   key: ValueKey<bool>(isExpanded),
-                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: const Color.fromARGB(255, 50, 189, 131),
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
               onPressed: () {
