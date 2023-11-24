@@ -104,17 +104,15 @@ class DatabaseCardState extends State<ExpandCard> {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.only(left: 8),
-                              child: Tooltip(
-                                message: widget
-                                    .batchNumber, // Display full text as a tooltip
+                              child: SingleChildScrollView(
+                                // Wrap with SingleChildScrollView
+                                scrollDirection: Axis.horizontal,
                                 child: Text(
                                   widget.batchNumber,
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
