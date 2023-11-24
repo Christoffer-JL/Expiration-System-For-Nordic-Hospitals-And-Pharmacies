@@ -90,6 +90,9 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
             content: 'Vänligen kontrollera filtreringsuppgifterna',
             buttonText1: 'OK',
             buttonText2: '',
+            onPressed1: () {
+              Navigator.pop(context);
+            },
             onPressed: () {
               Navigator.pop(context);
             },

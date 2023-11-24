@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_test_pca/pages/qr_scanning_screen.dart';
 import 'package:http/http.dart' as http;
 import '../config/config.dart';
 
@@ -71,6 +72,15 @@ class _InputScreenState extends State<InputScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Manuell inmatning'),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => QrScanningScreen()),
+              );
+          },
+          icon: const Icon(Icons.arrow_back),
+        )
       ),
       body: Center(
         child: Container(

@@ -6,6 +6,7 @@ class PopUp extends StatelessWidget {
   final String buttonText1;
   final String buttonText2;
   final VoidCallback onPressed;
+  final VoidCallback onPressed1;
 
   const PopUp({
     super.key,
@@ -14,6 +15,7 @@ class PopUp extends StatelessWidget {
     required this.buttonText1,
     required this.buttonText2,
     required this.onPressed,
+    required this.onPressed1,
   });
 
   @override
@@ -24,6 +26,7 @@ class PopUp extends StatelessWidget {
       actions: <Widget>[
         TextButton(
           onPressed: () {
+            onPressed1();
             Navigator.of(context).pop();
           },
           child: Text(buttonText1),
