@@ -115,19 +115,28 @@ class _scannerWidgetState extends State<QRScannerWidget> {
 
                   // Find and extract SERIAL from the end of the string
                   final serialStartIndex = qrCodeData.length - delimiter;
+                  String serialCheck = "";
                   if (serialStartIndex != -1) {
                     serial =
                         "SERIAL: ${qrCodeData.substring(serialStartIndex + 2)}";
+                    serialCheck = qrCodeData.substring(serialStartIndex + 2);
+
                     qrCodeData = qrCodeData.substring(0, serialStartIndex);
                   }
 
                   // Find and extract EXP
-                  final expStartIndex = qrCodeData.indexOf('17');
+                  var expStartIndex = qrCodeData.indexOf('17');
                   if (expStartIndex != -1) {
                     exp =
                         "EXP: ${qrCodeData.substring(expStartIndex + 2, expStartIndex + 8)}";
                     qrCodeData = qrCodeData.substring(0, expStartIndex) +
                         qrCodeData.substring(expStartIndex + 8);
+                  }
+
+                  // Delimiter can sometimes be misplaced. IF this is the case, EXP must be extracted from SERIAL
+                  if (exp.isEmpty) {
+                    exp = "EXP: ${serialCheck.substring(0, 6)}";
+                    serial = "SERIAL: ${serialCheck.substring(8)}";
                   }
 
                   // Whatever is left should be BATCH
@@ -301,8 +310,9 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
                   setState(() {
                     departmentCode = validInfo;
                   });
-                  Vibration.vibrate(duration: 100);
+                  Vibration.vibrate(duration: 300);
                   print(validInfo);
+                  fetchDepartmentFromServer();
                   bool isMatch = departmentNames.contains(departmentCode);
                   if (isMatch) {
                     widget.controller.stop();
