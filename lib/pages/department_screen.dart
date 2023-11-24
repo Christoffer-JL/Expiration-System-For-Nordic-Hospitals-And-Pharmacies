@@ -99,15 +99,6 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                           labelStyle: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.normal),
                           floatingLabelAlignment: FloatingLabelAlignment.start,
-
-                          //filled: true,
-                          //fillColor: Colors.white,
-                          //border: OutlineInputBorder(
-                          // borderRadius:
-                          //  BorderRadius.all(Radius.circular(10)),
-                          //borderSide:
-                          //  BorderSide(color: Colors.blue, width: 2.0),
-                          //),
                         ),
                         baseStyle: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.normal),

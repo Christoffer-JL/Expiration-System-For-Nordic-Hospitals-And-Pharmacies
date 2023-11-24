@@ -310,8 +310,9 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
                   setState(() {
                     departmentCode = validInfo;
                   });
-                  Vibration.vibrate(duration: 100);
+                  Vibration.vibrate(duration: 300);
                   print(validInfo);
+                  fetchDepartmentFromServer();
                   bool isMatch = departmentNames.contains(departmentCode);
                   if (isMatch) {
                     widget.controller.stop();
