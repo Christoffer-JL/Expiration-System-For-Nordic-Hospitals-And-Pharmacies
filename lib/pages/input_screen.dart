@@ -11,25 +11,26 @@ class InputScreen extends StatefulWidget {
 }
 
 class _InputScreenState extends State<InputScreen> {
-//  String department = '';
-
   TextEditingController productNameController = TextEditingController();
   TextEditingController productCodeController = TextEditingController();
   TextEditingController expirationDateController = TextEditingController();
   TextEditingController batchNumberController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> _insertMedicine() async {
     final Map<String, dynamic>? args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
     final String selectedDepartment = args?['selectedDepartment'] ?? '';
-    final String productCode = args?['productCode'] ?? '';
     final String url = '${AppConfig.apiUrl}/insert-entry-in-department';
-    productCodeController.text = productCode;
 
     final Map<String, dynamic> data = {
       'DepartmentName': selectedDepartment,
-      'ProductCode': productCodeController.text,
+      'productCode': productCodeController.text,
       'BatchNumber': batchNumberController.text,
       'ExpirationDate': expirationDateController.text,
     };
@@ -42,17 +43,13 @@ class _InputScreenState extends State<InputScreen> {
       );
 
       if (response.statusCode == 201) {
-        // Successful insertion
         print('Data inserted successfully');
       } else if (response.statusCode == 200) {
-        // Entry already exists
         print('Entry for the specified department and product already exists');
       } else {
-        // Handle errors
         print('Error inserting data: ${response.statusCode}');
       }
     } catch (error) {
-      // Handle network or server errors
       print('Error: $error');
     }
   }
@@ -63,6 +60,13 @@ class _InputScreenState extends State<InputScreen> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
     final String selectedDepartment = args?['selectedDepartment'] ?? '';
+    final String productCode = args?['productCode'] ?? '';
+
+    print('Selected Department: $selectedDepartment');
+    print('Received Product Code: $productCode');
+
+    // Set the received product code to the controller
+    productCodeController.text = productCode;
 
     return Scaffold(
       appBar: AppBar(
@@ -92,9 +96,10 @@ class _InputScreenState extends State<InputScreen> {
                   child: Text(
                     'Inloggad som : $selectedDepartment',
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                     maxLines: 1,
                   ),

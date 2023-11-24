@@ -76,6 +76,7 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
         productDataList.map((product) => product['departments'] as String));
     uniqueDepartments.addAll(
         searchResults.map((product) => product['departments'] as String));
+    print(uniqueDepartments);
   }
 
   void updateProductDataList(List<Map<dynamic, dynamic>> searchResults) {
