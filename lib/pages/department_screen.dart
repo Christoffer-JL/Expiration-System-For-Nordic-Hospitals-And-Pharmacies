@@ -131,8 +131,6 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                                   'Avdelningen du söker finns inte i systemet.',
                               buttonText1: '',
                               buttonText2: 'OK',
-                              onPressed1: () {
-                              },
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
