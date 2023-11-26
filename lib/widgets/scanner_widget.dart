@@ -226,9 +226,8 @@ class _scannerWidgetState extends State<QRScannerWidget> {
 
                     final batchStartIndex = qrCodeData.length - delimiter;
                     if (batchStartIndex != -1) {
-                      batch = qrCodeData
-                          .substring(batchStartIndex + 3)
-                          .replaceAll(String.fromCharCode(29), '');
+                      batch = qrCodeData.substring(batchStartIndex + 3);
+
                       qrCodeData = qrCodeData.substring(0, batchStartIndex);
                     }
 
@@ -265,10 +264,10 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                         .substring(2);
                   }
                   setState(() {
-                    pc = pc;
-                    exp = exp;
-                    batch = batch;
-                    serial = serial;
+                    pc = pc.replaceAll(String.fromCharCode(29), '');
+                    exp = exp.replaceAll(String.fromCharCode(29), '');
+                    batch = batch.replaceAll(String.fromCharCode(29), '');
+                    serial = serial.replaceAll(String.fromCharCode(29), '');
                     selectedDepartment = widget.selectedDepartment;
                     scanEnabled = false;
                   });
