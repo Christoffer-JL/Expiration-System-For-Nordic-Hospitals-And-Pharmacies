@@ -52,13 +52,13 @@ class _scannerWidgetState extends State<QRScannerWidget> {
         },
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         // Entry inserted successfully
         return true;
       } else {
         // Failed to insert entry
         print("Failed to insert entry. Status code: ${response.statusCode}");
-        print (selectedDepartment);
+        print(selectedDepartment);
         print(pc);
         print(batch);
         print(convertStringToDate(exp));
@@ -82,7 +82,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
 
         if (nordicNumber != null) {
           setState(() {
-            NordicNumber =  nordicNumber.toString();
+            NordicNumber = nordicNumber.toString();
           });
           print(NordicNumber);
         } else {
@@ -99,31 +99,52 @@ class _scannerWidgetState extends State<QRScannerWidget> {
   }
 
   String convertStringToDate(String input) {
-  if (input.length != 6) {
-    return input;
+    if (input.length != 6) {
+      return input;
+    }
+
+    String firstTwoDigits = input.substring(0, 2);
+    String year;
+
+    if (int.parse(firstTwoDigits) >= 21 && int.parse(firstTwoDigits) <= 99) {
+      year = "20$firstTwoDigits";
+    } else {
+      year = "21$firstTwoDigits";
+    }
+
+    String month = input.substring(2, 4);
+    String day = input.substring(4, 6);
+
+    String formattedDate = "$year-$month-$day";
+
+    return formattedDate;
   }
 
- 
-  String firstTwoDigits = input.substring(0, 2);
-  String year;
-
- 
-  if (int.parse(firstTwoDigits) >= 21 && int.parse(firstTwoDigits) <= 99) {
-  
-    year = "20$firstTwoDigits";
-  } else {
-
-    year = "21$firstTwoDigits";
+  Widget buildPopUpContent(
+      bool result, BuildContext context, _scannerWidgetState state) {
+    return PopUp(
+      title: result ? "Lyckas" : "Misslyckas",
+      content: result
+          ? 'Lyckad vararegistrering'
+          : 'Det gick inte att registrera posten, försök igen',
+      buttonText1: '',
+      buttonText2: 'OK',
+      onPressed1: () {
+        // Add any logic for onPressed1 if needed
+      },
+      onPressed: () {
+        print('Ok');
+        state.setState(() {
+          state.scanEnabled = true;
+          state.pc = "";
+          state.exp = "";
+          state.batch = "";
+          state.serial = "";
+          state.NordicNumber = "";
+        });
+      },
+    );
   }
-
-  String month = input.substring(2, 4);
-  String day = input.substring(4, 6);
-
- 
-  String formattedDate = "$year-$month-$day";
-
-  return formattedDate;
-}
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +168,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
         children: [
           MobileScanner(
             controller: widget.controller,
-            onDetect: (capture) async{
+            onDetect: (capture) async {
               if (scanEnabled) {
                 final List<Barcode> barcodes = capture.barcodes;
                 final barcode = barcodes.first;
@@ -167,31 +188,28 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                   }
                   final pcStartIndex = qrCodeData.indexOf('01');
                   if (pcStartIndex != -1) {
-                    pc =
-                        qrCodeData.substring(pcStartIndex + 2, pcStartIndex + 16);
-                    
+                    pc = qrCodeData.substring(
+                        pcStartIndex + 2, pcStartIndex + 16);
+
                     await getNordicNumber(pc);
 
                     qrCodeData = qrCodeData.substring(0, pcStartIndex) +
                         qrCodeData.substring(pcStartIndex + 16);
                   }
 
-                 
                   final serialStartIndex = qrCodeData.length - delimiter;
                   String serialCheck = "";
                   if (serialStartIndex != -1) {
-                    serial =
-                        qrCodeData.substring(serialStartIndex + 2);
+                    serial = qrCodeData.substring(serialStartIndex + 2);
                     serialCheck = qrCodeData.substring(serialStartIndex + 2);
 
                     qrCodeData = qrCodeData.substring(0, serialStartIndex);
                   }
 
-                 
                   var expStartIndex = qrCodeData.indexOf('17');
                   if (expStartIndex != -1) {
-                    exp =
-                        qrCodeData.substring(expStartIndex + 2, expStartIndex + 8);
+                    exp = qrCodeData.substring(
+                        expStartIndex + 2, expStartIndex + 8);
                     qrCodeData = qrCodeData.substring(0, expStartIndex) +
                         qrCodeData.substring(expStartIndex + 8);
                   }
@@ -203,8 +221,9 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                   }
 
                   // Whatever is left should be BATCH
-                  batch =
-                      qrCodeData.replaceAll(RegExp(r'[^A-Za-z0-9]'), '').substring(2);
+                  batch = qrCodeData
+                      .replaceAll(RegExp(r'[^A-Za-z0-9]'), '')
+                      .substring(2);
 
                   setState(() {
                     pc = pc;
@@ -214,7 +233,6 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                     selectedDepartment = widget.selectedDepartment;
                     scanEnabled = false;
                   });
-                
 
                   Vibration.vibrate(duration: 100);
 
@@ -240,34 +258,14 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                           });
                         },
                         onPressed: () async {
-                          
+                          Navigator.maybePop(context);
                           bool result = await insertDataToDatabase(
                               pc, exp, batch, serial, selectedDepartment);
-                          
+                          BuildContext dialogContext = context;
                           showDialog(
-                            context: context,
+                            context: dialogContext,
                             builder: (BuildContext context) {
-                              return PopUp(
-                                title: result ? "Lyckas" : "Misslyckas",
-                                content: result
-                                    ? 'Lyckad vararegistrering'
-                                    : 'Det gick inte att registrera posten, försök igen',
-                                buttonText1: '',
-                                buttonText2: 'OK',
-                                onPressed1: () {
-                                },
-                                onPressed: () {
-                                  print('okej');
-                                  setState(() {
-                                    scanEnabled = true;
-                                    pc = "";
-                                    exp = "";
-                                    batch = "";
-                                    serial = "";
-                                    NordicNumber = "";
-                                  });
-                                },
-                              );
+                              return buildPopUpContent(result, context, this);
                             },
                           );
                         },
@@ -563,8 +561,7 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
                         content: '$eanCode',
                         buttonText1: 'Nej',
                         buttonText2: 'Ja',
-                        onPressed1: () {
-                        },
+                        onPressed1: () {},
                         onPressed: () async {
                           print('Ja pressed');
                           print('Product Code: $productCode');

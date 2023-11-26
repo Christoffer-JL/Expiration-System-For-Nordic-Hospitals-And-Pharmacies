@@ -9,7 +9,6 @@ class PopUp extends StatelessWidget {
   final VoidCallback onPressed1;
 
   const PopUp({
-    super.key,
     required this.title,
     required this.content,
     required this.buttonText1,
