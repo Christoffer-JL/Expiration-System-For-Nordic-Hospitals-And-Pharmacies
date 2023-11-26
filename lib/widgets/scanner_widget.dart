@@ -599,7 +599,9 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
                         content: '$eanCode',
                         buttonText1: 'Nej',
                         buttonText2: 'Ja',
-                        onPressed1: () {},
+                        onPressed1: () {
+                          scanEnabled = true;
+                        },
                         onPressed: () async {
                           print('Ja pressed');
                           print('Product Code: $productCode');
