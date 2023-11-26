@@ -245,8 +245,8 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                         title: "vill du registrera denna vara?",
                         content:
                             ' PC: $pc \n Exp: $exp \n Batch: $batch \n Serial: $serial \n Vrn: $NordicNumber',
-                        buttonText1: 'Nej',
-                        buttonText2: 'OK',
+                        buttonText1: 'Avbryt',
+                        buttonText2: 'Ja',
                         onPressed1: () {
                           setState(() {
                             scanEnabled = true;
@@ -282,7 +282,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                       return PopUp(
                         title: "Det är en EAN-kod",
                         content: 'Vill du skanna en EAN-kod istället?',
-                        buttonText1: 'Nej',
+                        buttonText1: 'Avbryt',
                         buttonText2: 'Ja',
                         onPressed1: () {
                           setState(() {
