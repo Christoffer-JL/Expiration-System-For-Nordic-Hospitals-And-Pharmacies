@@ -197,34 +197,73 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                         qrCodeData.substring(pcStartIndex + 16);
                   }
 
-                  final serialStartIndex = qrCodeData.length - delimiter;
-                  String serialCheck = "";
-                  if (serialStartIndex != -1) {
-                    serial = qrCodeData.substring(serialStartIndex + 2);
-                    serialCheck = qrCodeData.substring(serialStartIndex + 2);
+                  int count = 0;
 
-                    qrCodeData = qrCodeData.substring(0, serialStartIndex);
+                  for (int i = 0; i < data.length; i++) {
+                    if (data[i] == 29) {
+                      count++;
+                    }
                   }
 
-                  var expStartIndex = qrCodeData.indexOf('17');
-                  if (expStartIndex != -1) {
-                    exp = qrCodeData.substring(
-                        expStartIndex + 2, expStartIndex + 8);
-                    qrCodeData = qrCodeData.substring(0, expStartIndex) +
-                        qrCodeData.substring(expStartIndex + 8);
+                  if (count == 3) {
+                    var expStartIndex = qrCodeData.length - delimiter;
+                    if (expStartIndex != -1) {
+                      exp = qrCodeData.substring(
+                          expStartIndex + 2, expStartIndex + 8);
+                      qrCodeData = qrCodeData.substring(0, expStartIndex) +
+                          qrCodeData.substring(expStartIndex + 8);
+                    }
+
+                    delimiter = 0;
+
+                    for (int i = data.length - 1; i >= 0; i--) {
+                      if (data[i] == 29) {
+                        break;
+                      } else {
+                        delimiter++;
+                      }
+                    }
+
+                    final batchStartIndex = qrCodeData.length - delimiter;
+                    if (batchStartIndex != -1) {
+                      batch = qrCodeData
+                          .substring(batchStartIndex + 3)
+                          .replaceAll(String.fromCharCode(29), '');
+                      qrCodeData = qrCodeData.substring(0, batchStartIndex);
+                    }
+
+                    serial = qrCodeData
+                        .replaceAll(RegExp(r'[^A-Za-z0-9]'), '')
+                        .substring(2);
+                  } else {
+                    final serialStartIndex = qrCodeData.length - delimiter;
+                    String serialCheck = "";
+                    if (serialStartIndex != -1) {
+                      serial = qrCodeData.substring(serialStartIndex + 2);
+                      serialCheck = qrCodeData.substring(serialStartIndex + 2);
+
+                      qrCodeData = qrCodeData.substring(0, serialStartIndex);
+                    }
+
+                    var expStartIndex = qrCodeData.indexOf('17');
+                    if (expStartIndex != -1) {
+                      exp = qrCodeData.substring(
+                          expStartIndex + 2, expStartIndex + 8);
+                      qrCodeData = qrCodeData.substring(0, expStartIndex) +
+                          qrCodeData.substring(expStartIndex + 8);
+                    }
+
+                    // Delimiter can sometimes be misplaced. IF this is the case, EXP must be extracted from SERIAL
+                    if (exp.isEmpty) {
+                      exp = serialCheck.substring(0, 6);
+                      serial = serialCheck.substring(8);
+                    }
+
+                    // Whatever is left should be BATCH
+                    batch = qrCodeData
+                        .replaceAll(RegExp(r'[^A-Za-z0-9]'), '')
+                        .substring(2);
                   }
-
-                  // Delimiter can sometimes be misplaced. IF this is the case, EXP must be extracted from SERIAL
-                  if (exp.isEmpty) {
-                    exp = serialCheck.substring(0, 6);
-                    serial = serialCheck.substring(8);
-                  }
-
-                  // Whatever is left should be BATCH
-                  batch = qrCodeData
-                      .replaceAll(RegExp(r'[^A-Za-z0-9]'), '')
-                      .substring(2);
-
                   setState(() {
                     pc = pc;
                     exp = exp;
@@ -244,7 +283,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                       return PopUp(
                         title: "vill du registrera denna vara?",
                         content:
-                            ' PC: $pc \n Exp: $exp \n Batch: $batch \n Serial: $serial \n Vrn: $NordicNumber',
+                            ' PC: $pc \n Exp: $exp \n Batch: $batch \n Serial: $serial \n Varunummer: $NordicNumber',
                         buttonText1: 'Avbryt',
                         buttonText2: 'Ja',
                         onPressed1: () {
