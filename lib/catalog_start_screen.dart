@@ -81,8 +81,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             content: 'Vänligen kontrollera filtreringsuppgifterna',
             buttonText1: 'OK',
             buttonText2: '',
-            onPressed1: () {
-            },
+            onPressed1: () {},
             onPressed: () {
               Navigator.of(context).pop();
             },

@@ -93,16 +93,13 @@ class CustomOverlayPainter extends StatelessWidget {
   }
 }
 
-
 class BorderPainter extends CustomPainter {
   final double borderWidth;
   final double borderRadius;
-  
 
   BorderPainter({
     this.borderWidth = 4.0,
     this.borderRadius = 20.0,
-
   });
 
   @override
@@ -111,14 +108,17 @@ class BorderPainter extends CustomPainter {
     final rect = Rect.fromLTWH(
       borderWidth,
       borderWidth,
-      size.width -2 * borderWidth,
-      size.height -2 * borderWidth,
+      size.width - 2 * borderWidth,
+      size.height - 2 * borderWidth,
     );
     final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
     final clippingRect0 = Rect.fromLTWH(0, 0, tRadius, tRadius);
-    final clippingRect1 = Rect.fromLTWH(size.width - tRadius, 0, tRadius, tRadius);
-    final clippingRect2 = Rect.fromLTWH(0, size.height - tRadius, tRadius, tRadius);
-    final clippingRect3 = Rect.fromLTWH(size.width - tRadius, size.height - tRadius, tRadius, tRadius);
+    final clippingRect1 =
+        Rect.fromLTWH(size.width - tRadius, 0, tRadius, tRadius);
+    final clippingRect2 =
+        Rect.fromLTWH(0, size.height - tRadius, tRadius, tRadius);
+    final clippingRect3 = Rect.fromLTWH(
+        size.width - tRadius, size.height - tRadius, tRadius, tRadius);
 
     final path = Path()
       ..addRect(clippingRect0)

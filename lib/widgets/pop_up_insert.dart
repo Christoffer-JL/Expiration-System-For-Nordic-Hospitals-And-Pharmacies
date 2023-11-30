@@ -52,27 +52,25 @@ class _PopUpInsert extends State<PopUpInsert> {
 
         Set<String> uniqueEntries = Set<String>();
 
-    setState(() {
-        products = data
-            .map((entry) {
-              
-              String entryString =
-                  '${entry['NordicNumber']}, ${entry['ArticleName']}, ${entry['Packaging']}';
+        setState(() {
+          products = data
+              .map((entry) {
+                String entryString =
+                    '${entry['NordicNumber']}, ${entry['ArticleName']}, ${entry['Packaging']}';
 
-              if (!uniqueEntries.contains(entryString)) {
-               
-                uniqueEntries.add(entryString);
-                return entryString;
-              } else {
-                return null;
-              }
-            })
-            .where((entry) => entry != null) 
-            .cast<String>() 
-            .toList();
+                if (!uniqueEntries.contains(entryString)) {
+                  uniqueEntries.add(entryString);
+                  return entryString;
+                } else {
+                  return null;
+                }
+              })
+              .where((entry) => entry != null)
+              .cast<String>()
+              .toList();
 
-        isDataFetched = true;
-      });
+          isDataFetched = true;
+        });
       } else {
         print('HTTP request failed with status code: ${response.statusCode}');
       }
