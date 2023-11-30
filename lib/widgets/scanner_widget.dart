@@ -7,11 +7,9 @@ import 'scanner_overlay.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
 import 'dart:typed_data';
-import '../pages/ean_scanning_screen.dart';
 import '../config/config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 class QRScannerWidget extends StatefulWidget {
   final String selectedDepartment;

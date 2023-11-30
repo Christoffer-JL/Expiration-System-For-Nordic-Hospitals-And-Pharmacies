@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_test_pca/pages/qr_scanning_screen.dart';
 import 'package:http/http.dart' as http;
 import '../config/config.dart';
 

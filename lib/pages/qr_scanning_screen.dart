@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_test_pca/pages/input_screen.dart';
 import '../widgets/scanner_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../config/config.dart';
 
 class QrScanningScreen extends StatefulWidget {
   const QrScanningScreen({Key? key}) : super(key: key);
