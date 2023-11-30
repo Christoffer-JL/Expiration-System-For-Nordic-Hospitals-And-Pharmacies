@@ -149,8 +149,7 @@ class _PopUpInsert extends State<PopUpInsert> {
           final nordicNumber = entry['NordicNumber'].toString();
           final batchNumber = entry['BatchNumber'];
 
-          final parsedExpiration = DateTime.parse(expiration)
-              .toLocal(); // Parse and convert to local time zone
+          final parsedExpiration = DateTime.parse(expiration).toLocal();
           final formattedExpiration =
               DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
@@ -229,7 +228,7 @@ class _PopUpInsert extends State<PopUpInsert> {
             TextFormField(
               controller: batchController,
               decoration: const InputDecoration(
-                  labelText: 'Batch NR: ', hintText: 'Fyll i batch nr '),
+                  labelText: 'Batchnummer: ', hintText: 'Fyll i batchnummer '),
             ),
             DropdownSearch<String>(
                 items: products,

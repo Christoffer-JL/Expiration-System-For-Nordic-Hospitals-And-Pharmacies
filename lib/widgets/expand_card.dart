@@ -105,7 +105,6 @@ class DatabaseCardState extends State<ExpandCard> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 8),
                               child: SingleChildScrollView(
-                                // Wrap with SingleChildScrollView
                                 scrollDirection: Axis.horizontal,
                                 child: Text(
                                   widget.batchNumber,
@@ -152,18 +151,19 @@ class DatabaseCardState extends State<ExpandCard> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: Text('Confirm Deletion'),
+                                              title:
+                                                  Text('Bekräfta borttagning'),
                                               content: Text(
-                                                  'Are you sure you want to delete this item?'),
+                                                  'Är du säker att du vill ta bort denna vara från avdelningen?'),
                                               actions: <Widget>[
                                                 TextButton(
-                                                  child: Text('No'),
+                                                  child: Text('Nej'),
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
                                                 TextButton(
-                                                  child: Text('Yes'),
+                                                  child: Text('Ja'),
                                                   onPressed: () {
                                                     widget.onDelete();
                                                     Navigator.of(context).pop();

@@ -30,14 +30,11 @@ class QrScanningScreenState extends State<QrScanningScreen> {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          // QRScannerWidget，放置在底层
           QRScannerWidget(
             controller: controller,
             selectedDepartment: selectedDepartment,
             overlayColor: Colors.black.withOpacity(0.3),
           ),
-
-          // 贴纸效果，放置在上层
           Positioned(
             top: 200.0,
             child: Container(
@@ -48,7 +45,7 @@ class QrScanningScreenState extends State<QrScanningScreen> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Text(
-                'Inloggad som : $selectedDepartment',
+                'Inloggad som: $selectedDepartment',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16,
@@ -58,8 +55,6 @@ class QrScanningScreenState extends State<QrScanningScreen> {
               ),
             ),
           ),
-
-          // 放置在屏幕底部的按钮
           Positioned(
             bottom: 50.0,
             child: Padding(

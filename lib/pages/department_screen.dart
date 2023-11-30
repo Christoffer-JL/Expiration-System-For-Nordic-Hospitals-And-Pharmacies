@@ -136,7 +136,7 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return PopUp(
-                              title: "Hitta inte avdelning",
+                              title: "Avdelningen kunde ej hittas",
                               content:
                                   'Avdelningen du söker finns inte i systemet.',
                               buttonText1: '',

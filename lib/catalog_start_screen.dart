@@ -42,8 +42,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           final batchNumber = entry['BatchNumber'];
           final departments = (entry['Departments'] as String).split(', ');
 
-          final parsedExpiration = DateTime.parse(expiration)
-              .toLocal(); // Parse and convert to local time zone
+          final parsedExpiration = DateTime.parse(expiration).toLocal();
           final formattedExpiration =
               DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
@@ -59,7 +58,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             'departments': departments,
           };
         }).toList();
-        //print(productsData);
         setState(() {
           productDataList = productsData;
         });
@@ -117,7 +115,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           searchResults = [];
         });
       } else if (response.statusCode == 500) {
-        // Error deleting medication
         print('Error deleting medication: ${response.body}');
       } else {
         print('Unexpected status code: ${response.statusCode}');

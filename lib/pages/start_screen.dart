@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_button.dart'; // Import your custom button widget
+import '../widgets/custom_button.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -20,8 +20,8 @@ class StartScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
-                      width: 216, // Set the width as desired
-                      height: 76, // Set the height as desired
+                      width: 216,
+                      height: 76,
                       child: CustomButton(
                         text: 'Registrera',
                         onPressed: () {
@@ -46,8 +46,8 @@ class StartScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
-                      width: 216, // Set the width as desired
-                      height: 76, // Set the height as desired
+                      width: 216,
+                      height: 76,
                       child: CustomButton(
                         text: 'Katalog',
                         onPressed: () {

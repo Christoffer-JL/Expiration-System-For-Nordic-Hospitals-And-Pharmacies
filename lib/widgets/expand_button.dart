@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ExpandButton extends StatefulWidget {
   final String mainText;
-  final IconData icon; // Icon for the button
+  final IconData icon;
   final List<String> expandedText;
   final VoidCallback? onPressed;
   final double cornerRadius;

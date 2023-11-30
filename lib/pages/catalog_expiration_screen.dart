@@ -36,8 +36,7 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
           final departments = entry['DepartmentName'] ?? '';
           final productCode = entry['ProductCode'].toString();
 
-          final parsedExpiration = DateTime.parse(expiration)
-              .toLocal(); // Parse and convert to local time zone
+          final parsedExpiration = DateTime.parse(expiration).toLocal();
           final formattedExpiration =
               DateFormat('yyyy-MM-dd').format(parsedExpiration);
 
@@ -94,7 +93,6 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
         if (response.statusCode == 200) {
           print('Medication deleted successfully');
           setState(() {
-            // Find the correct medication for deletion
             final medicationIndex = productDataList.indexWhere((medication) =>
                 medication['departments'] == departments &&
                 medication['expiration'] == expiration &&
@@ -106,7 +104,6 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
             }
           });
         } else if (response.statusCode == 500) {
-          // Error deleting medication
           print('Error deleting medication: ${response.body}');
         } else {
           print('Unexpected status code: ${response.statusCode}');
@@ -123,7 +120,6 @@ class CatalogExpirationScreenState extends State<CatalogExpirationScreen> {
   Widget build(BuildContext context) {
     Map<String, List<Map<String, dynamic>>> groupedData = {};
 
-    // Group medications by department
     for (var product in productDataList) {
       String department = product['departments'];
       if (!groupedData.containsKey(department)) {

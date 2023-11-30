@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class ScannerOverlay extends StatelessWidget {
   final Color overlayColor;
-  //final double scanAreaSize;
   final double borderWidth;
   final double borderRadius;
   final double scanAreaWidth;
@@ -10,7 +9,6 @@ class ScannerOverlay extends StatelessWidget {
 
   ScannerOverlay({
     this.overlayColor = Colors.black,
-    //this.scanAreaSize = 200.0,
     this.borderWidth = 4,
     this.borderRadius = 20.0,
     this.scanAreaWidth = 200.0,

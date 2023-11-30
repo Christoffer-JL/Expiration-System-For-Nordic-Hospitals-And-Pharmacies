@@ -51,10 +51,8 @@ class _scannerWidgetState extends State<QRScannerWidget> {
       );
 
       if (response.statusCode == 200) {
-        // Entry inserted successfully
         return true;
       } else {
-        // Failed to insert entry
         print("Failed to insert entry. Status code: ${response.statusCode}");
         print(selectedDepartment);
         print(pc);
@@ -127,9 +125,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
           : 'Det gick inte att registrera posten, försök igen',
       buttonText1: '',
       buttonText2: 'OK',
-      onPressed1: () {
-        // Add any logic for onPressed1 if needed
-      },
+      onPressed1: () {},
       onPressed: () {
         print('Ok');
         state.setState(() {
@@ -351,12 +347,10 @@ class _scannerWidgetState extends State<QRScannerWidget> {
 }
 
 class DepartmentScannerWidget extends StatefulWidget {
-  // final Function(String) onDepartmentCodeDetected;
   final Color overlayColor;
   final MobileScannerController controller;
 
   DepartmentScannerWidget({
-    // required this.onDepartmentCodeDetected,
     this.overlayColor = Colors.white,
     required this.controller,
   });
@@ -465,7 +459,6 @@ class _departmentScannerWidgetState extends State<DepartmentScannerWidget> {
                         );
                       });
                 }
-                // widget.onDepartmentCodeDetected(departmentCode);
               }
             },
           ),
@@ -524,10 +517,8 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
       );
 
       if (response.statusCode == 201) {
-        // Entry inserted successfully
         return true;
       } else {
-        // Failed to insert entry
         print("Failed to insert entry. Status code: ${response.statusCode}");
         return false;
       }
@@ -576,24 +567,17 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
                   });
                   Vibration.vibrate(duration: 100);
 
-                  // Pause the scanner while the popup is displayed
                   setState(() {
                     scanEnabled = false;
                   });
-
-                  // Extract the product code from the scanned EAN code
-
                   String productCode = eanCode;
-
-                  // Fetch product information using the extracted product code
-
                   print(productCode);
 
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return PopUp(
-                        title: "Registrera med EAN-kod",
+                        title: "För över EAN-kod?",
                         content: '$eanCode',
                         buttonText1: 'Nej',
                         buttonText2: 'Ja',
@@ -603,19 +587,14 @@ class _eanScannerWidgetState extends State<EanscannerWidget> {
                         onPressed: () async {
                           print('Ja pressed');
                           print('Product Code: $productCode');
-                          // Close the dialog
                           Navigator.of(context).pop();
 
-                          // Introduce a delay before navigating to the next screen
                           await Future.delayed(Duration(milliseconds: 100));
 
-// Start the scanner
                           startScanner();
 
-// Pop until there's no InputScreen on the stack
                           Navigator.popUntil(context,
                               (route) => !(route.settings.name == '/input'));
-// Navigate to InputScreen with the correct arguments
                           Navigator.push(
                             context,
                             MaterialPageRoute(

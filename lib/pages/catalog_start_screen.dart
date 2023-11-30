@@ -59,7 +59,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
             'departments': departments,
           };
         }).toList();
-        //print(productsData);
         setState(() {
           productDataList = productsData;
         });
@@ -117,7 +116,6 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
           searchResults = [];
         });
       } else if (response.statusCode == 500) {
-        // Error deleting medication
         print('Error deleting medication: ${response.body}');
       } else {
         print('Unexpected status code: ${response.statusCode}');

@@ -11,8 +11,6 @@ class InputScreen extends StatefulWidget {
 }
 
 class _InputScreenState extends State<InputScreen> {
-//  String department = '';
-
   TextEditingController productNameController = TextEditingController();
   TextEditingController productCodeController = TextEditingController();
   TextEditingController expirationDateController = TextEditingController();
@@ -45,17 +43,13 @@ class _InputScreenState extends State<InputScreen> {
       );
 
       if (response.statusCode == 201) {
-        // Successful insertion
         print('Data inserted successfully');
       } else if (response.statusCode == 200) {
-        // Entry already exists
         print('Entry for the specified department and product already exists');
       } else {
-        // Handle errors
         print('Error inserting data: ${response.statusCode}');
       }
     } catch (error) {
-      // Handle network or server errors
       print('Error: $error');
     }
   }
@@ -71,7 +65,7 @@ class _InputScreenState extends State<InputScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Input Screen'),
+        title: const Text('Manuell inmatning'),
       ),
       body: Center(
         child: Container(
@@ -95,7 +89,7 @@ class _InputScreenState extends State<InputScreen> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Text(
-                    'Inloggad som : $selectedDepartment',
+                    'Inloggad som: $selectedDepartment',
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -105,18 +99,13 @@ class _InputScreenState extends State<InputScreen> {
                   ),
                 ),
               ),
-              /*SizedBox(height: 20),
-              TextFormField(
-                controller: productNameController,
-                decoration: InputDecoration(labelText: 'Product Name'),
-              ),*/
               SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: productCodeController,
-                      decoration: InputDecoration(labelText: 'Product Code'),
+                      decoration: InputDecoration(labelText: 'Produktkod'),
                     ),
                   ),
                   IconButton(
@@ -134,12 +123,12 @@ class _InputScreenState extends State<InputScreen> {
               SizedBox(height: 10),
               TextFormField(
                 controller: expirationDateController,
-                decoration: InputDecoration(labelText: 'Expiration Date'),
+                decoration: InputDecoration(labelText: 'Utgångsdatum'),
               ),
               SizedBox(height: 10),
               TextFormField(
                 controller: batchNumberController,
-                decoration: InputDecoration(labelText: 'Batch Number'),
+                decoration: InputDecoration(labelText: 'Batchnummer'),
               ),
               SizedBox(height: 20),
               Align(
@@ -148,7 +137,7 @@ class _InputScreenState extends State<InputScreen> {
                   onPressed: () {
                     _insertMedicine();
                   },
-                  child: Text('Register'),
+                  child: Text('Registrera'),
                 ),
               ),
             ],
