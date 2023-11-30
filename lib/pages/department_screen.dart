@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_test_pca/pages/qr_scanning_screen.dart';
 import 'package:flutter_local_test_pca/widgets/pop_up.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../widgets/scanner_widget.dart';
@@ -116,11 +117,20 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                     bool isMatch = departmentNames.contains(selectedDepartment);
                     if (isMatch) {
                       controller.stop();
-                      Navigator.pushNamed(
+                      Navigator.push(
                         context,
-                        '/qr_scan',
-                        arguments: {'selectedDepartment': selectedDepartment},
-                      );
+                        MaterialPageRoute(
+                          builder: (context) => QrScanningScreen(),
+                          settings: RouteSettings(
+                            arguments: {
+                              'selectedDepartment': selectedDepartment
+                            },
+                          ),
+                        ),
+                      ).then((value) {
+                        print("Bug");
+                        controller.start(); // This should work, but doesn't
+                      });
                     } else {
                       showDialog(
                           context: context,
@@ -131,8 +141,7 @@ class DepartmentScreenState extends State<DepartmentScreen> {
                                   'Avdelningen du söker finns inte i systemet.',
                               buttonText1: '',
                               buttonText2: 'OK',
-                              onPressed1: () {
-                              },
+                              onPressed1: () {},
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },

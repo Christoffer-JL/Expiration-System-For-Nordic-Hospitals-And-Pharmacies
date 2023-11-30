@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_test_pca/pages/input_screen.dart';
 import '../widgets/scanner_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -70,11 +71,17 @@ class QrScanningScreenState extends State<QrScanningScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   controller.stop();
-                  Navigator.pushNamed(
+                  Navigator.push(
                     context,
-                    '/input',
-                    arguments: {'selectedDepartment': selectedDepartment},
-                  );
+                    MaterialPageRoute(
+                      builder: (context) => InputScreen(),
+                      settings: RouteSettings(
+                        arguments: {'selectedDepartment': selectedDepartment},
+                      ),
+                    ),
+                  ).then((value) {
+                    controller.start();
+                  });
                 },
                 child: Text('Registrera manuellt'),
               ),
