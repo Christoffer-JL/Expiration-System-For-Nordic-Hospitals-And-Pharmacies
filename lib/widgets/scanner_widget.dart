@@ -313,8 +313,8 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                     builder: (BuildContext context) {
                       return PopUp(
                         title: "Det är en EAN-kod",
-                        content: 'Vill du skanna en EAN-kod istället?',
-                        buttonText1: 'Avbryt',
+                        content: 'Vill du göra manuell inmatning istället?',
+                        buttonText1: 'Nej',
                         buttonText2: 'Ja',
                         onPressed1: () {
                           setState(() {
@@ -323,7 +323,7 @@ class _scannerWidgetState extends State<QRScannerWidget> {
                         },
                         onPressed: () {
                           widget.controller.stop();
-                          Navigator.pushNamed(context, '/ean_scan', arguments: {
+                          Navigator.pushNamed(context, '/input', arguments: {
                             'selectedDepartment': selectedDepartment
                           });
                         },
