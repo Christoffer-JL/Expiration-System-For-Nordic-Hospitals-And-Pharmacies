@@ -97,19 +97,21 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
   Future<void> deleteProduct(int index, List<String> departments,
       String expiration, String productCode) async {
     try {
-      final response = await http.delete(
-        Uri.parse('${AppConfig.apiUrl}/delete-medication'),
-        body: json.encode({
-          'DepartmentName': departments.first,
-          'ExpirationDate': expiration,
-          'ProductCode': productCode,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
+      for (var department in departments) {
+        final response = await http.delete(
+          Uri.parse('${AppConfig.apiUrl}/delete-medication'),
+          body: json.encode({
+            'DepartmentName': department,
+            'ExpirationDate': expiration,
+            'ProductCode': productCode,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        );
+      
       if (response.statusCode == 200) {
+        print(departments);
         print('Medication deleted successfully');
         await fetchDataFromServer();
         setState(() {
@@ -119,6 +121,7 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
         print('Error deleting medication: ${response.body}');
       } else {
         print('Unexpected status code: ${response.statusCode}');
+      }
       }
     } catch (error) {
       print('Error during medication deletion: $error');
@@ -208,9 +211,9 @@ class CatalogStartScreenState extends State<CatalogStartScreen> {
                         : (productDataList[index]['batchNumber'] != null
                             ? productDataList[index]['batchNumber'].toString()
                             : 'N/A'),
-                    onDelete: () => deleteProduct(
+                    onDelete: (List<String> departments) => deleteProduct(
                           index,
-                          productDataList[index]['departments'],
+                          departments,
                           productDataList[index]['expiration'],
                           productDataList[index]['productCode'].toString(),
                         ));

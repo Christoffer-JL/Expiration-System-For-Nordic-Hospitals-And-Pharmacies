@@ -5,7 +5,7 @@ class ExpandCard extends StatefulWidget {
   final List<String> departments;
   final String nordicNumber;
   final String batchNumber;
-  final Future<void> Function() onDelete;
+  final Future<void> Function(List<String> departments) onDelete;
 
   const ExpandCard({
     super.key,
@@ -165,7 +165,7 @@ class DatabaseCardState extends State<ExpandCard> {
                                                 TextButton(
                                                   child: Text('Ja'),
                                                   onPressed: () {
-                                                    widget.onDelete();
+                                                    widget.onDelete(widget.departments);
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
