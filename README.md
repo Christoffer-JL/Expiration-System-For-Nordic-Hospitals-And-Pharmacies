@@ -1,60 +1,25 @@
-# Pharm Aware
+# Hållbarhetssystem för bassortiment inom sjukhus och apotek
+Välkommen till följande projekt för att hjälpa hålla reda på utgångsdatumen för sjukhus/apoteks bassortiment. Detta system var utvecklat åt Region Skåne Ystads försörjningsfarmaceuter, men projektet lades så småningom ned. Beslutet togs då istället att ladda upp systemet som öppen källkod i hopp om att det kan komma till någons nytta. Projektet är en produkt av mig själv och fyra andra individers enormt imponerande insats av tid, arbete, engagemang och kärlek. En demostration för systemets funktionalitet är gjord av mig själv och finns att hitta på följande länk: https://www.youtube.com/watch?v=jv9Z7DiGN-4.
 
-## Exempel flutter till SQL
+## Översikt av projektet
+Hållbarhetssystemet är en full-stack mobilapplikation (kan anpassas för webbläsare och dator) som tillåter hantering av medicin i bassortiment för olika avdelningar. Användare tillåts skanna medicin med hjälp av QR-kod, EAN-kod och manuell registrering för olika avdelningar. Åtkomst till olika avdelningar kan göras genom skanning av antingen en specifik avdelningskod eller manuell inmatning. Verifikation för giltiga läkemedel görs mot e-Hälsomyndighetens VARA system. Borttagning av läkemedel görs genom en integrerad katalogfunktion. Inom katalogen tillåts användaren filtrera läkemedel beroende på avdelning, batchnummer, produkt och utgångsdatum. Borttagningen görs även per avdelning. En utgångsskärm finns även som generar utgående läkedel för en månad frammåt och bakåt där användaren även kan välja att ta bort läkemdlet från systemet.
 
-checka ut på FlutterTest branch och testa där
-check check check
-## Exempelkod för http hantering
+Systemets frontend är skriven i Flutter och backend är i Node.js med Express som ramverk. VARA:s integrering är gjord med hjälp utav ett hemmagjort Python script. Databasen är skriven med MySQL.
 
-// Handle GET requests to /api-endpoint
-app.get("/api-endpoint", (req, res) => {
-// Handle GET requests here (e.g., retrieve data)
-res.send("This is a GET request to /api-endpoint");
-});
 
-// Handle POST requests to /api-endpoint
-app.post("/api-endpoint", (req, res) => {
-const data = req.body.data;
-insertData(data);
-// Insert 'data' into your MySQL database here
-// Respond to the client accordingly
-res.status(200).json({ message: "Data received and processed." });
-});
+## Komma igång
+För att komma igång:
+* Klona repot genom `git clone https://github.com/Christoffer-JL/Region-Sk-ne-2.git`
+* Följ installationsinstruktioner under **/lib/**
+* Följ intruktion för att sätta upp databasen under **/lib/backend/**
+* Följ instruktioner för att initiallisera VARA under **/VARA/**
 
-app.post("/api-endpoint2", (req, res) => {
-const data = req.body.data;
-// Insert 'data' into table 2 here
-res.status(200).json({ message: "Data received and processed for table 2." });
-insertData2(data);
-});
 
-// Insert data into MySQL
-function insertData(data) {
-console.log(data);
-// Split the data into an array of values, assuming it's a comma-separated string
-const values = data.split(",");
+## Extra resurser
+Dokumentation kan finnas under **/documentation/**. Här finns info om databas, definitionslista, kända problem och framtida förbättringar. För frågor om projektet går det bra att kontakta mig direkt.
 
-const sql = "INSERT INTO dummy_table (name, age) VALUES (?, ?)";
-db.query(sql, values, (err, result) => {
-if (err) {
-console.error("Error inserting data:", err);
-} else {
-console.log("Data inserted successfully:", result);
-}
-});
-}
+## Licens
+Mjukvaran i detta repository använder sig av Apache 2.0 licens.
 
-function insertData2(data) {
-console.log(data);
-// Split the data into an array of values, assuming it's a comma-separated string
-const values = data.split(",");
-
-const sql = "INSERT INTO dummy_table2 (name, age) VALUES (?, ?)";
-db.query(sql, values, (err, result) => {
-if (err) {
-console.error("Error inserting data:", err);
-} else {
-console.log("Data inserted successfully:", result);
-}
-});
-}
+## Tack
+Vi är mycket nöjda med projektet och stolta med vår insats. Jag vill passa på att tacka de fyra individer som jag fått chansen att jobba tillsammans med och lära känna. Kenny, Hugo, Junchao och Argtim - ni är grymma! Tack även till Region Skåne, Ystad Lassarett och de hjälpsamma, passionerade och trevliga människor som vi arbetat med.
