@@ -14,8 +14,8 @@ namespaces = {
 
 sftp_host = 'sftp.ehalsomyndigheten.se'
 sftp_port = 22
-sftp_user = 'pe465'
-sftp_password = 'ZaGa8K\\Z[M(#'
+sftp_user = ''
+sftp_password = ''
 sftp_remote_dir = '5'
 local_unzip_dir = 'unzip_folder'
 prefix_to_match = 'vara'
