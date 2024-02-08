@@ -8,7 +8,6 @@ Välkommen till följande projekt för att hjälpa hålla reda på utgångsdatum
 ![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/859aca56-cbbe-4266-8912-c1e11707ea46)
 ![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/981cbf5f-b080-4cf7-8ab5-1888036fc028)
 ![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/23b29da5-631b-47a9-8250-473fb7d25244)
-![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/2a0935e9-3f3f-4fd6-a5a8-0da1950589d9)
 
 
 ## Översikt av projektet
