@@ -2,7 +2,7 @@
 Välkommen till följande projekt för att hjälpa hålla reda på utgångsdatumen för sjukhus/apoteks bassortiment. Detta system var utvecklat åt Region Skåne Ystads försörjningsfarmaceuter, men projektet lades så småningom ned. Beslutet togs då istället att ladda upp systemet som öppen källkod i hopp om att det kan komma till någons nytta. Projektet är en produkt av mig själv och fyra andra individers enormt imponerande insats av tid, arbete, engagemang och kärlek. En demostration för systemets funktionalitet är gjord av mig själv och finns att hitta på följande länk: https://www.youtube.com/watch?v=jv9Z7DiGN-4.
 
 ## Bilder
-!![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/ce452099-cf00-40e4-a715-7775f2abe622)
+![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/ce452099-cf00-40e4-a715-7775f2abe622)
 ![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/094ec8fc-6b9a-4ac8-aa91-2b3632ca1836)
 ![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/1fca6795-51e1-424e-a149-886cc8861748)
 ![bild](https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies/assets/119742508/859aca56-cbbe-4266-8912-c1e11707ea46)
