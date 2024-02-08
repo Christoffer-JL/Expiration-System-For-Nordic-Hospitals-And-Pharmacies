@@ -48,10 +48,10 @@ try:
             root = tree.getroot()
 
             db_config = {
-                "host": "104.248.81.249",
-                "user": "mandag",
-                "password": "regionskane",
-                "database": "region_skane",
+                "host": "",
+                "user": "",
+                "password": "",
+                "database": "",
                 "port": 3306,
             }
 
