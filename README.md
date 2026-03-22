@@ -20,7 +20,7 @@ Systemets frontend är skriven i Flutter och backend är i Node.js med Express s
 För att komma igång:
 * Klona repot genom `git clone https://github.com/Christoffer-JL/Expiration-System-For-Nordic-Hospitals-And-Pharmacies.git`
 * Följ installationsinstruktioner under **/lib/**
-* Följ intruktion för att sätta upp databasen under **/lib/backend/**
+* Följ intruktion för att sätta upp databasen under **/backend/**
 * Följ instruktioner för att initiallisera VARA under **/VARA/**
 
 
